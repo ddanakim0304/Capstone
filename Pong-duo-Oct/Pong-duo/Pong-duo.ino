@@ -1,4 +1,3 @@
-// UNO/Nano (10-bit ADC). Sends: "v0,v1\n" at ~300 Hz, rock-stable.
 const uint8_t PIN_L = A0;
 const uint8_t PIN_R = A1;
 

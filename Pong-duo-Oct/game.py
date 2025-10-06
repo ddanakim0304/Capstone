@@ -5,11 +5,11 @@ from collections import deque
 import statistics
 import math
 
-# ---------------- Settings ----------------
+# Settings
 BAUD_RATE     = 115200
-SERIAL_PORT   = "auto"        # set explicit port if auto fails (e.g., "COM3" or "/dev/cu.usbmodem101")
+SERIAL_PORT   = "auto"
 TARGET_FPS    = 120
-DEBUG_HUD     = True          # toggle with F1 at runtime
+DEBUG_HUD     = True 
 
 # Ball speed controls
 BALL_START_SPEED = 4.0
