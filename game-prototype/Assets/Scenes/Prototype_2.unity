@@ -834,11 +834,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e370b9c6d4364511b3bf33be48866ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WavelengthGameManager
-  player1Wave: {fileID: 0}
+  player1Wave: {fileID: 795921765}
   player2Wave: {fileID: 1719817003}
   matchThreshold: 0.1
   timeToWin: 6.1
-  p1LineRenderer: {fileID: 0}
+  p1LineRenderer: {fileID: 795921766}
   p2LineRenderer: {fileID: 1719817004}
   matchedColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!4 &1819896268

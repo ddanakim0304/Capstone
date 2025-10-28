@@ -1,17 +1,10 @@
+// MainGameFlowManager.cs (REVISED AND IMPROVED)
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
 
 public class MainGameFlowManager : MonoBehaviour
 {
     public static MainGameFlowManager Instance { get; private set; }
-
-    [Header("Game Sequence")]
-    [Tooltip("Add the names of your mini-game scenes IN ORDER.")]
-    public List<string> sceneNames;
-
-    private int currentSceneIndex = 0;
-
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -24,21 +17,23 @@ public class MainGameFlowManager : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         }
     }
-
     public void MiniGameWon()
     {
-        Debug.Log($"Mini-game '{sceneNames[currentSceneIndex]}' was won!");
-        currentSceneIndex++;
+        // Get the index of the scene we are currently in.
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
 
-        if (currentSceneIndex < sceneNames.Count)
+        // Calculate the index of the next scene.
+        int nextSceneIndex = currentSceneIndex + 1;
+
+        // Check if there IS a next scene in the build settings.
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
         {
-            Debug.Log($"Loading next mini-game: {sceneNames[currentSceneIndex]}");
-            SceneManager.LoadScene(sceneNames[currentSceneIndex]);
+            Debug.Log($"Mini-game {currentSceneIndex} won! Loading next scene: {nextSceneIndex}");
+            SceneManager.LoadScene(nextSceneIndex);
         }
         else
         {
-            Debug.Log("--- ENTIRE GAME COMPLETED! ---");
-            // Here you can load a final "Thank you for playing" scene or trigger the finale.
+            Debug.Log("--- FINAL SCENE COMPLETED! ENTIRE GAME WON! ---");
         }
     }
 }
