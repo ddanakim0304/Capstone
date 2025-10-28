@@ -1,4 +1,3 @@
-// BumpReaction.cs (MODIFIED FOR VISUAL SWAPPING)
 using UnityEngine;
 using System.Collections;
 
@@ -22,7 +21,6 @@ public class BumpReaction : MonoBehaviour
     void Start()
     {
         originalScale = transform.localScale;
-        // Ensure the correct visual state is active on start.
         if (normalVisuals) normalVisuals.SetActive(true);
         if (surprisedVisuals) surprisedVisuals.SetActive(false);
     }
@@ -41,7 +39,6 @@ public class BumpReaction : MonoBehaviour
         if (normalVisuals) normalVisuals.SetActive(false);
         if (surprisedVisuals) surprisedVisuals.SetActive(true);
 
-        // --- 1. BOUNCE PHASE ---
         Vector3 startPos = transform.position;
         Vector3 bounceTarget = startPos + bounceDirection * bounceDistance;
         float timer = 0f;
@@ -54,7 +51,6 @@ public class BumpReaction : MonoBehaviour
         }
         transform.position = bounceTarget;
 
-        // --- 2. SHUDDER (SCALE) PHASE ---
         float stepDuration = shudderDuration / 4.0f;
         Vector3 squashScale = new Vector3(originalScale.x * (1 + shudderMagnitude), originalScale.y * (1 - shudderMagnitude), originalScale.z);
         
@@ -63,10 +59,6 @@ public class BumpReaction : MonoBehaviour
         yield return AnimateScale(originalScale, squashScale, stepDuration);
         yield return AnimateScale(squashScale, originalScale, stepDuration);
 
-        // --- 3. CLEANUP AND REVERT VISUALS ---
-        if (surprisedVisuals) surprisedVisuals.SetActive(false);
-        if (normalVisuals) normalVisuals.SetActive(true);
-        
         runningReaction = null;
     }
 
