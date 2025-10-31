@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_DoodleEffect
+  m_Name: Shader Graphs_DoodleEffect 3
   m_Shader: {fileID: -6465566751694194690, guid: 9fc1e42a1716744cdb347712b44b11e5, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -54,7 +54,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _DoodleIntensity: 7.79
+    - _DoodleIntensity: 13.3
     - _DoodleSpeed: 4.85
     m_Colors: []
   m_BuildTextureStacks: []

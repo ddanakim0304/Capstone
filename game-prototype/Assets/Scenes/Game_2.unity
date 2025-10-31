@@ -439,7 +439,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &359283990
 Transform:
   m_ObjectHideFlags: 0
@@ -472,7 +472,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &397541469
 Transform:
   m_ObjectHideFlags: 0
@@ -951,11 +951,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerWaveController
   playerIndex: 2
+  isUpdating: 1
   initialFrequency: 5
   keyboardSensitivity: 4
   encoderSensitivity: 0.1
-  driftSpeed: 0
-  driftMagnitude: 0
   frequency: 1.5
   points: 800
   amplitude: 0.57
@@ -1234,11 +1233,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerWaveController
   playerIndex: 0
+  isUpdating: 1
   initialFrequency: 2
   keyboardSensitivity: 6
   encoderSensitivity: 5
-  driftSpeed: 0
-  driftMagnitude: 0
   frequency: 2.5
   points: 800
   amplitude: 0.36
@@ -1505,11 +1503,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerWaveController
   playerIndex: 2
+  isUpdating: 1
   initialFrequency: 5
   keyboardSensitivity: 4
   encoderSensitivity: 0.1
-  driftSpeed: 0
-  driftMagnitude: 0
   frequency: 2.3
   points: 800
   amplitude: 0.1
@@ -1671,11 +1668,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerWaveController
   playerIndex: 2
+  isUpdating: 1
   initialFrequency: 5
   keyboardSensitivity: 4
   encoderSensitivity: 0.1
-  driftSpeed: 0
-  driftMagnitude: 0
   frequency: 4.04
   points: 800
   amplitude: 0.48
@@ -1986,7 +1982,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1535090651
 Transform:
   m_ObjectHideFlags: 0
@@ -2109,7 +2105,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1620141979
 Transform:
   m_ObjectHideFlags: 0
@@ -2248,11 +2244,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerWaveController
   playerIndex: 1
+  isUpdating: 1
   initialFrequency: 5
   keyboardSensitivity: 4
   encoderSensitivity: 0.1
-  driftSpeed: 0
-  driftMagnitude: 0
   frequency: 2.5
   points: 800
   amplitude: 0.69
@@ -2504,9 +2499,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WavelengthGameManager
   player1Wave: {fileID: 795921765}
   player2Wave: {fileID: 1719817003}
+  player1Transform: {fileID: 722117132}
+  player2Transform: {fileID: 405046278}
+  player1NormalVisuals: {fileID: 1620141978}
+  player1HappyVisuals: {fileID: 359283989}
+  player2NormalVisuals: {fileID: 397541468}
+  player2HappyVisuals: {fileID: 1535090650}
+  noiseParent: {fileID: 489614193}
   matchText: {fileID: 205768022}
   matchThreshold: 0.2
   timeToWin: 3
+  delayAfterWin: 1
+  pulseMagnitude: 0.13
+  pulseDuration: 0.4
   p1LineRenderer: {fileID: 795921766}
   p2LineRenderer: {fileID: 1719817004}
   matchedColor: {r: 0, g: 0.8065429, b: 1, a: 1}

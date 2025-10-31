@@ -1,10 +1,13 @@
 using UnityEngine;
 
-[RequireComponent(typeof(LineRenderer))] // Automatically adds a LineRenderer if one doesn't exist
+[RequireComponent(typeof(LineRenderer))]
 public class PlayerWaveController : MonoBehaviour
 {
     [Tooltip("0 for Player 1, 1 for Player 2, 2 for non-playable background wave")]
     public int playerIndex;
+
+    // This public flag allows other scripts (like the GameManager) to freeze this wave.
+    public bool isUpdating = true;
 
     // --- Settings for Playable Waves (Index 0 & 1) ---
     [Header("Player Control & Instability")]
@@ -20,12 +23,11 @@ public class PlayerWaveController : MonoBehaviour
 
     // --- General Wave Shape Settings ---
     [Header("Wave Shape")]
-    public int points = 100; // Resolution of the line
+    public int points = 100;
     public float amplitude = 1f;
-    public Vector2 xLimits = new Vector2(-5, 5); // Start and end X position of the wave
-    public float movementSpeed = 1f; // How fast the wave animates
+    public Vector2 xLimits = new Vector2(-5, 5);
+    public float movementSpeed = 1f;
 
-    // This is the public property the GameManager will check for a match
     public float Frequency { get; private set; }
 
     private LineRenderer lineRenderer;
@@ -36,25 +38,20 @@ public class PlayerWaveController : MonoBehaviour
     void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.positionCount = points; // Set the number of points once
+        lineRenderer.positionCount = points;
     }
 
     void Start()
     {
-        // --- BEHAVIOR SWITCH BASED ON PLAYER INDEX ---
-
         if (playerIndex == 2)
         {
-            // This is the non-playable background wave.
-            // It uses the direct 'frequency' value and has no instability.
             Frequency = frequency;
         }
-        else // This is a playable character (Index 0 or 1)
+        else
         {
             Frequency = initialFrequency;
             perlinSeed = Random.Range(0f, 100f);
 
-            // Set up hardware/keyboard controls only for playable characters
             if (HardwareManager.Instance != null)
             {
                 controller = HardwareManager.Instance.GetController(playerIndex);
@@ -73,7 +70,9 @@ public class PlayerWaveController : MonoBehaviour
 
     void Update()
     {
-        // Only playable characters need their frequency updated each frame
+        // If the wave is frozen, stop all updates immediately.
+        if (!isUpdating) return;
+
         if (playerIndex != 2)
         {
             UpdateFrequencyForPlayer();
@@ -86,22 +85,20 @@ public class PlayerWaveController : MonoBehaviour
     {
         float totalChange = 0f;
 
-        // --- Calculate Input ---
         if (controller != null)
         {
             long encoderDelta = controller.EncoderCount - lastEncoderCount;
             lastEncoderCount = controller.EncoderCount;
             totalChange += encoderDelta * encoderSensitivity;
         }
-        else // Fallback to keyboard
+        else
         {
             string axisName = (playerIndex == 0) ? "Horizontal_P1" : "Horizontal_P2";
             totalChange += Input.GetAxis(axisName) * keyboardSensitivity * Time.deltaTime;
         }
 
-        // --- Apply Changes ---
         Frequency += totalChange;
-        Frequency = Mathf.Clamp(Frequency, 0.5f, 5f); // Set reasonable limits for frequency
+        Frequency = Mathf.Clamp(Frequency, 0.5f, 5f);
     }
 
     void DrawWave()
@@ -112,10 +109,7 @@ public class PlayerWaveController : MonoBehaviour
         {
             float progress = (float)i / (points - 1);
             float x = Mathf.Lerp(xLimits.x, xLimits.y, progress);
-
-            // The sine wave calculation remains the same for all wave types
             float y = amplitude * Mathf.Sin((tau * Frequency * x) + (Time.time * movementSpeed));
-
             lineRenderer.SetPosition(i, new Vector3(x, y, 0));
         }
     }
