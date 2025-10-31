@@ -6,10 +6,21 @@ public class WavelengthGameManager : MiniGameManager
     [Header("Player References")]
     public PlayerWaveController player1Wave;
     public PlayerWaveController player2Wave;
+
+    [Header("Player Visuals")]
+    [Tooltip("The GameObject holding the 'Normal' sprites for Player 1.")]
+    public GameObject player1NormalVisuals;
+    [Tooltip("The GameObject holding the 'Happy' sprites for Player 1.")]
+    public GameObject player1HappyVisuals;
+    [Tooltip("The GameObject holding the 'Normal' sprites for Player 2.")]
+    public GameObject player2NormalVisuals;
+    [Tooltip("The GameObject holding the 'Happy' sprites for Player 2.")]
+    public GameObject player2HappyVisuals;
     
     [Header("UI References")]
     [Tooltip("The TextMeshPro object that displays the 'Match!' countdown.")]
     public TextMeshProUGUI matchText;
+
     [Header("Game Rules")]
     public float matchThreshold = 0.1f;
     public float timeToWin = 3f;
@@ -28,11 +39,16 @@ public class WavelengthGameManager : MiniGameManager
         if(p1LineRenderer) p1InitialColor = p1LineRenderer.startColor;
         if(p2LineRenderer) p2InitialColor = p2LineRenderer.startColor;
 
-        // Ensure the match text is hidden at the start of the game.
         if (matchText != null)
         {
             matchText.gameObject.SetActive(false);
         }
+
+        // Set the initial visual state for both players to "Normal".
+        if (player1NormalVisuals != null) player1NormalVisuals.SetActive(true);
+        if (player1HappyVisuals != null) player1HappyVisuals.SetActive(false);
+        if (player2NormalVisuals != null) player2NormalVisuals.SetActive(true);
+        if (player2HappyVisuals != null) player2HappyVisuals.SetActive(false);
     }
 
     void Update()
@@ -43,7 +59,6 @@ public class WavelengthGameManager : MiniGameManager
 
     void CheckWinCondition()
     {
-        // Assuming your PlayerWaveController has a public 'Frequency' property.
         float frequency1 = player1Wave.Frequency;
         float frequency2 = player2Wave.Frequency;
         float frequencyDifference = Mathf.Abs(frequency1 - frequency2);
@@ -54,18 +69,28 @@ public class WavelengthGameManager : MiniGameManager
             
             if(p1LineRenderer) p1LineRenderer.startColor = p1LineRenderer.endColor = matchedColor;
             if(p2LineRenderer) p2LineRenderer.startColor = p2LineRenderer.endColor = matchedColor; 
+            
             if (matchText != null)
             {
-                // Make the text visible.
                 matchText.gameObject.SetActive(true);
-                
-                // Calculate remaining time and format the string. F1 = one decimal place.
                 float remainingTime = timeToWin - matchTimer;
                 matchText.text = string.Format("Match!\n{0:F1}s", remainingTime);
             }
 
             if (matchTimer >= timeToWin)
             {
+                // Switch the visuals from "Normal" to "Happy".
+                if (player1NormalVisuals != null) player1NormalVisuals.SetActive(false);
+                if (player1HappyVisuals != null) player1HappyVisuals.SetActive(true);
+                if (player2NormalVisuals != null) player2NormalVisuals.SetActive(false);
+                if (player2HappyVisuals != null) player2HappyVisuals.SetActive(true);
+                
+                // Hide the countdown text immediately upon winning.
+                if (matchText != null)
+                {
+                    matchText.gameObject.SetActive(false);
+                }
+
                 WinGame();
             }
         }
@@ -75,6 +100,7 @@ public class WavelengthGameManager : MiniGameManager
 
             if(p1LineRenderer) p1LineRenderer.startColor = p1LineRenderer.endColor = p1InitialColor;
             if(p2LineRenderer) p2LineRenderer.startColor = p2LineRenderer.endColor = p2InitialColor;
+            
             if (matchText != null)
             {
                 matchText.gameObject.SetActive(false);
