@@ -13,7 +13,7 @@ public class PlayerWaveController : MonoBehaviour
     public float movementSpeed = 1f; // How fast the wave animates
 
     [Header("Control & Instability")]
-    public float initialFrequency = 2f;
+    public float frequency = 2f; // Fixed frequency for in-game debug
     public float keyboardSensitivity = 1f;
     public float encoderSensitivity = 0.1f;
     public float driftSpeed = 0.1f;
@@ -35,6 +35,12 @@ public class PlayerWaveController : MonoBehaviour
 
     void Start()
     {
+        if (playerIndex == 2)
+        {
+            Frequency = frequency; // Set fixed frequency for non-playable background wave
+            return;
+        }
+
         if (HardwareManager.Instance != null)
         {
             controller = HardwareManager.Instance.GetController(playerIndex);
@@ -48,13 +54,16 @@ public class PlayerWaveController : MonoBehaviour
             lastEncoderCount = controller.EncoderCount;
         }
 
-        Frequency = initialFrequency;
+        Frequency = frequency;
         perlinSeed = Random.Range(0f, 100f);
     }
 
     void Update()
     {
-        UpdateFrequency();
+        if (playerIndex != 2) // Skip input updates for non-playable background wave
+        {
+            UpdateFrequency();
+        }
         DrawWave();
     }
 
