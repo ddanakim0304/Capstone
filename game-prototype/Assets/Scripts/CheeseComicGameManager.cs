@@ -23,6 +23,7 @@ public class CheeseComicGameManager : MiniGameManager
     public SpriteRenderer cut4_LineArt;
     public SpriteRenderer cut4_Color;
     public SpriteRenderer cut4_ColorCheese;
+    public Transform cut4_LineArtBubble; // The new static bubble for Cut 4
 
     [Header("Animation Timings")]
     public float artFadeInDuration = 1.0f;
@@ -32,10 +33,15 @@ public class CheeseComicGameManager : MiniGameManager
 
     [Header("Animation Settings")]
     public float pulseMagnitude = 0.1f;
+    
+    [Header("Bouncy Shake Animation (For Cut 4)")]
+    public float shakeDuration = 0.5f;
+    public float shakeMagnitude = 0.05f;
 
     private Vector3 cut1_Bubble_OriginalScale;
     private Vector3 cut2_Bubble_OriginalScale;
     private Vector3 cut3_Panel_OriginalScale;
+    private Vector3 cut4_Bubble_OriginalScale; // New variable for Cut 4's bubble
 
     void Start()
     {
@@ -45,35 +51,21 @@ public class CheeseComicGameManager : MiniGameManager
 
     void InitializeScene()
     {
-        // Hide Cut 1 & 2 elements by fading
         SetAlpha(cut1_LineArt, 0);
         SetAlpha(cut1_Color, 0);
-        if (cut1_LineArtBubble != null)
-        {
-            cut1_Bubble_OriginalScale = cut1_LineArtBubble.localScale;
-            cut1_LineArtBubble.gameObject.SetActive(false);
-        }
-
+        if (cut1_LineArtBubble != null) { cut1_Bubble_OriginalScale = cut1_LineArtBubble.localScale; cut1_LineArtBubble.gameObject.SetActive(false); }
+        
         SetAlpha(cut2_LineArt, 0);
         SetAlpha(cut2_Color, 0);
         SetAlpha(cut2_CheeseColor, 0);
-        if (cut2_LineArtBubble != null)
-        {
-            cut2_Bubble_OriginalScale = cut2_LineArtBubble.localScale;
-            cut2_LineArtBubble.gameObject.SetActive(false);
-        }
-
-        // Hide Cut 3 by deactivating the entire panel
-        if (cut3_PanelTransform != null)
-        {
-            cut3_Panel_OriginalScale = cut3_PanelTransform.localScale;
-            cut3_PanelTransform.gameObject.SetActive(false);
-        }
-
-        // Hide Cut 4 elements by fading
+        if (cut2_LineArtBubble != null) { cut2_Bubble_OriginalScale = cut2_LineArtBubble.localScale; cut2_LineArtBubble.gameObject.SetActive(false); }
+        
+        if (cut3_PanelTransform != null) { cut3_Panel_OriginalScale = cut3_PanelTransform.localScale; cut3_PanelTransform.gameObject.SetActive(false); }
+        
         SetAlpha(cut4_LineArt, 0);
         SetAlpha(cut4_Color, 0);
         SetAlpha(cut4_ColorCheese, 0);
+        if (cut4_LineArtBubble != null) { cut4_Bubble_OriginalScale = cut4_LineArtBubble.localScale; cut4_LineArtBubble.gameObject.SetActive(false); }
     }
 
     private IEnumerator PlayComicSequence()
@@ -94,7 +86,6 @@ public class CheeseComicGameManager : MiniGameManager
         yield return new WaitForSeconds(delayBetweenCuts);
 
         // --- CUT 3 ---
-        // The panel now appears with a boing animation instead of fading.
         yield return StartCoroutine(AnimatePanelAppearance(cut3_PanelTransform, cut3_Panel_OriginalScale));
         yield return new WaitForSeconds(delayBetweenCuts);
 
@@ -102,9 +93,37 @@ public class CheeseComicGameManager : MiniGameManager
         StartCoroutine(FadeIn(cut4_LineArt, artFadeInDuration));
         StartCoroutine(FadeIn(cut4_Color, artFadeInDuration));
         yield return StartCoroutine(FadeIn(cut4_ColorCheese, artFadeInDuration));
+        yield return new WaitForSeconds(delayBeforeBubble);
+        yield return StartCoroutine(AnimateBouncyBubble(cut4_LineArtBubble, cut4_Bubble_OriginalScale));
 
         // --- FINISH ---
         WinGame();
+    }
+
+    // --- Helper Functions and Coroutines ---
+
+    private IEnumerator AnimateBouncyBubble(Transform target, Vector3 finalScale)
+    {
+        if (target == null) yield break;
+
+        // Part 1: The "Boing" (Scale animation)
+        yield return StartCoroutine(AnimateBubble(target, finalScale));
+
+        // Part 2: The Shake (Position animation)
+        Vector3 originalPosition = target.localPosition;
+        float timer = 0f;
+        while (timer < shakeDuration)
+        {
+            float xOffset = Random.Range(-1f, 1f) * shakeMagnitude;
+            float yOffset = Random.Range(-1f, 1f) * shakeMagnitude;
+            target.localPosition = originalPosition + new Vector3(xOffset, yOffset, 0);
+            
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        // Reset to perfect position after shaking.
+        target.localPosition = originalPosition;
     }
 
     private void SetAlpha(SpriteRenderer renderer, float alpha)
