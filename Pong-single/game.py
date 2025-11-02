@@ -17,7 +17,7 @@ SPEEDUP_ON_HIT   = 1.06
 MIN_BOUNCE_ANGLE = math.radians(12)
 MAX_BOUNCE_ANGLE = math.radians(68)
 
-# Smoothing (for glitch)
+# Smoothing
 MEDIAN_WINDOW   = 7
 EMA_ALPHA       = 0.35
 MAX_STEP_PX     = 24
@@ -125,8 +125,8 @@ def map_pot_to_y(pot):
     pot = max(0, min(1023, pot))
     return (1.0 - (pot / 1023.0)) * (SCREEN_HEIGHT - PADDLE_HEIGHT)
 
-#-----------------------------------------------------------------------------------------
-# Kick off the first round
+
+# Start game
 reset_ball()
 
 # --- MAIN GAME LOOP ---

@@ -18,13 +18,13 @@ SPEEDUP_ON_HIT   = 1.06
 MIN_BOUNCE_ANGLE = math.radians(12)
 MAX_BOUNCE_ANGLE = math.radians(68)
 
-# Smoothing (for glitch)
+# Smoothing
 MEDIAN_WINDOW   = 7
 EMA_ALPHA       = 0.35
 MAX_STEP_PX     = 24
 NO_DATA_HOLD_S  = 1.0
 
-# ---------------- Pygame setup ----------------
+# Pygame setup 
 pygame.init()
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -78,7 +78,7 @@ except Exception as e:
 
 # We'll accumulate bytes here and split on newlines
 serial_buf = bytearray()
-last_line  = ""     # for HUD
+last_line  = ""
 last_v0    = 512
 last_v1    = 512
 
@@ -177,7 +177,6 @@ while True:
                         if 0 <= v1 <= 1023:
                             hist_R.append(v1); last_R = v1; t_R = time.monotonic()
                     except ValueError:
-                        # malformed line; ignore
                         pass
     except Exception as e:
         # Print once in a while if you want: print("Serial read error:", e)

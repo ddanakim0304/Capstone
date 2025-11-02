@@ -17,7 +17,7 @@ void setup() {
 void loop() {
   static uint32_t last = 0;
   uint32_t now = micros();
-  if (now - last < 3333) return;  // ~300 Hz (3.33 ms). Change to taste.
+  if (now - last < 3333) return;
   last = now;
 
   int v0 = readStable(PIN_L);
