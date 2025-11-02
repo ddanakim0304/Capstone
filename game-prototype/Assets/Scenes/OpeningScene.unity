@@ -553,7 +553,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "Hello!\nThis is a game about connection, told through the story of two
-    mice. \neIt's a cooperative experience, so find a partner!\nWhile the final game
+    mice. \nIt's a cooperative experience, so find a partner!\nWhile the final game
     uses unique hardware, this prototype uses the keyboard.\n\nControls:\nPlayer
     1: A and D\nPlayer 2: \u2190 and \u2192\n\nEnjoy the story!"
   m_isRightToLeft: 0
