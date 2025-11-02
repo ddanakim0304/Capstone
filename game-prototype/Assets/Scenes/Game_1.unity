@@ -321,6 +321,8 @@ MonoBehaviour:
   playerIndex: 1
   canMove: 1
   keyboardSensitivity: 5
+  encoderSensitivity: 0.1
+  smoothing: 8
 --- !u!61 &390236225
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1062,6 +1064,8 @@ MonoBehaviour:
   playerIndex: 0
   canMove: 1
   keyboardSensitivity: 5
+  encoderSensitivity: 0.1
+  smoothing: 8
 --- !u!61 &1141610970
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1369,7 +1373,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24daa706e08a942f792585baa83dfcbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HardwareManager
-  controllersToConnect: []
+  hardwareControllers: []
+  minPlayerCount: 2
 --- !u!4 &1484624729
 Transform:
   m_ObjectHideFlags: 0

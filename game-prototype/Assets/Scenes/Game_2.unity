@@ -904,7 +904,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24daa706e08a942f792585baa83dfcbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HardwareManager
-  controllersToConnect: []
+  hardwareControllers: []
+  minPlayerCount: 2
 --- !u!4 &541321941
 Transform:
   m_ObjectHideFlags: 0
@@ -955,6 +956,7 @@ MonoBehaviour:
   initialFrequency: 5
   keyboardSensitivity: 4
   encoderSensitivity: 0.1
+  smoothing: 8
   frequency: 1.5
   points: 800
   amplitude: 0.57
@@ -1236,7 +1238,8 @@ MonoBehaviour:
   isUpdating: 1
   initialFrequency: 2
   keyboardSensitivity: 6
-  encoderSensitivity: 5
+  encoderSensitivity: 0.03
+  smoothing: 8
   frequency: 2.5
   points: 800
   amplitude: 0.36
@@ -1507,6 +1510,7 @@ MonoBehaviour:
   initialFrequency: 5
   keyboardSensitivity: 4
   encoderSensitivity: 0.1
+  smoothing: 8
   frequency: 2.3
   points: 800
   amplitude: 0.1
@@ -1672,6 +1676,7 @@ MonoBehaviour:
   initialFrequency: 5
   keyboardSensitivity: 4
   encoderSensitivity: 0.1
+  smoothing: 8
   frequency: 4.04
   points: 800
   amplitude: 0.48
@@ -2248,6 +2253,7 @@ MonoBehaviour:
   initialFrequency: 5
   keyboardSensitivity: 4
   encoderSensitivity: 0.1
+  smoothing: 8
   frequency: 2.5
   points: 800
   amplitude: 0.69

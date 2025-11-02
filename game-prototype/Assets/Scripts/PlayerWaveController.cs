@@ -11,6 +11,7 @@ public class PlayerWaveController : MonoBehaviour
     public float initialFrequency = 2f;
     public float keyboardSensitivity = 1f;
     public float encoderSensitivity = 0.1f;
+    public float smoothing = 8f;
 
     [Header("Background Wave Settings (Index 2)")]
     public float frequency = 2.5f;
@@ -24,8 +25,8 @@ public class PlayerWaveController : MonoBehaviour
 
     private LineRenderer lineRenderer;
     private ControllerInput controller;
-    // Stores the encoder value from the previous frame to calculate the delta.
     private long lastEncoderCount = 0;
+    private float targetFrequency;
 
     void Awake()
     {
@@ -40,11 +41,13 @@ public class PlayerWaveController : MonoBehaviour
         if (playerIndex == 2)
         {
             Frequency = frequency;
+            targetFrequency = frequency;
         }
         // Otherwise, it's a player-controlled wave.
         else
         {
             Frequency = initialFrequency;
+            targetFrequency = initialFrequency;
             // Attempt to get the assigned controller from the HardwareManager.
             if (HardwareManager.Instance != null)
             {
@@ -71,6 +74,7 @@ public class PlayerWaveController : MonoBehaviour
         if (playerIndex != 2)
         {
             UpdateFrequencyForPlayer();
+            Frequency = Mathf.Lerp(Frequency, targetFrequency, smoothing * Time.deltaTime);
         }
         DrawWave();
     }
@@ -97,9 +101,9 @@ public class PlayerWaveController : MonoBehaviour
             totalChange = Input.GetAxis(axisName) * keyboardSensitivity * Time.deltaTime;
         }
 
-        // Apply the input change to the frequency and keep it within a playable range.
-        Frequency += totalChange;
-        Frequency = Mathf.Clamp(Frequency, 0.5f, 5f);
+        // Apply the input change to the target frequency and keep it within a playable range.
+        targetFrequency += totalChange;
+        targetFrequency = Mathf.Clamp(targetFrequency, 0.5f, 5f);
     }
 
     // Calculates and sets the positions of the LineRenderer's points to form a sine wave.

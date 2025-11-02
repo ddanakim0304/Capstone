@@ -88,8 +88,10 @@ public class WavelengthGameManager : MiniGameManager
             }
 
             // If the timer reaches the goal, trigger the win sequence.
-            if (matchTimer >= timeToWin)
+            if (matchTimer >= timeToWin && !isGameWon)
             {
+                // Lock the game state immediately to prevent this from running multiple times.
+                isGameWon = true;
                 StartCoroutine(WinSequence());
             }
         }
@@ -106,9 +108,6 @@ public class WavelengthGameManager : MiniGameManager
     // This coroutine handles all the events that occur after winning.
     private IEnumerator WinSequence()
     {
-        // Immediately lock the game state to prevent this from running multiple times.
-        isGameWon = true;
-
         // Freeze player input and hide the distracting background noise.
         if (player1Wave != null) player1Wave.isUpdating = false;
         if (player2Wave != null) player2Wave.isUpdating = false;
@@ -120,13 +119,22 @@ public class WavelengthGameManager : MiniGameManager
         if (player2NormalVisuals != null) player2NormalVisuals.SetActive(false);
         if (player2HappyVisuals != null) player2HappyVisuals.SetActive(true);
 
-        // Play the victory animations for both players.
+        // Play the victory animations for both players simultaneously.
         StartCoroutine(AnimateBoing(player1Transform));
-        yield return StartCoroutine(AnimateBoing(player2Transform));
+        yield return StartCoroutine(AnimateBoing(player2Transform)); // Wait for the second (and thus both) to finish.
 
         // Wait a moment before loading the next level.
         yield return new WaitForSeconds(delayAfterWin);
-        WinGame();
+        
+        // This game has a custom win animation, so it calls the MainGameFlowManager directly.
+        if (MainGameFlowManager.Instance != null)
+        {
+            MainGameFlowManager.Instance.MiniGameWon();
+        }
+        else
+        {
+            Debug.LogError("MainGameFlowManager not found! Cannot proceed to the next scene.");
+        }
     }
 
     // perform a "boing"  animation

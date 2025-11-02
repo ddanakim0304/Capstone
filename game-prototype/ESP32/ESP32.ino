@@ -1,7 +1,7 @@
 #include <ESP32Encoder.h>
 
 // 2 controllers can be differentiated by changing this ID
-#define CONTROLLER_ID 1   
+#define CONTROLLER_ID 0   
 
 #define ENCODER_CLK 32
 #define ENCODER_DT  33

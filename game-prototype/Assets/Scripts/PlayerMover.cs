@@ -9,13 +9,17 @@ public class PlayerMover : MonoBehaviour
     [Header("Control Sensitivity")]
     public float keyboardSensitivity = 5f;
     public float encoderSensitivity = 0.1f;
-    private ControllerInput controller;
+    public float smoothing = 8f;
 
-    // Stores the encoder value from the previous frame to calculate the change.
+    private ControllerInput controller;
     private long lastEncoderCount;
+    private Vector3 targetPosition;
 
     void Start()
     {
+        // Initialize the target position to prevent snapping on start.
+        targetPosition = transform.position;
+
         // Get the controller assigned to this player from the HardwareManager.
         if (HardwareManager.Instance != null)
         {
@@ -63,10 +67,13 @@ public class PlayerMover : MonoBehaviour
             movement = Input.GetAxis(axisName) * keyboardSensitivity * Time.deltaTime;
         }
 
-        // Apply the calculated movement to the character.
+        // Update the target position with the new input.
         if (movement != 0)
         {
-            transform.Translate(movement, 0, 0);
+            targetPosition.x += movement;
         }
+        
+        // Smoothly move the player towards the target position.
+        transform.position = Vector3.Lerp(transform.position, targetPosition, smoothing * Time.deltaTime);
     }
 }
