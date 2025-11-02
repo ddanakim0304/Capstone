@@ -26,7 +26,7 @@ This folder contains all the C# code
 *   `startButton.cs`: A script for the main menu button to start the game by loading the first level
 
 ### Other Asset Folders
-*   **`Assets/Scenes/`**: Contains all game levels
-*   **`Assets/Sprites/`**: All art assets
+*   **`Assets/Scenes/`**: All game levels
+*   **`Assets/Sprites/`**: Art assets
 *   **`Assets/Audio/`**: Sound assets
 *   **`ESP32/`**: Contains the Arduino (`.ino`) sketch for the ESP32 hardware controllers.
