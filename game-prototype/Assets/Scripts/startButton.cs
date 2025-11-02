@@ -5,9 +5,8 @@ public class OpeningSceneUI : MonoBehaviour
 {
     public void StartGame()
     {
+        // Load the next scene in the build index
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(currentSceneIndex + 1);
-
-        Debug.Log("Start Button Clicked! Loading next scene...");
     }
 }

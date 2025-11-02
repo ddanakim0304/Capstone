@@ -7,7 +7,8 @@ public abstract class MiniGameManager : MonoBehaviour
     // This is the method that individual mini-games will call when their win condition is met.
     protected void WinGame()
     {
-        if (isGameWon) return; // Prevent winning multiple times
+        // Prevent winning multiple times
+        if (isGameWon) return; 
         isGameWon = true;
 
         // Tell the main flow manager to proceed to the next scene.

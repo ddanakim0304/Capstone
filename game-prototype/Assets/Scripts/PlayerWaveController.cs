@@ -20,28 +20,32 @@ public class PlayerWaveController : MonoBehaviour
     public float amplitude = 1f;
     public Vector2 xLimits = new Vector2(-5, 5);
     public float movementSpeed = 1f;
-
     public float Frequency { get; private set; }
 
     private LineRenderer lineRenderer;
     private ControllerInput controller;
+    // Stores the encoder value from the previous frame to calculate the delta.
     private long lastEncoderCount = 0;
 
     void Awake()
     {
+        // Get a reference to the LineRenderer component attached to this GameObject.
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.positionCount = points;
     }
 
     void Start()
     {
+        // If this is a background wave, use its fixed frequency setting.
         if (playerIndex == 2)
         {
             Frequency = frequency;
         }
+        // Otherwise, it's a player-controlled wave.
         else
         {
             Frequency = initialFrequency;
+            // Attempt to get the assigned controller from the HardwareManager.
             if (HardwareManager.Instance != null)
             {
                 controller = HardwareManager.Instance.GetController(playerIndex);
@@ -53,6 +57,7 @@ public class PlayerWaveController : MonoBehaviour
             }
             else
             {
+                // Initialize the encoder count for the first frame's calculation.
                 lastEncoderCount = controller.EncoderCount;
             }
         }
@@ -61,6 +66,8 @@ public class PlayerWaveController : MonoBehaviour
     void Update()
     {
         if (!isUpdating) return;
+        
+        // Only players' frequencies can be changed at runtime.
         if (playerIndex != 2)
         {
             UpdateFrequencyForPlayer();
@@ -68,31 +75,34 @@ public class PlayerWaveController : MonoBehaviour
         DrawWave();
     }
 
+    // Adjusts the wave's frequency based on hardware or keyboard input.
     void UpdateFrequencyForPlayer()
     {
         if (controller == null) return;
 
         float totalChange = 0f;
 
-        // --- NEW, FOOLPROOF LOGIC ---
-        // If a real hardware controller is connected and working, use its encoder data.
+        // Prioritize physical hardware input if a controller is connected.
         if (controller.IsHardwareConnected)
         {
+            // Calculate how much the encoder has turned since the last frame.
             long encoderDelta = controller.EncoderCount - lastEncoderCount;
             lastEncoderCount = controller.EncoderCount;
             totalChange = encoderDelta * encoderSensitivity;
         }
-        // Otherwise, fall back to simple keyboard input, just like PlayerMover.cs.
+        // If no hardware is found, fall back to keyboard input.
         else
         {
             string axisName = (playerIndex == 0) ? "Horizontal_P1" : "Horizontal_P2";
             totalChange = Input.GetAxis(axisName) * keyboardSensitivity * Time.deltaTime;
         }
 
+        // Apply the input change to the frequency and keep it within a playable range.
         Frequency += totalChange;
         Frequency = Mathf.Clamp(Frequency, 0.5f, 5f);
     }
 
+    // Calculates and sets the positions of the LineRenderer's points to form a sine wave.
     void DrawWave()
     {
         float tau = 2 * Mathf.PI;
@@ -100,6 +110,7 @@ public class PlayerWaveController : MonoBehaviour
         {
             float progress = (float)i / (points - 1);
             float x = Mathf.Lerp(xLimits.x, xLimits.y, progress);
+            // The y-position is determined by a sine function, creating the wave shape.
             float y = amplitude * Mathf.Sin((tau * Frequency * x) + (Time.time * movementSpeed));
             lineRenderer.SetPosition(i, new Vector3(x, y, 0));
         }

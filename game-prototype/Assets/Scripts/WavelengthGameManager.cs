@@ -28,22 +28,26 @@ public class WavelengthGameManager : MiniGameManager
     public float delayAfterWin = 1.0f;
 
     [Header("Victory Animation Settings")]
-    public float pulseMagnitude = 0.2f; // Renamed from bounceMagnitude
-    public float pulseDuration = 0.5f;  // Renamed from bounceDuration
+    public float pulseMagnitude = 0.2f;
+    public float pulseDuration = 0.5f;
     
     [Header("Visual Feedback")]
     public LineRenderer p1LineRenderer;
     public LineRenderer p2LineRenderer;
     public Color matchedColor = Color.white;
     
+    // Tracks how long the players have successfully matched their wavelengths.
     private float matchTimer = 0f;
+    // Caches the original colors to revert to when the match is broken.
     private Color p1InitialColor;
     private Color p2InitialColor;
 
     void Start()
     {
+        // Store the starting colors of the player lines for later use.
         if(p1LineRenderer) p1InitialColor = p1LineRenderer.startColor;
         if(p2LineRenderer) p2InitialColor = p2LineRenderer.startColor;
+        // Ensure the UI and character visuals are in their default state.
         if (matchText != null) matchText.gameObject.SetActive(false);
 
         if (player1NormalVisuals != null) player1NormalVisuals.SetActive(true);
@@ -54,6 +58,7 @@ public class WavelengthGameManager : MiniGameManager
 
     void Update()
     {
+        // Stop all game logic once the win sequence has started.
         if (isGameWon) return;
         CheckWinCondition();
     }
@@ -64,13 +69,16 @@ public class WavelengthGameManager : MiniGameManager
         float frequency2 = player2Wave.Frequency;
         float frequencyDifference = Mathf.Abs(frequency1 - frequency2);
 
+        // Check if the players' frequencies are close enough to be considered a match.
         if (frequencyDifference < matchThreshold)
         {
+            // If they match, increment the timer and provide visual feedback.
             matchTimer += Time.deltaTime;
 
             if (p1LineRenderer) p1LineRenderer.startColor = p1LineRenderer.endColor = matchedColor;
             if (p2LineRenderer) p2LineRenderer.startColor = p2LineRenderer.endColor = matchedColor;
 
+            // Update the UI to show the match status and remaining time.
             if (matchText != null)
             {
                 matchText.gameObject.SetActive(true);
@@ -79,6 +87,7 @@ public class WavelengthGameManager : MiniGameManager
                 matchText.text = string.Format("Match!\n{0:F1}s", remainingTime);
             }
 
+            // If the timer reaches the goal, trigger the win sequence.
             if (matchTimer >= timeToWin)
             {
                 StartCoroutine(WinSequence());
@@ -86,6 +95,7 @@ public class WavelengthGameManager : MiniGameManager
         }
         else
         {
+            // If the frequencies don't match, reset the timer and all visual feedback.
             matchTimer = 0f;
             if (p1LineRenderer) p1LineRenderer.startColor = p1LineRenderer.endColor = p1InitialColor;
             if (p2LineRenderer) p2LineRenderer.startColor = p2LineRenderer.endColor = p2InitialColor;
@@ -93,28 +103,33 @@ public class WavelengthGameManager : MiniGameManager
         }
     }
     
+    // This coroutine handles all the events that occur after winning.
     private IEnumerator WinSequence()
     {
+        // Immediately lock the game state to prevent this from running multiple times.
         isGameWon = true;
 
+        // Freeze player input and hide the distracting background noise.
         if (player1Wave != null) player1Wave.isUpdating = false;
         if (player2Wave != null) player2Wave.isUpdating = false;
         if (noiseParent != null) noiseParent.SetActive(false);
 
+        // Swap the character sprites to their "happy" versions.
         if (player1NormalVisuals != null) player1NormalVisuals.SetActive(false);
         if (player1HappyVisuals != null) player1HappyVisuals.SetActive(true);
         if (player2NormalVisuals != null) player2NormalVisuals.SetActive(false);
         if (player2HappyVisuals != null) player2HappyVisuals.SetActive(true);
 
-        // Start the procedural scale animations and wait for them to finish.
+        // Play the victory animations for both players.
         StartCoroutine(AnimateBoing(player1Transform));
         yield return StartCoroutine(AnimateBoing(player2Transform));
 
+        // Wait a moment before loading the next level.
         yield return new WaitForSeconds(delayAfterWin);
         WinGame();
     }
 
-    // A coroutine to perform the procedural scale pulse animation for one character.
+    // perform a "boing"  animation
     private IEnumerator AnimateBoing(Transform targetTransform)
     {
         if (targetTransform == null) yield break;
@@ -132,7 +147,7 @@ public class WavelengthGameManager : MiniGameManager
         yield return AnimateScale(targetTransform, squashScale, originalScale, stepDuration);
     }
     
-    // A helper coroutine to smoothly animate scale between two states.
+    // smoothly animate scale between two values.
     private IEnumerator AnimateScale(Transform target, Vector3 start, Vector3 end, float duration)
     {
         float timer = 0f;
@@ -142,6 +157,7 @@ public class WavelengthGameManager : MiniGameManager
             timer += Time.deltaTime;
             yield return null;
         }
+        // Snap to the final scale to ensure accuracy.
         target.localScale = end;
     }
 }

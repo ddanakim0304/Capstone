@@ -7,7 +7,6 @@ public class BumpingGameManager : MiniGameManager
     public CollisionDetection player1Collision;
     public CollisionDetection player2Collision;
     
-    // We need a reference to the PlayerMover scripts to disable them.
     [Header("Movement References")]
     public PlayerMover player1Mover;
     public PlayerMover player2Mover;
@@ -15,12 +14,11 @@ public class BumpingGameManager : MiniGameManager
     [Header("Reaction References")]
     public BumpReaction player1Reaction;
     public BumpReaction player2Reaction;
-
-    [Tooltip("How long to wait after the bump before loading the next scene.")]
     public float delayAfterBump = 1.0f;
 
     void Start()
     {
+        // When a bump is detected, call HandleBumpDetected
         if (player1Collision != null) player1Collision.OnPlayerBump += HandleBumpDetected;
         if (player2Collision != null) player2Collision.OnPlayerBump += HandleBumpDetected;
     }
@@ -29,15 +27,15 @@ public class BumpingGameManager : MiniGameManager
     {
         if (isGameWon) return;
 
-        // Unsubscribe immediately
+        // Unsubscribe from further bump events to prevent multiple triggers.
         if (player1Collision != null) player1Collision.OnPlayerBump -= HandleBumpDetected;
         if (player2Collision != null) player2Collision.OnPlayerBump -= HandleBumpDetected;
         
-        // Disable movement on both players immediately.
+        // Disable movement on both players
         if (player1Mover != null) player1Mover.canMove = false;
         if (player2Mover != null) player2Mover.canMove = false;
         
-        // --- TRIGGER THE ANIMATION ---
+        // Trigger bump animation
         Vector3 direction = (player2Reaction.transform.position - player1Reaction.transform.position).normalized;
         player1Reaction.TriggerReaction(-direction);
         player2Reaction.TriggerReaction(direction);
@@ -47,6 +45,7 @@ public class BumpingGameManager : MiniGameManager
 
     private IEnumerator DelayedWin()
     {
+        // Wait for a short delay before declaring the win
         yield return new WaitForSeconds(delayAfterBump); 
         WinGame();
     }

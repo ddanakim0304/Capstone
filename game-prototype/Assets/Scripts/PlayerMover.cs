@@ -8,7 +8,6 @@ public class PlayerMover : MonoBehaviour
 
     [Header("Control Sensitivity")]
     public float keyboardSensitivity = 5f;
-    // You can add encoder sensitivity later if needed for this scene.
 
     void Update()
     {

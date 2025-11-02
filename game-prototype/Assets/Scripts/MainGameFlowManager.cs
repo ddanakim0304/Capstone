@@ -1,12 +1,15 @@
-// MainGameFlowManager.cs (REVISED AND IMPROVED)
+// MainGameFlowManager.cs
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MainGameFlowManager : MonoBehaviour
 {
+    // A singleton instance for easy access from other scripts
     public static MainGameFlowManager Instance { get; private set; }
+
     void Awake()
     {
+        //ensure only one instance of the manager exists.
         if (Instance != null && Instance != this)
         {
             Destroy(this.gameObject);
@@ -17,15 +20,16 @@ public class MainGameFlowManager : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         }
     }
+
     public void MiniGameWon()
     {
-        // Get the index of the scene we are currently in.
+        // Get the build index of the currently active scene.
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
 
-        // Calculate the index of the next scene.
+        // Figure out the index for the next scene in the build order.
         int nextSceneIndex = currentSceneIndex + 1;
 
-        // Check if there IS a next scene in the build settings.
+        // Check if a next scene actually exists in the build settings.
         if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
         {
             Debug.Log($"Mini-game {currentSceneIndex} won! Loading next scene: {nextSceneIndex}");
@@ -33,7 +37,8 @@ public class MainGameFlowManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("--- FINAL SCENE COMPLETED! ENTIRE GAME WON! ---");
+            // If there are no more scenes, the player has finished the entire game.
+            Debug.Log("FINAL SCENE COMPLETED! ENTIRE GAME WON!");
         }
     }
 }

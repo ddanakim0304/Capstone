@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 public class HardwareManager : MonoBehaviour
 {
-    // A class to define how to set up one hardware controller in the Inspector.
+    // Defines the Inspector settings for a single hardware controller.
     [System.Serializable]
     public class ControllerSetup
     {
         public string portName = "";
         public int baudRate = 115200;
-        // This is populated at runtime, so it doesn't need to be visible.
+        // This is populated at runtime, so it can be hidden in the Inspector.
         [HideInInspector] public ControllerInput input; 
     }
 
@@ -20,15 +20,15 @@ public class HardwareManager : MonoBehaviour
     [Tooltip("Ensures that at least this many controllers exist for keyboard fallback, even if none are connected.")]
     public int minPlayerCount = 2;
     
-    // Singleton instance for easy access from other scripts.
+    // A singleton instance for easy access from other scripts.
     public static HardwareManager Instance { get; private set; }
 
-    // This private list will hold all controllers, both real and virtual.
+    // This list holds all active controllers
     private List<ControllerInput> allControllers = new List<ControllerInput>();
 
     void Awake()
     {
-        // Standard Singleton pattern to ensure only one instance exists.
+        // Ensure only one instance of the HardwareManager exists.
         if (Instance != null && Instance != this)
         {
             Destroy(this.gameObject);
@@ -39,19 +39,21 @@ public class HardwareManager : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         }
 
-        // 1. Create controllers for any real hardware specified in the Inspector.
+        // Create and initialize controllers for any real hardware defined in the Inspector.
         for (int i = 0; i < hardwareControllers.Count; i++)
         {
             var setup = hardwareControllers[i];
+            // Create a new ControllerInput component.
             GameObject controllerObject = new GameObject($"HardwareController_Player{i} ({setup.portName})");
             controllerObject.transform.SetParent(this.transform);
             
             setup.input = controllerObject.AddComponent<ControllerInput>();
+            // Initialize with a port name to trigger a hardware connection attempt.
             setup.input.Initialize(i, setup.portName, setup.baudRate);
             allControllers.Add(setup.input);
         }
         
-        // 2. Create "virtual" controllers for keyboard fallback if we don't have enough.
+        // If there aren't enough hardware controllers, create virtual ones for keyboard fallback.
         while (allControllers.Count < minPlayerCount)
         {
             int playerIndex = allControllers.Count;
@@ -59,12 +61,13 @@ public class HardwareManager : MonoBehaviour
             controllerObject.transform.SetParent(this.transform);
             
             ControllerInput virtualInput = controllerObject.AddComponent<ControllerInput>();
-            virtualInput.Initialize(playerIndex); // Initialize without a port name
+            // Initialize without a port name, which makes it a keyboard-only controller.
+            virtualInput.Initialize(playerIndex); 
             allControllers.Add(virtualInput);
         }
     }
 
-    // Public method for any script to get a player's controller.
+    // A public method for other scripts to get a specific player's controller.
     public ControllerInput GetController(int playerIndex)
     {
         if (playerIndex >= 0 && playerIndex < allControllers.Count)
