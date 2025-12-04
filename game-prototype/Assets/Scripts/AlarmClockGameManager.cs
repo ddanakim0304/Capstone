@@ -112,8 +112,7 @@ public class AlarmClockGameManager : MiniGameManager
             currentTargetY += alarmSetup.resistanceSpeed * Time.deltaTime;
         }
         
-        // Enforce a ceiling so the target can't go above the start position,
-        // but allow it to go infinitely far down to create a buffer.
+        // Enforce a ceiling so the target can't go above the start position
         return Mathf.Min(currentTargetY, alarmSetup.handStartPositionY);
     }
     

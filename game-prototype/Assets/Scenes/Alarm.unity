@@ -1554,10 +1554,10 @@ MonoBehaviour:
     alarmOffSprite: {fileID: 1239448789}
     alarmAudioSource: {fileID: 0}
     handStartPositionY: 0.35
-    winZonePositionY: -2.2
+    winZonePositionY: -2.1
     handEndPositionY: -2.05
     pressDistance: 1.3
-    resistanceSpeed: 5.5
+    resistanceSpeed: 6.34
   player2Alarm:
     handTransform: {fileID: 437816439}
     alarmOnSprite: {fileID: 923180977}
@@ -1567,7 +1567,7 @@ MonoBehaviour:
     winZonePositionY: -1.01
     handEndPositionY: -0.92
     pressDistance: 0.78
-    resistanceSpeed: 3.08
+    resistanceSpeed: 3.92
   handMovementSmoothing: 8
   delayAfterWin: 0.67
 --- !u!1 &1484624727
