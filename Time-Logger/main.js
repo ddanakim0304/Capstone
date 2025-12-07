@@ -59,6 +59,9 @@ ipcMain.on('start-tracking', (event, manualMode) => {
             const appName = window.owner.name.toLowerCase();
             const title = window.title.toLowerCase();
 
+            // DEBUG: Print app name and title to see how they appear
+            console.log(`[ActiveWin] App: "${window.owner.name}" | Title: "${window.title}"`);
+
             let detectedApp = null;
 
             // Unity detection
@@ -69,19 +72,33 @@ ipcMain.on('start-tracking', (event, manualMode) => {
             else if (appName.includes('code') || appName.includes('visual studio code')) {
                 detectedApp = 'VS Code';
             }
-            // Chrome with AI websites
-            else if (appName.includes('chrome') || appName.includes('google chrome')) {
-                if (title.includes('claude.ai') || title.includes('ai.google') ||
-                    title.includes('aistudio') || title.includes('chatgpt')) {
-                    detectedApp = 'Chrome (AI Studio)';
+            // Antigravity detection
+            else if (appName.includes('antigravity')) {
+                detectedApp = 'Antigravity';
+            }
+            // NAVER Whale browser with specific websites (detect by tab name)
+            else if (appName.includes('naver whale')) {
+                if (title.includes('claude')) {
+                    detectedApp = 'Claude';
+                } else if (title.includes('ai studio')) {
+                    detectedApp = 'AI Studio';
+                } else if (title.includes('chatgpt')) {
+                    detectedApp = 'ChatGPT';
+                } else if (title.includes('github')) {
+                    detectedApp = 'GitHub';
+                } else if (title.includes('gitingest')) {
+                    detectedApp = 'GitIngest';
                 }
             }
 
             if (detectedApp) {
                 event.reply('app-detected', detectedApp);
+            } else {
+                // Send signal that no tracked app is active (for auto-stop)
+                event.reply('app-undetected');
             }
         } catch (error) {
-            console.error('Detection error:', error);
+            // Silently ignore detection errors
         }
     }, 2000); // Check every 2 seconds
 });
