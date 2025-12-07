@@ -12,16 +12,16 @@ EditorBuildSettings:
     path: Assets/Scenes/Alarm.unity
     guid: 5fa9346088b9146c48e8a78a85db9e13
   - enabled: 1
-    path: Assets/Scenes/Game_1.unity
+    path: Assets/Scenes/Welcome.unity
     guid: 7dcedf8c6cdd74731b7c482bee7b6b3a
   - enabled: 1
-    path: Assets/Scenes/Game_2.unity
+    path: Assets/Scenes/Wavelength.unity
     guid: 5fa8f60140657465393feb100c930d35
   - enabled: 1
-    path: Assets/Scenes/Game_3.unity
+    path: Assets/Scenes/CheeseComics.unity
     guid: 58670f54f7c834bf3bf8ff2fce927277
   - enabled: 1
-    path: Assets/Scenes/Game_4.unity
+    path: Assets/Scenes/CheseCut.unity
     guid: 1f532ea2cab4549289cb4f0e8f05a004
   - enabled: 1
     path: Assets/Scenes/Credit.unity
