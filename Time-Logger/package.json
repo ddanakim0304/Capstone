@@ -1,0 +1,31 @@
+{
+  "name": "capstone-time-logger",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --mac --arm64",
+    "rebuild": "electron-rebuild"
+  },
+  "build": {
+    "appId": "com.yourname.timer",
+    "productName": "CuteTimer",
+    "mac": {
+      "target": "dmg",
+      "arch": [
+        "arm64"
+      ],
+      "icon": "build/icon.icns"
+    }
+  },
+  "dependencies": {
+    "active-win": "7.7.2",
+    "better-sqlite3": "^11.0.0",
+    "electron": "^28.0.0",
+    "exceljs": "^4.4.0"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^3.6.0",
+    "electron-builder": "^24.9.0"
+  }
+}
