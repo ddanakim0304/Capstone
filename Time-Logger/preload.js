@@ -7,5 +7,4 @@ contextBridge.exposeInMainWorld('electronAPI', {
     onAppUndetected: (callback) => ipcRenderer.on('app-undetected', () => callback()),
     saveSession: (session) => ipcRenderer.invoke('save-session', session),
     getSessions: () => ipcRenderer.invoke('get-sessions'),
-    exportExcel: (sessions) => ipcRenderer.invoke('export-excel', sessions),
 });

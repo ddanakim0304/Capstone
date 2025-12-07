@@ -9,11 +9,11 @@ let detectionInterval;
 
 function createWindow() {
     mainWindow = new BrowserWindow({
-        width: 400,
-        height: 600,
+        width: 600,
+        height: 350,
         alwaysOnTop: true,
         frame: true,
-        resizable: false,
+        resizable: true,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false,
@@ -27,8 +27,9 @@ function createWindow() {
     // mainWindow.webContents.openDevTools();
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
     db = new Database();
+    await db.init();  // Initialize database async
     createWindow();
 
     app.on('activate', () => {
@@ -60,7 +61,7 @@ ipcMain.on('start-tracking', (event, manualMode) => {
             const title = window.title.toLowerCase();
 
             // DEBUG: Print app name and title to see how they appear
-            console.log(`[ActiveWin] App: "${window.owner.name}" | Title: "${window.title}"`);
+            // console.log(`[ActiveWin] App: "${window.owner.name}" | Title: "${window.title}"`);
 
             let detectedApp = null;
 
@@ -118,45 +119,4 @@ ipcMain.handle('save-session', async (event, session) => {
 
 ipcMain.handle('get-sessions', async () => {
     return db.getSessions();
-});
-
-ipcMain.handle('export-excel', async (event, sessions) => {
-    const ExcelJS = require('exceljs');
-    const { dialog } = require('electron');
-
-    try {
-        const { filePath } = await dialog.showSaveDialog({
-            defaultPath: `timer-export-${Date.now()}.xlsx`,
-            filters: [{ name: 'Excel Files', extensions: ['xlsx'] }]
-        });
-
-        if (!filePath) return { success: false };
-
-        const workbook = new ExcelJS.Workbook();
-        const sheet = workbook.addWorksheet('Sessions');
-
-        sheet.columns = [
-            { header: 'Date', key: 'date', width: 15 },
-            { header: 'App', key: 'app', width: 20 },
-            { header: 'Category', key: 'category', width: 15 },
-            { header: 'Duration', key: 'duration', width: 12 },
-            { header: 'Summary', key: 'summary', width: 40 },
-        ];
-
-        sessions.forEach(s => {
-            sheet.addRow({
-                date: s.date,
-                app: s.app,
-                category: s.category,
-                duration: s.duration,
-                summary: s.summary,
-            });
-        });
-
-        await workbook.xlsx.writeFile(filePath);
-        return { success: true, path: filePath };
-    } catch (error) {
-        console.error('Export error:', error);
-        return { success: false, error: error.message };
-    }
 });

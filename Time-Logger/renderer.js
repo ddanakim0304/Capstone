@@ -80,7 +80,7 @@ function startTracking() {
 
 function pauseTimer() {
   state.isPaused = true;
-  state.currentApp = 'You are not working on your Capstone!!';
+  state.currentApp = 'WORK ON UR CAPSTONE!!';
   render();
 }
 
@@ -98,21 +98,39 @@ function stopTracking() {
 }
 
 async function saveSession() {
-  if (!state.category || !state.summary) return;
+  console.log('[Renderer] saveSession called');
+  console.log('[Renderer] category:', state.category, 'summary:', state.summary);
+
+  if (!state.category || !state.summary) {
+    console.log('[Renderer] Missing category or summary, returning early');
+    return;
+  }
+
+  // Build apps breakdown string
+  const appsBreakdown = Object.entries(state.usedApps)
+    .sort((a, b) => b[1] - a[1])
+    .map(([app, secs]) => `${app}: ${formatTimeCompact(secs)}`)
+    .join(', ');
 
   const session = {
-    app: state.currentApp,
     category: state.category,
     summary: state.summary,
-    duration: formatTime(state.elapsedTime),
+    totalDuration: formatTimeCompact(state.elapsedTime),
+    appsBreakdown: appsBreakdown || 'Manual Timer',
     date: new Date().toLocaleDateString(),
     timestamp: new Date().toISOString(),
   };
 
-  const saved = await window.electronAPI.saveSession(session);
-  state.sessions.unshift(saved);
+  console.log('[Renderer] Saving session:', session);
 
-  resetSession();
+  try {
+    const saved = await window.electronAPI.saveSession(session);
+    console.log('[Renderer] Session saved successfully:', saved);
+    state.sessions.unshift(saved);
+    resetSession();
+  } catch (error) {
+    console.error('[Renderer] Error saving session:', error);
+  }
 }
 
 function cancelSession() {
@@ -127,15 +145,6 @@ function resetSession() {
   state.usedApps = {};
   state.elapsedTime = 0;
   render();
-}
-
-async function exportExcel() {
-  const result = await window.electronAPI.exportExcel(state.sessions);
-  if (result.success) {
-    alert(`✓ Exported to: ${result.path}`);
-  } else {
-    alert('✗ Export failed');
-  }
 }
 
 // Render functions
@@ -157,7 +166,7 @@ function renderMain() {
   return `
     <div class="main-container">
       <div class="timer-card">
-        <div class="timer-display">
+        <div class="timer-display ${state.isPaused ? 'paused' : ''}">
           <div class="time-digits">${formatTime(state.elapsedTime)}</div>
           ${state.isTracking ? `
             <div class="status-indicator">
@@ -247,18 +256,38 @@ function renderSummary() {
 }
 
 function renderStats() {
-  // Filter out "Detecting..." sessions from stats
-  const validSessions = state.sessions.filter(s => s.app !== 'Detecting...');
+  console.log('[Renderer] renderStats called, sessions:', state.sessions.length);
 
-  const totalTime = validSessions.reduce((acc, s) => {
-    const parts = s.duration.split(':');
-    return acc + parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
-  }, 0);
+  // Helper to parse duration from various formats
+  function parseDuration(s) {
+    // Try new format: totalDuration (e.g., "2m 15s", "1h 30m", "45s")
+    const dur = s.totalDuration || s.duration || '0s';
+    let seconds = 0;
+
+    const hourMatch = dur.match(/(\d+)h/);
+    const minMatch = dur.match(/(\d+)m/);
+    const secMatch = dur.match(/(\d+)s/);
+
+    if (hourMatch) seconds += parseInt(hourMatch[1]) * 3600;
+    if (minMatch) seconds += parseInt(minMatch[1]) * 60;
+    if (secMatch) seconds += parseInt(secMatch[1]);
+
+    // Fallback: try old format "HH:MM:SS"
+    if (seconds === 0 && dur.includes(':')) {
+      const parts = dur.split(':');
+      if (parts.length === 3) {
+        seconds = parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
+      }
+    }
+
+    return seconds;
+  }
+
+  const totalTime = state.sessions.reduce((acc, s) => acc + parseDuration(s), 0);
 
   const categoryStats = {};
-  validSessions.forEach(s => {
-    const parts = s.duration.split(':');
-    const seconds = parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
+  state.sessions.forEach(s => {
+    const seconds = parseDuration(s);
     categoryStats[s.category] = (categoryStats[s.category] || 0) + seconds;
   });
 
@@ -273,7 +302,7 @@ function renderStats() {
         <div class="stats-grid">
           <div class="stat-box">
             <div class="stat-label">SESSIONS</div>
-            <div class="stat-value">${validSessions.length}</div>
+            <div class="stat-value">${state.sessions.length}</div>
           </div>
           <div class="stat-box">
             <div class="stat-label">TOTAL TIME</div>
@@ -281,13 +310,9 @@ function renderStats() {
           </div>
           <div class="stat-box">
             <div class="stat-label">AVG SESSION</div>
-            <div class="stat-value stat-value-medium">${validSessions.length > 0 ? formatTime(Math.floor(totalTime / validSessions.length)) : '00:00:00'}</div>
+            <div class="stat-value stat-value-medium">${state.sessions.length > 0 ? formatTime(Math.floor(totalTime / state.sessions.length)) : '00:00:00'}</div>
           </div>
         </div>
-        
-        <button id="exportBtn" class="btn btn-primary btn-full">
-          EXPORT TO EXCEL
-        </button>
         
         <div class="sessions-section">
           <h3 class="section-title">RECENT SESSIONS</h3>
@@ -297,8 +322,8 @@ function renderStats() {
             ` : state.sessions.slice(0, 20).map(s => `
               <div class="session-item">
                 <div class="session-item-header">
-                  <span class="session-item-app">${s.app}</span>
-                  <span class="session-item-duration">${s.duration}</span>
+                  <span class="session-item-app">${s.totalDuration || s.duration || ''}</span>
+                  <span class="session-item-duration">${s.appsBreakdown || s.app || ''}</span>
                 </div>
                 <div class="session-item-meta">
                   <span class="session-item-category">${categories.find(c => c.value === s.category)?.label || s.category}</span>
@@ -321,7 +346,6 @@ function attachEventListeners() {
   const saveBtn = document.getElementById('saveBtn');
   const cancelBtn = document.getElementById('cancelBtn');
   const backBtn = document.getElementById('backBtn');
-  const exportBtn = document.getElementById('exportBtn');
   const categorySelect = document.getElementById('category');
   const summaryTextarea = document.getElementById('summary');
 
@@ -372,10 +396,6 @@ function attachEventListeners() {
       state.showStats = false;
       render();
     });
-  }
-
-  if (exportBtn) {
-    exportBtn.addEventListener('click', exportExcel);
   }
 
   if (categorySelect) {
