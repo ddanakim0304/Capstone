@@ -44,7 +44,30 @@ async function init() {
     }
   });
 
-  render();
+  // Listen for active URL from browser extension via WebSocket
+  window.electronAPI.onActiveURL((url) => {
+    console.log("URL from browser extension:", url);
+
+    // Your URL categorization here
+    // Example quick logic:
+    let detectedApp = null;
+    const u = url.toLowerCase();
+
+    if (u.includes("chatgpt") || u.includes("claude") || u.includes("ai studio")) {
+      detectedApp = "LLM";
+    } else if (u.includes("github") || u.includes("gitingest")) {
+      detectedApp = "Programming";
+    } else if (u.includes("medium")) {
+      detectedApp = "Blog";
+    }
+
+    if (detectedApp) {
+      state.currentApp = detectedApp;
+      if (state.isPaused) resumeTimer();
+      render();
+    }
+  });
+
 }
 
 // Utility functions

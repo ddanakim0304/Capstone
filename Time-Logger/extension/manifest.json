@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "Capstone Timer URL Tracker",
+  "version": "1.0",
+  "description": "Sends active tab URL to Electron app.",
+  "permissions": [
+    "tabs"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}

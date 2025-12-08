@@ -2,10 +2,35 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const activeWin = require('active-win');
 const Database = require('./database');
+const WebSocket = require("ws");
+
 
 let mainWindow;
 let db;
 let detectionInterval;
+let wss;
+
+function startWebSocketServer() {
+    wss = new WebSocket.Server({ port: 31337 });
+
+    wss.on("connection", ws => {
+        console.log("[Electron] Extension connected via WebSocket");
+
+        ws.on("message", raw => {
+            try {
+                const { url } = JSON.parse(raw);
+
+                // Forward URL to renderer
+                if (mainWindow) {
+                    mainWindow.webContents.send("active-url", url);
+                }
+            } catch (e) { }
+        });
+    });
+
+    console.log("[Electron] WebSocket server listening on ws://localhost:31337");
+}
+
 
 function createWindow() {
     mainWindow = new BrowserWindow({
@@ -29,7 +54,10 @@ function createWindow() {
 
 app.whenReady().then(async () => {
     db = new Database();
-    await db.init();  // Initialize database async
+    await db.init();
+
+    startWebSocketServer();
+
     createWindow();
 
     app.on('activate', () => {
@@ -38,6 +66,7 @@ app.whenReady().then(async () => {
         }
     });
 });
+
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
