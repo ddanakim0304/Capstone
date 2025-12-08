@@ -1,15 +1,11 @@
-const ExcelJS = require('exceljs');
-const path = require('path');
 const fs = require('fs');
+const path = require('path');
 
 class TimerDatabase {
   constructor() {
-    // Store Excel file in Stats folder relative to app directory
+    // Store CSV file in Stats folder relative to app directory
     this.statsDir = path.join(__dirname, 'Stats');
-    this.excelPath = path.join(this.statsDir, 'sessions.xlsx');
-    this.workbook = new ExcelJS.Workbook();
-    this.sessions = [];
-    this.initialized = false;
+    this.csvPath = path.join(this.statsDir, 'sessions.csv');
   }
 
   async init() {
@@ -18,59 +14,99 @@ class TimerDatabase {
       fs.mkdirSync(this.statsDir, { recursive: true });
     }
 
-    try {
-      // Try to load existing Excel file
-      await this.workbook.xlsx.readFile(this.excelPath);
-      const sheet = this.workbook.getWorksheet('Sessions');
+    // Check if file exists, if not create it with headers
+    if (!fs.existsSync(this.csvPath)) {
+      const headers = 'ID,Date,Category,Total Duration,Apps Breakdown,Summary,Timestamp\n';
+      fs.writeFileSync(this.csvPath, headers, 'utf8');
+      console.log('[DB] Created new CSV file:', this.csvPath);
+    }
+  }
 
-      if (sheet) {
-        // Load existing sessions from Excel
-        this.sessions = [];
-        sheet.eachRow((row, rowNumber) => {
-          if (rowNumber === 1) return; // Skip header row
+  // Helper: Parse CSV content into session objects
+  _parseCSV(content) {
+    const lines = content.trim().split('\n');
+    if (lines.length <= 1) return []; // Only header or empty
 
-          this.sessions.push({
-            id: row.getCell(1).value,
-            date: row.getCell(2).value,
-            category: row.getCell(3).value,
-            totalDuration: row.getCell(4).value,
-            appsBreakdown: row.getCell(5).value,
-            summary: row.getCell(6).value,
-            timestamp: row.getCell(7).value
-          });
+    const sessions = [];
+    for (let i = 1; i < lines.length; i++) {
+      const values = this._parseCSVLine(lines[i]);
+      if (values.length >= 7) {
+        sessions.push({
+          id: parseInt(values[0]) || i,
+          date: values[1],
+          category: values[2],
+          totalDuration: values[3],
+          appsBreakdown: values[4],
+          summary: values[5],
+          timestamp: values[6]
         });
       }
-    } catch (error) {
-      // File doesn't exist, create new workbook with headers
-      const sheet = this.workbook.addWorksheet('Sessions');
-      sheet.columns = [
-        { header: 'ID', key: 'id', width: 8 },
-        { header: 'Date', key: 'date', width: 12 },
-        { header: 'Category', key: 'category', width: 20 },
-        { header: 'Total Duration', key: 'totalDuration', width: 15 },
-        { header: 'Apps Breakdown', key: 'appsBreakdown', width: 40 },
-        { header: 'Summary', key: 'summary', width: 50 },
-        { header: 'Timestamp', key: 'timestamp', width: 25 }
-      ];
-
-      // Style header row
-      sheet.getRow(1).font = { bold: true };
-
-      await this.workbook.xlsx.writeFile(this.excelPath);
     }
+    return sessions;
+  }
 
-    this.initialized = true;
+  // Helper: Parse a single CSV line (handles quoted values with commas)
+  _parseCSVLine(line) {
+    const values = [];
+    let current = '';
+    let inQuotes = false;
+
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === ',' && !inQuotes) {
+        values.push(current.trim());
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    values.push(current.trim());
+    return values;
+  }
+
+  // Helper: Escape value for CSV (wrap in quotes if contains comma)
+  _escapeCSV(value) {
+    const str = String(value || '');
+    if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+      return `"${str.replace(/"/g, '""')}"`;
+    }
+    return str;
   }
 
   async saveSession(session) {
-    if (!this.initialized) {
-      await this.init();
+    // Make sure file exists
+    await this.init();
+
+    // Read current content
+    let content = fs.readFileSync(this.csvPath, 'utf8');
+
+    // FIX: Ensure file ends with newline before appending
+    if (content.length > 0 && !content.endsWith('\n')) {
+      fs.appendFileSync(this.csvPath, '\n', 'utf8');
+      content = fs.readFileSync(this.csvPath, 'utf8');
     }
 
-    const sheet = this.workbook.getWorksheet('Sessions');
-    const newId = this.sessions.length + 1;
+    const sessions = this._parseCSV(content);
+    const newId = sessions.length + 1;
 
-    const newSession = {
+    // Create new row
+    const row = [
+      newId,
+      this._escapeCSV(session.date),
+      this._escapeCSV(session.category),
+      this._escapeCSV(session.totalDuration),
+      this._escapeCSV(session.appsBreakdown),
+      this._escapeCSV(session.summary),
+      this._escapeCSV(session.timestamp)
+    ].join(',');
+
+    // Append to file
+    fs.appendFileSync(this.csvPath, row + '\n', 'utf8');
+    console.log('[DB] Session saved successfully, ID:', newId);
+
+    return {
       id: newId,
       date: session.date,
       category: session.category,
@@ -79,41 +115,20 @@ class TimerDatabase {
       summary: session.summary,
       timestamp: session.timestamp
     };
-
-    // Add row to Excel
-    sheet.addRow({
-      id: newId,
-      date: session.date,
-      category: session.category,
-      totalDuration: session.totalDuration,
-      appsBreakdown: session.appsBreakdown,
-      summary: session.summary,
-      timestamp: session.timestamp
-    });
-
-    // Auto-save to file
-    try {
-      await this.workbook.xlsx.writeFile(this.excelPath);
-    } catch (error) {
-      console.error('[DB] Error saving Excel file:', error);
-    }
-
-    // Add to in-memory cache
-    this.sessions.push(newSession);
-
-    return newSession;
   }
 
   async getSessions() {
-    if (!this.initialized) {
-      await this.init();
-    }
+    // Make sure file exists
+    await this.init();
 
-    return [...this.sessions].reverse();
+    // Always read fresh from file
+    const content = fs.readFileSync(this.csvPath, 'utf8');
+    const sessions = this._parseCSV(content);
+    return [...sessions].reverse();
   }
 
   getExcelPath() {
-    return this.excelPath;
+    return this.csvPath;
   }
 }
 

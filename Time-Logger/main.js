@@ -65,30 +65,37 @@ ipcMain.on('start-tracking', (event, manualMode) => {
 
             let detectedApp = null;
 
-            // Unity detection
+            // Unity detection → Unity category
             if (appName.includes('unity')) {
                 detectedApp = 'Unity';
             }
-            // VS Code detection
+            // VS Code detection → Programming category
             else if (appName.includes('code') || appName.includes('visual studio code')) {
-                detectedApp = 'VS Code';
+                detectedApp = 'Programming';
             }
-            // Antigravity detection
+            // Antigravity detection → Programming category
             else if (appName.includes('antigravity')) {
-                detectedApp = 'Antigravity';
+                detectedApp = 'Programming';
             }
             // NAVER Whale browser with specific websites (detect by tab name)
             else if (appName.includes('naver whale')) {
+                // LLM category
                 if (title.includes('claude')) {
-                    detectedApp = 'Claude';
+                    detectedApp = 'LLM';
                 } else if (title.includes('ai studio')) {
-                    detectedApp = 'AI Studio';
+                    detectedApp = 'LLM';
                 } else if (title.includes('chatgpt')) {
-                    detectedApp = 'ChatGPT';
-                } else if (title.includes('github')) {
-                    detectedApp = 'GitHub';
+                    detectedApp = 'LLM';
+                }
+                // Programming category
+                else if (title.includes('github')) {
+                    detectedApp = 'Programming';
                 } else if (title.includes('gitingest')) {
-                    detectedApp = 'GitIngest';
+                    detectedApp = 'Programming';
+                }
+                // Blog category
+                else if (title.includes('medium')) {
+                    detectedApp = 'Blog';
                 }
             }
 
