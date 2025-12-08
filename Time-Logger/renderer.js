@@ -70,8 +70,7 @@ async function init() {
       if (state.isPaused) resumeTimer();
       render();
     } else {
-      // Optional: Pause if on an unknown website
-      // pauseTimer();
+      pauseTimer();
     }
   });
 
@@ -113,7 +112,9 @@ function startTracking() {
 
 function pauseTimer() {
   state.isPaused = true;
-  state.currentApp = 'WORK ON UR CAPSTONE!!';
+  if (state.elapsedTime > 0) {
+    state.currentApp = 'WORK ON UR CAPSTONE!!';
+  }
   render();
 }
 
@@ -199,7 +200,7 @@ function renderMain() {
   return `
     <div class="main-container">
       <div class="timer-card">
-        <div class="timer-display ${state.isPaused ? 'paused' : ''}">
+        <div class="timer-display ${state.isPaused && state.elapsedTime > 0 ? 'paused' : ''}">
           <div class="time-digits">${formatTime(state.elapsedTime)}</div>
           ${state.isTracking ? `
             <div class="status-indicator">
