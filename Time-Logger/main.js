@@ -61,7 +61,7 @@ ipcMain.on('start-tracking', (event, manualMode) => {
             const title = window.title.toLowerCase();
 
             // DEBUG: Print app name and title to see how they appear
-            // console.log(`[ActiveWin] App: "${window.owner.name}" | Title: "${window.title}"`);
+            console.log(`[ActiveWin] App: "${window.owner.name}" | Title: "${window.title}"`);
 
             let detectedApp = null;
 

@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Alarm.unity
     guid: 5fa9346088b9146c48e8a78a85db9e13
   - enabled: 1
+    path: Assets/Scenes/GetReady.unity
+    guid: a8412fd46f85649a7adf5ff3ef531a4a
+  - enabled: 1
     path: Assets/Scenes/Welcome.unity
     guid: 7dcedf8c6cdd74731b7c482bee7b6b3a
   - enabled: 1
