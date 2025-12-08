@@ -1,18 +1,3 @@
-/**
- * Migration Script: Convert individual app names to categories
- * 
- * This script updates the existing sessions.csv file to use category names
- * instead of individual app names in the "Apps Breakdown" column.
- * 
- * Category Mapping:
- * - Programming: VS Code, Antigravity, GitHub, GitIngest
- * - LLM: Claude, AI Studio, ChatGPT
- * - Unity: Unity
- * - Blog: Medium
- * 
- * Usage: node migrate_to_categories.js
- */
-
 const fs = require('fs');
 const path = require('path');
 

@@ -74,70 +74,70 @@ app.on('window-all-closed', () => {
     }
 });
 
-// Start app detection
+
+// List of browser process names to IGNORE in main.js
+const BROWSER_PROCESSES = [
+    'chrome',
+    'google chrome',
+    'brave',
+    'firefox',
+    'msedge',
+    'naver whale',
+    'safari'
+];
+
 ipcMain.on('start-tracking', (event, manualMode) => {
     if (manualMode) {
         event.reply('app-detected', 'Manual Timer');
         return;
     }
 
-    detectionInterval = setInterval(async () => {
+    // Define the check function
+    const checkApp = async () => {
         try {
             const window = await activeWin();
             if (!window) return;
 
             const appName = window.owner.name.toLowerCase();
-            const title = window.title.toLowerCase();
 
-            // DEBUG: Print app name and title to see how they appear
-            console.log(`[ActiveWin] App: "${window.owner.name}" | Title: "${window.title}"`);
+            // 1. If it is a browser, DO NOTHING here. 
+            // Let the extension send the data via WebSocket -> Renderer.
+            if (BROWSER_PROCESSES.some(browser => appName.includes(browser))) {
+                return;
+            }
 
+            // 2. Handle NATIVE apps (Unity, VS Code, etc.)
             let detectedApp = null;
 
-            // Unity detection → Unity category
+            // Unity
             if (appName.includes('unity')) {
                 detectedApp = 'Unity';
             }
-            // VS Code detection → Programming category
-            else if (appName.includes('code') || appName.includes('visual studio code')) {
+            // VS Code / Programming
+            else if (appName.includes('code') || appName.includes('visual studio code') || appName.includes('cursor')) {
                 detectedApp = 'Programming';
             }
-            // Antigravity detection → Programming category
+            // Antigravity
             else if (appName.includes('antigravity')) {
                 detectedApp = 'Programming';
             }
-            // NAVER Whale browser with specific websites (detect by tab name)
-            else if (appName.includes('naver whale')) {
-                // LLM category
-                if (title.includes('claude')) {
-                    detectedApp = 'LLM';
-                } else if (title.includes('ai studio')) {
-                    detectedApp = 'LLM';
-                } else if (title.includes('chatgpt')) {
-                    detectedApp = 'LLM';
-                }
-                // Programming category
-                else if (title.includes('github')) {
-                    detectedApp = 'Programming';
-                } else if (title.includes('gitingest')) {
-                    detectedApp = 'Programming';
-                }
-                // Blog category
-                else if (title.includes('medium')) {
-                    detectedApp = 'Blog';
-                }
-            }
 
+            // 3. Send result if found, otherwise signal undetected
             if (detectedApp) {
                 event.reply('app-detected', detectedApp);
             } else {
-                // Send signal that no tracked app is active (for auto-stop)
                 event.reply('app-undetected');
             }
         } catch (error) {
             // Silently ignore detection errors
         }
-    }, 2000); // Check every 2 seconds
+    };
+
+    // Run IMMEDIATELY
+    checkApp();
+
+    // Then run every 2 seconds
+    detectionInterval = setInterval(checkApp, 2000);
 });
 
 // Stop detection

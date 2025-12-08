@@ -7,6 +7,12 @@ function connectWebSocket() {
 
     ws.onopen = () => {
         console.log("[Extension] Connected to Electron");
+        // Immediately check current tab upon connection
+        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+            if (tabs.length > 0 && tabs[0].url) {
+                sendUrl(tabs[0].url);
+            }
+        });
     };
 
     ws.onclose = () => {

@@ -24,50 +24,60 @@ const categories = [
   { value: 'planning', label: 'Planning & Admin' },
 ];
 
+// define rules for categorizing websites
+function getCategoryFromUrl(url) {
+  const u = url.toLowerCase();
+
+  if (u.includes("chatgpt") || u.includes("claude") || u.includes("aistudio")) {
+    return "LLM";
+  }
+  if (u.includes("github") || u.includes("gitingest") || u.includes("stackoverflow")) {
+    return "Programming";
+  }
+  if (u.includes("medium") || u.includes("dev.to")) {
+    return "Blog";
+  }
+  return null;
+}
+
 // Initialize
 async function init() {
   state.sessions = await window.electronAPI.getSessions();
 
-  // Listen for app detection - resume if paused
+  // 1. Handle NATIVE apps (from main.js active-win)
   window.electronAPI.onAppDetected((app) => {
-    state.currentApp = app;
-    if (state.isPaused) {
-      resumeTimer();
+    // Only update if it actually changed to avoid UI flickering
+    if (state.currentApp !== app) {
+      state.currentApp = app;
+      if (state.isPaused) resumeTimer();
+      render(); // Update UI
     }
-    render();
   });
 
-  // Listen for when user switches to untracked app - pause timer
+  // 2. Handle PAUSE (when focusing untracked windows)
   window.electronAPI.onAppUndetected(() => {
     if (state.isTracking && !state.manualMode && !state.isPaused) {
       pauseTimer();
     }
   });
 
-  // Listen for active URL from browser extension via WebSocket
+  // 3. Handle WEBSITES (from Extension)
   window.electronAPI.onActiveURL((url) => {
-    console.log("URL from browser extension:", url);
+    const detectedCategory = getCategoryFromUrl(url);
 
-    // Your URL categorization here
-    // Example quick logic:
-    let detectedApp = null;
-    const u = url.toLowerCase();
-
-    if (u.includes("chatgpt") || u.includes("claude") || u.includes("ai studio")) {
-      detectedApp = "LLM";
-    } else if (u.includes("github") || u.includes("gitingest")) {
-      detectedApp = "Programming";
-    } else if (u.includes("medium")) {
-      detectedApp = "Blog";
-    }
-
-    if (detectedApp) {
-      state.currentApp = detectedApp;
+    if (detectedCategory) {
+      state.currentApp = detectedCategory;
       if (state.isPaused) resumeTimer();
       render();
+    } else {
+      // Optional: Pause if on an unknown website
+      // pauseTimer();
     }
   });
 
+  // === AUTO START ===
+  render();
+  startTracking();
 }
 
 // Utility functions
