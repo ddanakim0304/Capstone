@@ -87,6 +87,12 @@ const BROWSER_PROCESSES = [
 ];
 
 ipcMain.on('start-tracking', (event, manualMode) => {
+    // Clear existing interval if any to allow restarts
+    if (detectionInterval) {
+        clearInterval(detectionInterval);
+        detectionInterval = null;
+    }
+
     if (manualMode) {
         event.reply('app-detected', 'Manual Timer');
         return;

@@ -31,10 +31,10 @@ function getCategoryFromUrl(url) {
   if (u.includes("chatgpt") || u.includes("claude") || u.includes("aistudio")) {
     return "LLM";
   }
-  if (u.includes("github") || u.includes("gitingest") || u.includes("stackoverflow")) {
+  if (u.includes("github") || u.includes("gitingest") || u.includes("stackoverflow") || u.includes("unity")) {
     return "Programming";
   }
-  if (u.includes("medium") || u.includes("dev.to")) {
+  if (u.includes("medium") || u.includes("dev.to") || u.includes("overleaf") || u.includes("docs.google")) {
     return "Blog";
   }
   return null;
@@ -63,6 +63,9 @@ async function init() {
 
   // 3. Handle WEBSITES (from Extension)
   window.electronAPI.onActiveURL((url) => {
+    // If in manual mode, ignore website updates
+    if (state.manualMode) return;
+
     const detectedCategory = getCategoryFromUrl(url);
 
     if (detectedCategory) {
@@ -386,6 +389,13 @@ function attachEventListeners() {
   if (manualCheckbox) {
     manualCheckbox.addEventListener('change', (e) => {
       state.manualMode = e.target.checked;
+
+      // If we are currently tracking, restart the tracking process to switch modes immediately
+      if (state.isTracking) {
+        state.currentApp = state.manualMode ? 'Manual Timer' : 'Detecting...';
+        window.electronAPI.startTracking(state.manualMode);
+        render();
+      }
     });
   }
 
