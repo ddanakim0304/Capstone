@@ -219,7 +219,6 @@ function renderMain() {
               type="checkbox" 
               id="manual" 
               ${state.manualMode ? 'checked' : ''}
-              ${state.isTracking ? 'disabled' : ''}
             />
             <span class="checkbox-label">Manual mode (ignore app detection)</span>
           </label>
@@ -394,6 +393,12 @@ function attachEventListeners() {
       if (state.isTracking) {
         state.currentApp = state.manualMode ? 'Manual Timer' : 'Detecting...';
         window.electronAPI.startTracking(state.manualMode);
+
+        // Resume timer if we were paused (e.g. from unregistered app) and switched to manual
+        if (state.manualMode && state.isPaused) {
+          resumeTimer();
+        }
+
         render();
       }
     });
