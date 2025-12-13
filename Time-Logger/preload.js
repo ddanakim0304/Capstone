@@ -9,5 +9,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
     onActiveURL: (callback) => ipcRenderer.on("active-url", (_, url) => callback(url)),
 
     saveSession: (session) => ipcRenderer.invoke("save-session", session),
-    getSessions: () => ipcRenderer.invoke("get-sessions")
+    getSessions: () => ipcRenderer.invoke("get-sessions"),
+
+    getConfig: () => ipcRenderer.invoke("get-config"),
+    saveConfig: (config) => ipcRenderer.invoke("save-config", config)
 });

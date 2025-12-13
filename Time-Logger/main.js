@@ -3,6 +3,8 @@ const path = require('path');
 const activeWin = require('active-win');
 const Database = require('./database');
 const WebSocket = require("ws");
+const fs = require('fs');
+const configPath = path.join(__dirname, 'config.json');
 
 
 let mainWindow;
@@ -112,20 +114,25 @@ ipcMain.on('start-tracking', (event, manualMode) => {
                 return;
             }
 
-            // 2. Handle NATIVE apps (Unity, VS Code, etc.)
+            // 2. Handle NATIVE apps via Config
             let detectedApp = null;
+            let config = {};
 
-            // Unity
-            if (appName.includes('unity')) {
-                detectedApp = 'Unity';
+            try {
+                if (fs.existsSync(configPath)) {
+                    config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+                }
+            } catch (err) {
+                console.error("Error reading config:", err);
             }
-            // VS Code / Programming
-            else if (appName.includes('code') || appName.includes('visual studio code') || appName.includes('cursor')) {
-                detectedApp = 'Programming';
-            }
-            // Antigravity
-            else if (appName.includes('antigravity')) {
-                detectedApp = 'Programming';
+
+            if (config.apps) {
+                for (const appRule of config.apps) {
+                    if (appRule.keywords.some(keyword => appName.includes(keyword.toLowerCase()))) {
+                        detectedApp = appRule.name;
+                        break;
+                    }
+                }
             }
 
             // 3. Send result if found, otherwise signal undetected
@@ -144,6 +151,28 @@ ipcMain.on('start-tracking', (event, manualMode) => {
 
     // Then run every 2 seconds
     detectionInterval = setInterval(checkApp, 2000);
+});
+
+// Config management
+ipcMain.handle('get-config', async () => {
+    try {
+        if (fs.existsSync(configPath)) {
+            return JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+        }
+    } catch (e) {
+        console.error("Failed to load config", e);
+    }
+    return { apps: [], websites: [] };
+});
+
+ipcMain.handle('save-config', async (event, newConfig) => {
+    try {
+        fs.writeFileSync(configPath, JSON.stringify(newConfig, null, 2));
+        return true;
+    } catch (e) {
+        console.error("Failed to save config", e);
+        return false;
+    }
 });
 
 // Stop detection

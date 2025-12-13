@@ -1,0 +1,47 @@
+{
+    "apps": [
+        {
+            "name": "Game Dev (Unity)",
+            "keywords": [
+                "unity"
+            ]
+        },
+        {
+            "name": "Programming",
+            "keywords": [
+                "code",
+                "visual studio code",
+                "cursor",
+                "antigravity"
+            ]
+        }
+    ],
+    "websites": [
+        {
+            "name": "LLM",
+            "keywords": [
+                "chatgpt",
+                "claude",
+                "aistudio"
+            ]
+        },
+        {
+            "name": "Programming",
+            "keywords": [
+                "github",
+                "gitingest",
+                "stackoverflow",
+                "itch.io"
+            ]
+        },
+        {
+            "name": "Blog",
+            "keywords": [
+                "medium",
+                "dev.to",
+                "overleaf",
+                "docs.google"
+            ]
+        }
+    ]
+}

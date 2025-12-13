@@ -10,6 +10,45 @@
 
 <body>
     <div id="app"></div>
+    <!-- Settings Button (Top Right) -->
+    <button id="settingsBtn" class="settings-btn" title="Settings">⚙️</button>
+
+    <!-- Settings Modal Overlay -->
+    <div id="settingsOverlay" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button id="closeSettingsBtn" class="close-btn">&times;</button>
+            </div>
+
+            <div class="modal-tabs">
+                <button class="tab-btn active" data-tab="apps">Apps</button>
+                <button class="tab-btn" data-tab="websites">Websites</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- New Rule Form -->
+                <div class="add-rule-form">
+                    <div class="form-row">
+                        <select id="ruleName" class="form-select flex-1">
+                            <!-- Populated by renderer.js -->
+                        </select>
+                        <input type="text" id="ruleKeywords" class="flex-1" placeholder="Keywords (comma separated)">
+                        <button id="addRuleBtn" class="action-btn">Add</button>
+                    </div>
+                    <p class="hint-text">Keywords: partial text to match window title or URL.</p>
+                </div>
+
+                <div id="appsList" class="rules-list">
+                    <!-- Dynamic Content -->
+                </div>
+                <div id="websitesList" class="rules-list hidden">
+                    <!-- Dynamic Content -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="renderer.js"></script>
 </body>
 

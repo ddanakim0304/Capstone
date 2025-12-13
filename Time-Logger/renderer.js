@@ -12,8 +12,15 @@ let state = {
   summary: '',
   sessions: [],
   timer: null,
+  config: { apps: [], websites: [] } // Config state
 };
 
+// Removed Hardcoded Categories - now driven by Config only
+// (Or can be kept if we want a default dropdown list, but dynamic is better if we want full customizability.
+// For now, let's keep the dropdown list for the "Save Session" manual entry consistent with config if possible, 
+// or just standard categories. The user asked for "choose the category (this is pre-set)", 
+// so we might still need a list of valid categories. Let's keep the hardcoded list for the UI dropdown 
+// but use config for detection mappings.)
 const categories = [
   { value: 'gamedev', label: 'Game Dev (Unity)' },
   { value: 'audio', label: 'Audio & Sound Design' },
@@ -28,14 +35,13 @@ const categories = [
 function getCategoryFromUrl(url) {
   const u = url.toLowerCase();
 
-  if (u.includes("chatgpt") || u.includes("claude") || u.includes("aistudio")) {
-    return "LLM";
-  }
-  if (u.includes("github") || u.includes("gitingest") || u.includes("stackoverflow") || u.includes("unity")) {
-    return "Programming";
-  }
-  if (u.includes("medium") || u.includes("dev.to") || u.includes("overleaf") || u.includes("docs.google")) {
-    return "Blog";
+  // Use Config for detection
+  if (state.config && state.config.websites) {
+    for (const site of state.config.websites) {
+      if (site.keywords.some(k => u.includes(k.toLowerCase()))) {
+        return site.name; // This is actually the "Category" or "Name" of the rule
+      }
+    }
   }
   return null;
 }
@@ -43,6 +49,7 @@ function getCategoryFromUrl(url) {
 // Initialize
 async function init() {
   state.sessions = await window.electronAPI.getSessions();
+  state.config = await window.electronAPI.getConfig(); // Load Config
 
   // 1. Handle NATIVE apps (from main.js active-win)
   window.electronAPI.onAppDetected((app) => {
@@ -384,6 +391,131 @@ function attachEventListeners() {
   const backBtn = document.getElementById('backBtn');
   const categorySelect = document.getElementById('category');
   const summaryTextarea = document.getElementById('summary');
+
+  // Settings UI Elements
+  const settingsBtn = document.getElementById('settingsBtn');
+  const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+  const settingsOverlay = document.getElementById('settingsOverlay');
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const addRuleBtn = document.getElementById('addRuleBtn');
+  const ruleNameInput = document.getElementById('ruleName');
+  const ruleKeywordsInput = document.getElementById('ruleKeywords');
+
+  // Settings: Open/Close
+  if (settingsBtn) {
+    settingsBtn.addEventListener('click', async () => {
+      // Ensure config is fresh
+      state.config = await window.electronAPI.getConfig();
+
+      settingsOverlay.classList.remove('hidden');
+      populateRuleNameDropdown();
+      renderSettingsList('apps'); // Default tab
+    });
+  }
+
+  if (closeSettingsBtn) {
+    closeSettingsBtn.addEventListener('click', () => {
+      settingsOverlay.classList.add('hidden');
+    });
+  }
+
+  // Settings: Tabs
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // UI Toggle
+      tabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const tab = btn.dataset.tab;
+      renderSettingsList(tab);
+    });
+  });
+
+  // Helper: Populate Rule Dropdown
+  function populateRuleNameDropdown() {
+    const select = document.getElementById('ruleName');
+    if (!select) return;
+
+    select.innerHTML = '';
+    categories.forEach(cat => {
+      const option = document.createElement('option');
+      option.value = cat.label; // Use Label as the Name in Config
+      option.textContent = cat.label;
+      select.appendChild(option);
+    });
+  }
+
+  // Helper: Render Settings Lists
+  function renderSettingsList(type) {
+    const listContainer = document.getElementById(type === 'apps' ? 'appsList' : 'websitesList');
+    const otherContainer = document.getElementById(type === 'apps' ? 'websitesList' : 'appsList');
+
+    if (!listContainer || !otherContainer) return;
+
+    listContainer.classList.remove('hidden');
+    otherContainer.classList.add('hidden');
+
+    listContainer.innerHTML = '';
+
+    const items = state.config[type] || [];
+
+    // Debug
+    console.log(`Rendering ${type} list:`, items);
+
+    if (items.length === 0) {
+      listContainer.innerHTML = '<div class="empty-state">No rules defined.</div>';
+      return;
+    }
+
+    items.forEach((item, index) => {
+      const div = document.createElement('div');
+      div.className = 'rule-item';
+      div.innerHTML = `
+            <div class="rule-info">
+                <span class="rule-name">${item.name}</span>
+                <span class="rule-keywords">${item.keywords.join(', ')}</span>
+            </div>
+            <button class="delete-btn" data-type="${type}" data-index="${index}">&times;</button>
+        `;
+      listContainer.appendChild(div);
+    });
+
+    // Add Delete Listeners
+    listContainer.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const t = e.target.dataset.type;
+        const i = parseInt(e.target.dataset.index);
+
+        state.config[t].splice(i, 1);
+        await window.electronAPI.saveConfig(state.config);
+        renderSettingsList(t);
+      });
+    });
+  }
+  // Settings: Add Rule
+  if (addRuleBtn) {
+    addRuleBtn.addEventListener('click', async () => {
+      const name = ruleNameInput.value.trim();
+      const keywordsStr = ruleKeywordsInput.value.trim();
+
+      if (!name || !keywordsStr) return alert("Please fill in both fields");
+
+      const keywords = keywordsStr.split(',').map(s => s.trim()).filter(s => s.length > 0);
+      const activeTab = document.querySelector('.tab-btn.active').dataset.tab; // 'apps' or 'websites'
+
+      // Add to state config
+      if (!state.config[activeTab]) state.config[activeTab] = [];
+      state.config[activeTab].push({ name, keywords });
+
+      // Save to backend
+      await window.electronAPI.saveConfig(state.config);
+
+      // Refresh UI
+      renderSettingsList(activeTab);
+      ruleNameInput.value = '';
+      ruleKeywordsInput.value = '';
+    });
+  }
 
   if (manualCheckbox) {
     manualCheckbox.addEventListener('change', (e) => {

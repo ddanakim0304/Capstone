@@ -12,8 +12,180 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-#app {
-  min-height: 100vh;
+/* Settings Button */
+.settings-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 100;
+  padding: 4px;
+}
+
+.settings-btn:hover {
+  transform: rotate(45deg);
+  transition: transform 0.3s ease;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 90%;
+  max-width: 500px;
+  background: #ffffff;
+  border: 3px solid #000000;
+  box-shadow: 8px 8px 0 #000000;
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+}
+
+.modal-header {
+  padding: 16px;
+  border-bottom: 2px solid #000000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.modal-tabs {
+  display: flex;
+  border-bottom: 2px solid #000000;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background: #f0f0f0;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.tab-btn.active {
+  background: #000000;
+  color: #ffffff;
+}
+
+.modal-body {
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.add-rule-form {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 2px dashed #cccccc;
+}
+
+.form-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.form-row input {
+  padding: 8px;
+  border: 2px solid #000000;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.form-row input.flex-1 {
+  flex: 1;
+}
+
+#ruleName { width: 30%; }
+#ruleKeywords { flex: 1; }
+
+.action-btn {
+  background: #000000;
+  color: #ffffff;
+  border: none;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.hint-text {
+  font-size: 9px;
+  color: #666;
+}
+
+.rules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rule-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #000000;
+  background: #fff;
+}
+
+.rule-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rule-name {
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.rule-keywords {
+  font-size: 10px;
+  color: #666;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #ff0000;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+}
+
+.hidden {
+  display: none !important;
 }
 
 /* Main Container */
