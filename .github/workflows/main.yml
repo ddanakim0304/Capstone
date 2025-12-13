@@ -3,7 +3,7 @@ name: Build and Publish to Itch
 on:
   push:
     tags:
-      - 'v*' # Triggers when you push a tag like v0.1, v0.2, etc.
+      - 'v*' # Triggers on version tags like v0.1, v1.0, etc.
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -12,8 +12,9 @@ env:
 
 jobs:
   buildAndDeploy:
-    name: Build for ${{ matrix.targetPlatform }}
-    runs-on: ubuntu-latest
+    name: Build ${{ matrix.targetPlatform }}
+    runs-on: ${{ matrix.os }}
+
     strategy:
       fail-fast: false
       matrix:
@@ -28,28 +29,30 @@ jobs:
             os: macos-latest
 
     steps:
-      # 1. Checkout Code
-      - uses: actions/checkout@v4
+      # 1. Checkout repository
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           lfs: true
 
-      # 2. Cache Library (Speeds up builds)
-      - uses: actions/cache@v3
+      # 2. Cache Unity Library
+      - name: Cache Unity Library
+        uses: actions/cache@v3
         with:
           path: game-prototype/Library
           key: Library-${{ matrix.targetPlatform }}
           restore-keys: |
             Library-
 
-      # 3. Build Unity Project
-      - uses: game-ci/unity-builder@v4
+      # 3. Build Unity project
+      - name: Build Unity
+        uses: game-ci/unity-builder@v4
         with:
-          targetPlatform: ${{ matrix.targetPlatform }}
           projectPath: game-prototype
+          targetPlatform: ${{ matrix.targetPlatform }}
           buildName: ${{ env.ITCH_GAME }}
 
-      # 4. Set the Itch.io Channel Name (The Magic Step)
-      # This checks if we are building WebGL or Windows and names the channel accordingly
+      # 4. Set Itch.io channel
       - name: Set Itch Channel
         run: |
           if [ "${{ matrix.targetPlatform }}" == "WebGL" ]; then
@@ -60,12 +63,23 @@ jobs:
             echo "ITCH_CHANNEL=mac" >> $GITHUB_ENV
           fi
 
-      # 5. Upload to Itch.io
-      - uses: manolevesque/itchio-butler-action@v1
-        with:
-          butlerApiKey: ${{ secrets.BUTLER_API_KEY }}
-          itchUser: ${{ env.ITCH_USER }}
-          itchGame: ${{ env.ITCH_GAME }}
-          version: ${{ github.ref_name }}
-          buildData: build/${{ matrix.targetPlatform }}
-          channel: ${{ env.ITCH_CHANNEL }} # Uses the variable we set in Step 4
+      # 5. Download butler (official)
+      - name: Download butler
+        run: |
+          if [[ "$RUNNER_OS" == "Linux" ]]; then
+            curl -L https://broth.itch.ovh/butler/linux-amd64/latest/archive/default -o butler.zip
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            curl -L https://broth.itch.ovh/butler/darwin-amd64/latest/archive/default -o butler.zip
+          fi
+          unzip butler.zip
+          chmod +x butler
+
+      # 6. Upload build to Itch.io
+      - name: Upload to Itch.io
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: |
+          ./butler push \
+            build/${{ matrix.targetPlatform }} \
+            ${{ env.ITCH_USER }}/${{ env.ITCH_GAME }}:${{ env.ITCH_CHANNEL }} \
+            --userversion ${{ github.ref_name }}
