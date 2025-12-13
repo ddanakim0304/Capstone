@@ -10,7 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 157c4521c4d0347858517de77b5ace68, type: 3}
-  m_Name: HardwareConfig
+  m_Name: HardwareConfig(Bluetooth)
   m_EditorClassIdentifier: Assembly-CSharp::HardwareConfig
-  hardwareControllers: []
+  hardwareControllers:
+  - portName: /dev/cu.Controller_1
+    baudRate: 115200
+  - portName: /dev/cu.Controller_2
+    baudRate: 115200
   minPlayerCount: 2

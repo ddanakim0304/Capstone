@@ -1,13 +1,11 @@
 using UnityEngine;
 using System.Collections;
 
-public class PrototypeAnimationManager : MonoBehaviour
+public class PrototypeAnimationManager : MiniGameManager
 {
     [Tooltip("Assign the 5 objects here")]
     public GameObject[] animationFrames;
     public float switchInterval = 0.5f;
-
-    private int currentIndex = 0;
 
     void Start()
     {
@@ -19,21 +17,20 @@ public class PrototypeAnimationManager : MonoBehaviour
 
     private IEnumerator AnimateObjects()
     {
-        while (true)
+        for (int i = 0; i < animationFrames.Length; i++)
         {
             // Enable the current frame and disable others
-            for (int i = 0; i < animationFrames.Length; i++)
+            for (int j = 0; j < animationFrames.Length; j++)
             {
-                if (animationFrames[i] != null)
+                if (animationFrames[j] != null)
                 {
-                    animationFrames[i].SetActive(i == currentIndex);
+                    animationFrames[j].SetActive(j == i);
                 }
             }
 
             yield return new WaitForSeconds(switchInterval);
-
-            // Move to the next frame, looping back to 0
-            currentIndex = (currentIndex + 1) % animationFrames.Length;
         }
+
+        WinGame();
     }
 }
