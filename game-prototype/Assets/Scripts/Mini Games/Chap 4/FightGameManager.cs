@@ -38,7 +38,7 @@ public class FightGameManager : MiniGameManager
     [Header("Visual Juice")]
     public float punchScaleAmount = 1.1f;
     public float punchDuration = 0.15f;
-    public float fightStartShake = 10f; // Magnitude of shake when Free Fight starts
+    public float fightStartShake = 50f; // Magnitude of shake when Free Fight starts
 
     // --- Internal State ---
     private FightPhase currentPhase = FightPhase.P1_Argument;
@@ -264,13 +264,17 @@ public class FightGameManager : MiniGameManager
     {
         if (shakeContainer == null) yield break;
         
-        float duration = 0.5f;
+        float duration = 1.2f;
         float elapsed = 0f;
 
         while (elapsed < duration)
         {
-            float x = Random.Range(-1f, 1f) * fightStartShake;
-            float y = Random.Range(-1f, 1f) * fightStartShake;
+            // Decay shake over time for more natural feel
+            float intensity = 1f - (elapsed / duration);
+            float currentShake = fightStartShake * intensity;
+            
+            float x = Random.Range(-1f, 1f) * currentShake;
+            float y = Random.Range(-1f, 1f) * currentShake;
             
             shakeContainer.localPosition = containerOriginalPos + new Vector3(x, y, 0);
             elapsed += Time.deltaTime;
