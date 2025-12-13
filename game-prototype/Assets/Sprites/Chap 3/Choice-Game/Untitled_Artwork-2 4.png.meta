@@ -1,0 +1,676 @@
+fileFormatVersion: 2
+guid: 845fdfd464d12496ea85f0f75b1dff5e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6107758474448997642
+    second: Untitled_Artwork-2 4_0
+  - first:
+      213: -3085969837251235247
+    second: Untitled_Artwork-2 4_1
+  - first:
+      213: 7235029265824063681
+    second: Untitled_Artwork-2 4_2
+  - first:
+      213: -112942985304232351
+    second: Untitled_Artwork-2 4_3
+  - first:
+      213: -3103124129787955104
+    second: Untitled_Artwork-2 4_4
+  - first:
+      213: 156902184544875056
+    second: Untitled_Artwork-2 4_5
+  - first:
+      213: 8295289871479282410
+    second: Untitled_Artwork-2 4_6
+  - first:
+      213: 1422431474584683587
+    second: Untitled_Artwork-2 4_7
+  - first:
+      213: -8902394757970972722
+    second: Untitled_Artwork-2 4_8
+  - first:
+      213: -5916865370239805162
+    second: Untitled_Artwork-2 4_9
+  - first:
+      213: -6598448612852929481
+    second: Untitled_Artwork-2 4_10
+  - first:
+      213: -6639353857992245650
+    second: Untitled_Artwork-2 4_11
+  - first:
+      213: -2315692428336069723
+    second: Untitled_Artwork-2 4_12
+  - first:
+      213: 7348110993926846932
+    second: Untitled_Artwork-2 4_13
+  - first:
+      213: 5872094954803429721
+    second: Untitled_Artwork-2 4_14
+  - first:
+      213: 1289833428808347320
+    second: Untitled_Artwork-2 4_15
+  - first:
+      213: 8679283825207614105
+    second: Untitled_Artwork-2 4_16
+  - first:
+      213: 3024238434703344941
+    second: Untitled_Artwork-2 4_17
+  - first:
+      213: 8746123476103856037
+    second: Untitled_Artwork-2 4_18
+  - first:
+      213: 4630997601341295935
+    second: Untitled_Artwork-2 4_19
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_0
+      rect:
+        serializedVersion: 2
+        x: 1668
+        y: 961
+        width: 159
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0d0a63e8fd13c450800000000000000
+      internalID: 6107758474448997642
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_1
+      rect:
+        serializedVersion: 2
+        x: 424
+        y: 590
+        width: 34
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 152f11f78ce6c25d0800000000000000
+      internalID: -3085969837251235247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_2
+      rect:
+        serializedVersion: 2
+        x: 526
+        y: 547
+        width: 129
+        height: 122
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c0aff0d8ccf76460800000000000000
+      internalID: 7235029265824063681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_3
+      rect:
+        serializedVersion: 2
+        x: 742
+        y: 558
+        width: 71
+        height: 138
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16ea11904febe6ef0800000000000000
+      internalID: -112942985304232351
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_4
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 640
+        width: 59
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 068bb068b0d7fe4d0800000000000000
+      internalID: -3103124129787955104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_5
+      rect:
+        serializedVersion: 2
+        x: 879
+        y: 651
+        width: 92
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 032b74e94bd6d2200800000000000000
+      internalID: 156902184544875056
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_6
+      rect:
+        serializedVersion: 2
+        x: 987
+        y: 659
+        width: 69
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aea1b62103ace1370800000000000000
+      internalID: 8295289871479282410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_7
+      rect:
+        serializedVersion: 2
+        x: 351
+        y: 553
+        width: 49
+        height: 101
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 34484f7c3ed7db310800000000000000
+      internalID: 1422431474584683587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_8
+      rect:
+        serializedVersion: 2
+        x: 472
+        y: 595
+        width: 56
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ecf27d07227547480800000000000000
+      internalID: -8902394757970972722
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_9
+      rect:
+        serializedVersion: 2
+        x: 1346
+        y: 501
+        width: 77
+        height: 143
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 619db0f6b4213eda0800000000000000
+      internalID: -5916865370239805162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_10
+      rect:
+        serializedVersion: 2
+        x: 1077
+        y: 424
+        width: 73
+        height: 120
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73c6b3a52f99d64a0800000000000000
+      internalID: -6598448612852929481
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_11
+      rect:
+        serializedVersion: 2
+        x: 1139
+        y: 498
+        width: 53
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6eb04cc7d64cd3a0800000000000000
+      internalID: -6639353857992245650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_12
+      rect:
+        serializedVersion: 2
+        x: 1189
+        y: 508
+        width: 79
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5a387f761020ddfd0800000000000000
+      internalID: -2315692428336069723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_13
+      rect:
+        serializedVersion: 2
+        x: 1277
+        y: 529
+        width: 69
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d9f62b540cb9f560800000000000000
+      internalID: 7348110993926846932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_14
+      rect:
+        serializedVersion: 2
+        x: 751
+        y: 374
+        width: 58
+        height: 123
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9510c6cef3fdd7150800000000000000
+      internalID: 5872094954803429721
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_15
+      rect:
+        serializedVersion: 2
+        x: 880
+        y: 473
+        width: 31
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8beab8f6ba866e110800000000000000
+      internalID: 1289833428808347320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_16
+      rect:
+        serializedVersion: 2
+        x: 899
+        y: 420
+        width: 23
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99a1b4a77a2037870800000000000000
+      internalID: 8679283825207614105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_17
+      rect:
+        serializedVersion: 2
+        x: 922
+        y: 430
+        width: 66
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d25839055d048f920800000000000000
+      internalID: 3024238434703344941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_18
+      rect:
+        serializedVersion: 2
+        x: 1000
+        y: 473
+        width: 61
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5afffda66f8706970800000000000000
+      internalID: 8746123476103856037
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Untitled_Artwork-2 4_19
+      rect:
+        serializedVersion: 2
+        x: 806
+        y: 403
+        width: 85
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3d42a748cb944040800000000000000
+      internalID: 4630997601341295935
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Untitled_Artwork-2 4_0: 6107758474448997642
+      Untitled_Artwork-2 4_1: -3085969837251235247
+      Untitled_Artwork-2 4_10: -6598448612852929481
+      Untitled_Artwork-2 4_11: -6639353857992245650
+      Untitled_Artwork-2 4_12: -2315692428336069723
+      Untitled_Artwork-2 4_13: 7348110993926846932
+      Untitled_Artwork-2 4_14: 5872094954803429721
+      Untitled_Artwork-2 4_15: 1289833428808347320
+      Untitled_Artwork-2 4_16: 8679283825207614105
+      Untitled_Artwork-2 4_17: 3024238434703344941
+      Untitled_Artwork-2 4_18: 8746123476103856037
+      Untitled_Artwork-2 4_19: 4630997601341295935
+      Untitled_Artwork-2 4_2: 7235029265824063681
+      Untitled_Artwork-2 4_3: -112942985304232351
+      Untitled_Artwork-2 4_4: -3103124129787955104
+      Untitled_Artwork-2 4_5: 156902184544875056
+      Untitled_Artwork-2 4_6: 8295289871479282410
+      Untitled_Artwork-2 4_7: 1422431474584683587
+      Untitled_Artwork-2 4_8: -8902394757970972722
+      Untitled_Artwork-2 4_9: -5916865370239805162
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
