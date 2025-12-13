@@ -437,10 +437,24 @@ function attachEventListeners() {
     if (!select) return;
 
     select.innerHTML = '';
-    categories.forEach(cat => {
+
+    // Collect unique names from both apps and websites in config
+    const names = new Set();
+
+    if (state.config.apps) {
+      state.config.apps.forEach(app => names.add(app.name));
+    }
+    if (state.config.websites) {
+      state.config.websites.forEach(site => names.add(site.name));
+    }
+
+    // Sort alphabetically
+    const sortedNames = Array.from(names).sort();
+
+    sortedNames.forEach(name => {
       const option = document.createElement('option');
-      option.value = cat.label; // Use Label as the Name in Config
-      option.textContent = cat.label;
+      option.value = name;
+      option.textContent = name;
       select.appendChild(option);
     });
   }
