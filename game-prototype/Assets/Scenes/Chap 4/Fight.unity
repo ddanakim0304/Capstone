@@ -2275,7 +2275,7 @@ MonoBehaviour:
   argumentCapMin: 0.02
   punchScaleAmount: 1.05
   punchDuration: 0.1
-  fightStartShake: 10
+  fightStartShake: 72
 --- !u!4 &2061984369
 Transform:
   m_ObjectHideFlags: 0
