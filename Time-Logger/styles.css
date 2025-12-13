@@ -12,22 +12,51 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Settings Button */
+/* Settings Button - Material Design Style */
 .settings-btn {
   position: absolute;
   top: 12px;
   right: 12px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
   z-index: 100;
-  padding: 4px;
+
+  /* Reset default button styles */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #000000;
+
+  /* Shape and Size */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+
+  /* Centering the icon */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Smooth transitions */
+  transition: background-color 0.2s ease, transform 0.3s ease;
 }
 
+/* Material Ripple-like Hover Effect */
 .settings-btn:hover {
-  transform: rotate(45deg);
-  transition: transform 0.3s ease;
+  background-color: rgba(0, 0, 0, 0.08);
+  /* Light grey hover circle */
+  transform: rotate(90deg);
+  /* Slight rotation on hover */
+}
+
+.settings-btn:active {
+  background-color: rgba(0, 0, 0, 0.12);
+  /* Darker on click */
+}
+
+/* Material Icon sizing */
+.material-icons {
+  font-size: 24px;
+  user-select: none;
+  /* Prevents selecting the text icon */
 }
 
 /* Modal Overlay */
@@ -125,8 +154,13 @@ body {
   flex: 1;
 }
 
-#ruleName { width: 30%; }
-#ruleKeywords { flex: 1; }
+#ruleName {
+  width: 30%;
+}
+
+#ruleKeywords {
+  flex: 1;
+}
 
 .action-btn {
   background: #000000;
