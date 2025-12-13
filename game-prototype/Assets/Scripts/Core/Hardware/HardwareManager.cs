@@ -78,4 +78,15 @@ public class HardwareManager : MonoBehaviour
         Debug.LogWarning($"Requested controller for player index {playerIndex} is out of bounds.");
         return null;
     }
+
+    void OnApplicationQuit()
+    {
+        foreach (var controller in allControllers)
+        {
+            if (controller != null)
+            {
+                controller.Close();
+            }
+        }
+    }
 }

@@ -1254,7 +1254,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24daa706e08a942f792585baa83dfcbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HardwareManager
-  hardwareControllers: []
+  hardwareControllers:
+  - portName: /dev/cu.Controller_1
+    baudRate: 115200
+    input: {fileID: 0}
+  - portName: /dev/cu.Controller_2
+    baudRate: 115200
+    input: {fileID: 0}
   minPlayerCount: 2
 --- !u!4 &1484624729
 Transform:

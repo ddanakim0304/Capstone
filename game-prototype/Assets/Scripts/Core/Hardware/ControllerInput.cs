@@ -6,18 +6,18 @@ public class ControllerInput : MonoBehaviour
 {
     public int ControllerID { get; private set; }
     public long EncoderCount { get; private set; }
+    public long EncoderDelta { get; private set; }
     public bool IsButtonPressed { get; private set; }
-
-    // check if physical hardware is actually connected.
     public bool IsHardwareConnected => serialPort != null && serialPort.IsOpen;
 
     private int playerIndex;
     private SerialPort serialPort;
     private Thread readThread;
-    private bool isRunning = false;
+    private volatile bool isRunning = false;
     private volatile string latestData = "";
+    private long previousEncoderCount = 0;
+    private readonly object serialLock = new object();
 
-    // Sets up the controller for a specific player index and attempts to connect to the hardware
     public void Initialize(int index, string port = "", int rate = 115200)
     {
         this.playerIndex = index;
@@ -29,91 +29,243 @@ public class ControllerInput : MonoBehaviour
 
     void Update()
     {
-        bool hardwareButtonState = false;
-        // If hardware is connected and has sent new data, process it.
-        if (IsHardwareConnected && !string.IsNullOrEmpty(latestData))
+        EncoderDelta = 0;
+        
+        // Process Hardware Data
+        string dataToProcess = null;
+        lock (serialLock)
         {
-            hardwareButtonState = ParseDataAndGetButtonState(latestData);
-            // Clear the data after processing
-            latestData = "";
+            if (!string.IsNullOrEmpty(latestData))
+            {
+                dataToProcess = latestData;
+                latestData = "";
+            }
+        }
+        
+        if (dataToProcess != null)
+        {
+            ParseData(dataToProcess);
         }
 
-        // First check hardware button state, then fallback to keyboard input if not pressed.
-        if (hardwareButtonState)
+        // Handle Button State (Hardware OR Keyboard)
+        IsButtonPressed = false;
+        
+        // Keyboard Fallback for Encoder Rotation
+        if (playerIndex == 0 && Input.GetKeyDown(KeyCode.E)) 
         {
-            IsButtonPressed = true;
+            EncoderDelta = 1;
         }
-        else if (playerIndex == 0 && Input.GetKeyDown(KeyCode.E))
+        if (playerIndex == 1 && Input.GetKeyDown(KeyCode.Return)) 
         {
-            IsButtonPressed = true;
-        }
-        else if (playerIndex == 1 && Input.GetKeyDown(KeyCode.Return))
-        {
-            IsButtonPressed = true;
-        }
-        else
-        {
-            // If no input was detected this frame, the button is not pressed.
-            IsButtonPressed = false;
+            EncoderDelta = 1;
         }
     }
 
-    // Parses the raw string from the serial port and updates the controller's state.
-    private bool ParseDataAndGetButtonState(string data)
-    {
-        string[] parts = data.Split(',');
-        if (parts.Length == 3)
-        {
-            int.TryParse(parts[0], out int id);
-            long.TryParse(parts[1], out long count);
-            bool buttonState = (parts[2].Trim() == "1");
-
-            ControllerID = id;
-            EncoderCount = count;
-            return buttonState;
-        }
-        return false;
-    }
-
-    // Attempts to open a connection to the specified serial port and starts the listening thread.
-    void ConnectToController(string portName, int baudRate)
+    private void ParseData(string data)
     {
         try
         {
-            serialPort = new SerialPort(portName, baudRate);
-            serialPort.ReadTimeout = 200;
-            serialPort.Open();
-            isRunning = true;
-            readThread = new Thread(ReadData);
-            readThread.Start();
-            Debug.Log($"Successfully connected to controller on {portName}");
+            string[] parts = data.Split(',');
+            if (parts.Length == 3)
+            {
+                int.TryParse(parts[0], out int id);
+                long.TryParse(parts[1], out long count);
+                bool btnState = (parts[2].Trim() == "1");
+
+                ControllerID = id;
+                EncoderDelta = count - previousEncoderCount;
+                previousEncoderCount = count;
+                EncoderCount = count;
+                
+                Debug.Log($"<color=yellow>[P{playerIndex}] Parsed - ID: {id}, Encoder: {count}, Delta: {EncoderDelta}, Button: {btnState}</color>");
+                
+                if (btnState) IsButtonPressed = true;
+            }
         }
-        catch (System.Exception e)
+        catch { /* Ignore dirty packets */ }
+    }
+
+    void ConnectToController(string portName, int baudRate)
+    {
+        lock (serialLock)
         {
-            Debug.LogWarning($"Could not connect to {portName}. Using keyboard fallback. Error: {e.Message}");
+            if (serialPort != null && serialPort.IsOpen) return;
+
+            try
+            {
+                serialPort = new SerialPort(portName, baudRate);
+                serialPort.ReadTimeout = 100;
+                serialPort.WriteTimeout = 100;
+                serialPort.DtrEnable = false; // CRITICAL: Start with DTR disabled
+                serialPort.RtsEnable = false; // CRITICAL: Start with RTS disabled
+                serialPort.Open();
+                
+                // Small delay before enabling control signals
+                Thread.Sleep(50);
+                serialPort.DtrEnable = true;
+                serialPort.RtsEnable = true;
+
+                isRunning = true;
+                readThread = new Thread(ReadSerialLoop);
+                readThread.IsBackground = true;
+                readThread.Start();
+
+                Debug.Log($"<color=cyan>[P{playerIndex}] Connected to {portName}</color>");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"[P{playerIndex}] Failed to connect to {portName}: {e.Message}");
+                serialPort = null;
+            }
         }
     }
 
-    private void ReadData()
+    private void ReadSerialLoop()
     {
-        while (isRunning && serialPort != null && serialPort.IsOpen)
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+        while (isRunning)
         {
-            try 
-            { 
-                latestData = serialPort.ReadLine(); 
+            try
+            {
+                SerialPort port;
+                lock (serialLock)
+                {
+                    port = serialPort;
+                }
+                
+                if (port == null || !port.IsOpen)
+                {
+                    break;
+                }
+
+                int b = port.ReadByte();
+                
+                if (b == -1) continue;
+
+                char c = (char)b;
+                if (c == '\n')
+                {
+                    string line = sb.ToString().Trim();
+                    sb.Clear();
+                    if (!string.IsNullOrEmpty(line))
+                    {
+                        lock (serialLock)
+                        {
+                            latestData = line;
+                        }
+                    }
+                }
+                else if (c != '\r') // Skip carriage returns
+                {
+                    sb.Append(c);
+                }
             }
-            // A timeout exception is normal and expected if no new data arrives.
-            catch (System.TimeoutException) {}
+            catch (System.TimeoutException) 
+            {
+                // Normal - no data available
+            }
+            catch (ThreadInterruptedException)
+            {
+                // Thread was interrupted during Close()
+                break;
+            }
+            catch (System.Exception e)
+            {
+                if (isRunning) 
+                {
+                    Debug.LogWarning($"<color=red>[P{playerIndex}] Serial read error: {e.Message}</color>");
+                }
+                break;
+            }
         }
+        
+        Debug.Log($"<color=orange>[P{playerIndex}] Read thread exiting</color>");
+    }
+
+    public void Close()
+    {
+        Debug.Log($"<color=orange>[P{playerIndex}] Closing serial connection...</color>");
+        
+        // 1. Signal the thread to stop
+        isRunning = false;
+
+        // 2. Wait for thread to exit (with timeout)
+        if (readThread != null && readThread.IsAlive)
+        {
+            if (!readThread.Join(500))
+            {
+                Debug.LogWarning($"[P{playerIndex}] Thread didn't exit gracefully, interrupting...");
+                try
+                {
+                    readThread.Interrupt();
+                    readThread.Join(200);
+                }
+                catch { }
+            }
+            readThread = null;
+        }
+
+        // 3. Close the serial port properly
+        lock (serialLock)
+        {
+            if (serialPort != null)
+            {
+                try
+                {
+                    if (serialPort.IsOpen)
+                    {
+                        // CRITICAL FOR BLUETOOTH: Disable control signals BEFORE closing
+                        serialPort.DtrEnable = false;
+                        serialPort.RtsEnable = false;
+                        
+                        // Small delay to let signals propagate
+                        Thread.Sleep(50);
+                        
+                        // Discard buffers
+                        serialPort.DiscardInBuffer();
+                        serialPort.DiscardOutBuffer();
+                        
+                        // Close the port
+                        serialPort.Close();
+                        
+                        Debug.Log($"<color=green>[P{playerIndex}] Serial port closed successfully</color>");
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"[P{playerIndex}] Error closing port: {e.Message}");
+                }
+                finally
+                {
+                    // CRITICAL: Dispose the SerialPort object
+                    try
+                    {
+                        serialPort.Dispose();
+                    }
+                    catch { }
+                    
+                    serialPort = null;
+                }
+            }
+        }
+        
+        // 4. Extra sleep to ensure Bluetooth releases (macOS specific)
+        Thread.Sleep(100);
+    }
+
+    void OnDisable()
+    {
+        Close();
     }
 
     void OnDestroy()
     {
-        // Signal the reading thread to stop.
-        isRunning = false;
-        // Wait for the thread to finish its current loop before continuing.
-        if (readThread != null && readThread.IsAlive) readThread.Join();
-        // Close the serial port to release it.
-        if (serialPort != null && serialPort.IsOpen) serialPort.Close();
+        Close();
+    }
+
+    void OnApplicationQuit()
+    {
+        Close();
     }
 }
