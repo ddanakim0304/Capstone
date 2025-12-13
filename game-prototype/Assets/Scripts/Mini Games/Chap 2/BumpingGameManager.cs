@@ -36,7 +36,14 @@ public class BumpingGameManager : MiniGameManager
         if (player2Mover != null) player2Mover.canMove = false;
         
         // Trigger bump animation
-        Vector3 direction = (player2Reaction.transform.position - player1Reaction.transform.position).normalized;
+        Vector3 diff = player2Reaction.transform.position - player1Reaction.transform.position;
+        diff.y = 0;
+        diff.z = 0;
+        Vector3 direction = diff.normalized;
+
+        // Fallback if positions are identical
+        if (direction == Vector3.zero) direction = Vector3.right;
+
         player1Reaction.TriggerReaction(-direction);
         player2Reaction.TriggerReaction(direction);
 

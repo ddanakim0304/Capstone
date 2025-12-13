@@ -281,8 +281,6 @@ public class FightGameManager : MiniGameManager
 
     private IEnumerator WinSequence()
     {
-        isGameWon = true;
-        
         yield return new WaitForSeconds(1.0f);
         
         WinGame(); // Transitions to next scene
