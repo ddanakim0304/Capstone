@@ -21,6 +21,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Chap 1/OutroComics.unity
     guid: adbb24a04db6a4f5787887cf6570e4c6
   - enabled: 1
+    path: Assets/Scenes/Chap 2/IntroComics.unity
+    guid: fe4b3140060eb428ca4bd1cd8122b73f
+  - enabled: 1
     path: Assets/Scenes/Chap 2/Bump.unity
     guid: 7dcedf8c6cdd74731b7c482bee7b6b3a
   - enabled: 1
@@ -30,11 +33,35 @@ EditorBuildSettings:
     path: Assets/Scenes/Chap 2/Wavelength.unity
     guid: 5fa8f60140657465393feb100c930d35
   - enabled: 1
+    path: Assets/Scenes/Chap 2/OutroComics.unity
+    guid: 1284dd357c45c4967afd770b657c84d2
+  - enabled: 1
+    path: Assets/Scenes/Chap 3/[INCOMP]IntroComics.unity
+    guid: c137b954b02704b57839e44c8fae6d7a
+  - enabled: 1
     path: Assets/Scenes/Chap 3/CheeseComics.unity
     guid: 58670f54f7c834bf3bf8ff2fce927277
   - enabled: 1
     path: Assets/Scenes/Chap 3/CheseCut.unity
     guid: 1f532ea2cab4549289cb4f0e8f05a004
+  - enabled: 1
+    path: Assets/Scenes/Chap 3/OutroComics.unity
+    guid: 4c5c4fe43917a4fa2b11f51b9ede4129
+  - enabled: 1
+    path: Assets/Scenes/Chap 4/IntroComics.unity
+    guid: c3d0f1e952d1b4a7dbdc4f0c79bdc1ff
+  - enabled: 1
+    path: Assets/Scenes/Chap 4/Fight.unity
+    guid: 28aa8a9ce52e24e0ebaf729f440f0419
+  - enabled: 1
+    path: Assets/Scenes/Chap 4/[INCOMP]OutroComics.unity
+    guid: cdfac5641b57a48a99145b5385d81e6c
+  - enabled: 1
+    path: Assets/Scenes/Chap 5/[INCOMP]IntroComics.unity
+    guid: 9295ff6060eaf4da8bb03f7ab38688aa
+  - enabled: 1
+    path: Assets/Scenes/Chap 5/[INCOMP]OutroComics.unity
+    guid: 5288a357053c742e696e60ceda18a38b
   - enabled: 1
     path: Assets/Scenes/Others/Credit.unity
     guid: 921e44a4b4b5944168ec0bb641d72e23
