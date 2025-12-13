@@ -3,90 +3,89 @@ using System.Collections.Generic;
 
 public class HardwareManager : MonoBehaviour
 {
-    // Defines the Inspector settings for a single hardware controller.
-    [System.Serializable]
-    public class ControllerSetup
-    {
-        public string portName = "";
-        public int baudRate = 115200;
-        // This is populated at runtime, so it can be hidden in the Inspector.
-        [HideInInspector] public ControllerInput input; 
-    }
-
-    [Header("Hardware Configuration")]
-    [Tooltip("Add any real hardware controllers you want to connect to here.")]
-    public List<ControllerSetup> hardwareControllers;
-
-    [Tooltip("Ensures that at least this many controllers exist for keyboard fallback, even if none are connected.")]
-    public int minPlayerCount = 2;
-    
-    // A singleton instance for easy access from other scripts.
     public static HardwareManager Instance { get; private set; }
-
-    // This list holds all active controllers
     private List<ControllerInput> allControllers = new List<ControllerInput>();
-
+    
     void Awake()
     {
-        // Ensure only one instance of the HardwareManager exists.
         if (Instance != null && Instance != this)
         {
             Destroy(this.gameObject);
+            return;
         }
-        else
+        
+        Instance = this;
+        DontDestroyOnLoad(this.gameObject);
+        
+        InitializeControllers();
+    }
+    
+    private void InitializeControllers()
+    {
+        // Clear any existing controllers
+        foreach (var controller in allControllers)
         {
-            Instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            if (controller != null) controller.Close();
         }
-
-        // Create and initialize controllers for any real hardware defined in the Inspector.
-        for (int i = 0; i < hardwareControllers.Count; i++)
+        allControllers.Clear();
+        
+        // Auto-load config from Resources folder
+        HardwareConfig config = Resources.Load<HardwareConfig>("HardwareConfig");
+        
+        if (config == null)
         {
-            var setup = hardwareControllers[i];
-            // Create a new ControllerInput component.
+            Debug.LogWarning("HardwareConfig not found in Resources folder. Creating keyboard-only controllers.");
+        }
+        
+        var controllers = config != null ? config.hardwareControllers : new List<HardwareConfig.ControllerSetup>();
+        int minPlayers = config != null ? config.minPlayerCount : 2;
+        
+        // Create hardware controllers
+        for (int i = 0; i < controllers.Count; i++)
+        {
+            var setup = controllers[i];
             GameObject controllerObject = new GameObject($"HardwareController_Player{i} ({setup.portName})");
             controllerObject.transform.SetParent(this.transform);
             
-            setup.input = controllerObject.AddComponent<ControllerInput>();
-            // Initialize with a port name to trigger a hardware connection attempt.
-            setup.input.Initialize(i, setup.portName, setup.baudRate);
-            allControllers.Add(setup.input);
+            var input = controllerObject.AddComponent<ControllerInput>();
+            input.Initialize(i, setup.portName, setup.baudRate);
+            allControllers.Add(input);
         }
         
-        // If there aren't enough hardware controllers, create virtual ones for keyboard fallback.
-        while (allControllers.Count < minPlayerCount)
+        // Fill with virtual (keyboard) controllers to reach minimum player count
+        while (allControllers.Count < minPlayers)
         {
             int playerIndex = allControllers.Count;
-            GameObject controllerObject = new GameObject($"VirtualController_Player{playerIndex}");
+            GameObject controllerObject = new GameObject($"KeyboardController_Player{playerIndex}");
             controllerObject.transform.SetParent(this.transform);
             
-            ControllerInput virtualInput = controllerObject.AddComponent<ControllerInput>();
-            // Initialize without a port name, which makes it a keyboard-only controller.
-            virtualInput.Initialize(playerIndex); 
+            var virtualInput = controllerObject.AddComponent<ControllerInput>();
+            virtualInput.Initialize(playerIndex); // No port name = keyboard only
             allControllers.Add(virtualInput);
         }
+        
+        Debug.Log($"HardwareManager initialized with {allControllers.Count} controllers ({controllers.Count} hardware, {allControllers.Count - controllers.Count} keyboard)");
     }
-
-    // A public method for other scripts to get a specific player's controller.
+    
     public ControllerInput GetController(int playerIndex)
     {
         if (playerIndex >= 0 && playerIndex < allControllers.Count)
-        {
             return allControllers[playerIndex];
-        }
         
         Debug.LogWarning($"Requested controller for player index {playerIndex} is out of bounds.");
         return null;
     }
-
+    
+    public int GetControllerCount()
+    {
+        return allControllers.Count;
+    }
+    
     void OnApplicationQuit()
     {
         foreach (var controller in allControllers)
         {
-            if (controller != null)
-            {
-                controller.Close();
-            }
+            if (controller != null) controller.Close();
         }
     }
 }
