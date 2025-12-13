@@ -54,6 +54,9 @@ public class AlarmClockGameManager : MiniGameManager
     private bool isP1AlarmOff = false;
     private bool isP2AlarmOff = false;
 
+    private bool p1_wasPressed = false;
+    private bool p2_wasPressed = false;
+
     void Start()
     {
         if (HardwareManager.Instance != null)
@@ -71,20 +74,23 @@ public class AlarmClockGameManager : MiniGameManager
         if (isGameWon) return;
 
         // --- Handle Player 1 ---
-        HandlePlayerLogic(player1Alarm, ref p1_targetHandY, ref isP1AlarmOff, p1_controller);
+        HandlePlayerLogic(player1Alarm, ref p1_targetHandY, ref isP1AlarmOff, ref p1_wasPressed, p1_controller);
         
         // --- Handle Player 2 ---
-        HandlePlayerLogic(player2Alarm, ref p2_targetHandY, ref isP2AlarmOff, p2_controller);
+        HandlePlayerLogic(player2Alarm, ref p2_targetHandY, ref isP2AlarmOff, ref p2_wasPressed, p2_controller);
     }
 
     // A single, reusable function to handle all logic for one player.
-    private void HandlePlayerLogic(PlayerAlarmSetup alarmSetup, ref float targetHandY, ref bool isAlarmOff, ControllerInput controller)
+    private void HandlePlayerLogic(PlayerAlarmSetup alarmSetup, ref float targetHandY, ref bool isAlarmOff, ref bool wasPressed, ControllerInput controller)
     {
         if (isAlarmOff) return;
 
         // Update the target hand position based on input.
-        bool playerPressed = controller != null && controller.IsButtonPressed;
-        targetHandY = UpdateTargetHandPosition(targetHandY, playerPressed, alarmSetup);
+        bool isPressed = controller != null && controller.IsButtonPressed;
+        bool isJustPressed = isPressed && !wasPressed;
+        wasPressed = isPressed;
+
+        targetHandY = UpdateTargetHandPosition(targetHandY, isJustPressed, alarmSetup);
         
         // Always move the visual hand smoothly towards its target.
         UpdateHandVisuals(alarmSetup, targetHandY);
@@ -99,18 +105,16 @@ public class AlarmClockGameManager : MiniGameManager
     }
 
     // Calculates the new target Y-position for the hand.
-    private float UpdateTargetHandPosition(float currentTargetY, bool isPressed, PlayerAlarmSetup alarmSetup)
+    private float UpdateTargetHandPosition(float currentTargetY, bool isJustPressed, PlayerAlarmSetup alarmSetup)
     {
-        if (isPressed)
+        if (isJustPressed)
         {
             // Move the target position down by the specified distance.
             currentTargetY -= alarmSetup.pressDistance;
         }
-        else
-        {
-            // Move the target position up over time by the resistance speed.
-            currentTargetY += alarmSetup.resistanceSpeed * Time.deltaTime;
-        }
+        
+        // Always apply resistance (move up) over time
+        currentTargetY += alarmSetup.resistanceSpeed * Time.deltaTime;
         
         // Enforce a ceiling so the target can't go above the start position
         return Mathf.Min(currentTargetY, alarmSetup.handStartPositionY);
