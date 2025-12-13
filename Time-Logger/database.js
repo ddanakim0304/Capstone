@@ -3,9 +3,10 @@ const path = require('path');
 
 class TimerDatabase {
   constructor() {
-    // Store CSV file in Stats folder relative to app directory
-    this.statsDir = path.join(__dirname, 'Stats');
+    // Hardcoded path to save data in the Capstone project directory
+    this.statsDir = '/Users/yeinkim/Desktop/Capstone/Time-Logger/Stats';
     this.csvPath = path.join(this.statsDir, 'sessions.csv');
+    console.log('[DB] Using hardcoded path:', this.csvPath);
   }
 
   async init() {

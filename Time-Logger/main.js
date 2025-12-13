@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const activeWin = require('active-win');
 const Database = require('./database');
@@ -11,6 +11,8 @@ let mainWindow;
 let db;
 let detectionInterval;
 let wss;
+let hasAccessibilityPermission = false;
+let permissionCheckFailed = false;
 
 function startWebSocketServer() {
     wss = new WebSocket.Server({ port: 31337 });
@@ -104,6 +106,13 @@ ipcMain.on('start-tracking', (event, manualMode) => {
     const checkApp = async () => {
         try {
             const window = await activeWin();
+            
+            // If we successfully got window info, we have permission
+            if (window) {
+                hasAccessibilityPermission = true;
+                permissionCheckFailed = false;
+            }
+            
             if (!window) return;
 
             const appName = window.owner.name.toLowerCase();
@@ -142,7 +151,30 @@ ipcMain.on('start-tracking', (event, manualMode) => {
                 event.reply('app-undetected');
             }
         } catch (error) {
-            // Silently ignore detection errors
+            // Handle permission errors
+            if (error.message && error.message.includes('Error: Could not get active window')) {
+                if (!permissionCheckFailed) {
+                    permissionCheckFailed = true;
+                    console.error('[Permission] Accessibility permission not granted');
+                    
+                    // Stop checking to prevent repeated prompts
+                    if (detectionInterval) {
+                        clearInterval(detectionInterval);
+                        detectionInterval = null;
+                    }
+                    
+                    // Notify user once
+                    if (mainWindow) {
+                        dialog.showMessageBox(mainWindow, {
+                            type: 'warning',
+                            title: 'Permission Required',
+                            message: 'Accessibility Permission Not Granted',
+                            detail: 'Please grant accessibility permission in System Settings > Privacy & Security > Accessibility, then restart the app.',
+                            buttons: ['OK']
+                        });
+                    }
+                }
+            }
         }
     };
 
