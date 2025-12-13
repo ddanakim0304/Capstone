@@ -17,9 +17,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        targetPlatform:
-          - WebGL                 # <--- Added WebGL here
-          - StandaloneWindows64   # Keeps your Windows build too
+        include:
+          - targetPlatform: WebGL
+            os: ubuntu-latest
+
+          - targetPlatform: StandaloneWindows64
+            os: ubuntu-latest
+
+          - targetPlatform: StandaloneOSX
+            os: macos-latest
 
     steps:
       # 1. Checkout Code
@@ -39,7 +45,7 @@ jobs:
       - uses: game-ci/unity-builder@v4
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
-          projectPath: game-prototype # Points to your subfolder
+          projectPath: game-prototype
           buildName: ${{ env.ITCH_GAME }}
 
       # 4. Set the Itch.io Channel Name (The Magic Step)
@@ -50,6 +56,8 @@ jobs:
             echo "ITCH_CHANNEL=web" >> $GITHUB_ENV
           elif [ "${{ matrix.targetPlatform }}" == "StandaloneWindows64" ]; then
             echo "ITCH_CHANNEL=windows" >> $GITHUB_ENV
+          elif [ "${{ matrix.targetPlatform }}" == "StandaloneOSX" ]; then
+            echo "ITCH_CHANNEL=mac" >> $GITHUB_ENV
           fi
 
       # 5. Upload to Itch.io
