@@ -173,7 +173,6 @@ public class AlarmClockGameManager : MiniGameManager
 
     private IEnumerator WinSequence()
     {
-        isGameWon = true;
         yield return new WaitForSeconds(delayAfterWin);
         WinGame();
     }
