@@ -16,6 +16,7 @@ public class ControllerInput : MonoBehaviour
     private volatile bool isRunning = false;
     private volatile string latestData = "";
     private long previousEncoderCount = 0;
+    private bool _lastHardwareButtonState = false;
     private readonly object serialLock = new object();
 
     public void Initialize(int index, string port = "", int rate = 115200)
@@ -48,17 +49,26 @@ public class ControllerInput : MonoBehaviour
         }
 
         // Handle Button State (Hardware OR Keyboard)
-        IsButtonPressed = false;
+        bool keyboardPressed = false;
         
-        // Keyboard Fallback for Encoder Rotation
-        if (playerIndex == 0 && Input.GetKeyDown(KeyCode.E)) 
+        if (playerIndex == 0)
         {
-            EncoderDelta = 1;
+            // Button: Space or E (held)
+            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.E)) keyboardPressed = true;
+            
+            // Encoder: E (tap)
+            if (Input.GetKeyDown(KeyCode.E)) EncoderDelta = 1;
         }
-        if (playerIndex == 1 && Input.GetKeyDown(KeyCode.Return)) 
+        else if (playerIndex == 1)
         {
-            EncoderDelta = 1;
+            // Button: Enter or RightShift (held)
+            if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.RightShift)) keyboardPressed = true;
+            
+            // Encoder: Return (tap)
+            if (Input.GetKeyDown(KeyCode.Return)) EncoderDelta = 1;
         }
+
+        IsButtonPressed = _lastHardwareButtonState || keyboardPressed;
     }
 
     private void ParseData(string data)
@@ -79,7 +89,7 @@ public class ControllerInput : MonoBehaviour
                 
                 Debug.Log($"<color=yellow>[P{playerIndex}] Parsed - ID: {id}, Encoder: {count}, Delta: {EncoderDelta}, Button: {btnState}</color>");
                 
-                if (btnState) IsButtonPressed = true;
+                _lastHardwareButtonState = btnState;
             }
         }
         catch { /* Ignore dirty packets */ }
