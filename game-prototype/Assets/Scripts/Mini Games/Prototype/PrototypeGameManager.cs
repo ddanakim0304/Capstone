@@ -3,11 +3,14 @@ using System.Collections;
 
 public class PrototypeGameManager : MiniGameManager
 {
-    void Update()
+    void Start()
     {
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            WinGame();
-        }
+        StartCoroutine(WaitAndWin());
+    }
+
+    IEnumerator WaitAndWin()
+    {
+        yield return new WaitForSeconds(10f);
+        WinGame();
     }
 }
