@@ -9,40 +9,40 @@ EditorBuildSettings:
     path: Assets/Scenes/Others/OpeningScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
-    path: Assets/Scenes/Chap 1/IntroComics.unity
+    path: Assets/Scenes/Chap 1/1 IntroComics.unity
     guid: ad50e66379bb048d090ca09ad29b33f6
   - enabled: 1
-    path: Assets/Scenes/Chap 1/Alarm.unity
+    path: Assets/Scenes/Chap 1/2 Alarm.unity
     guid: 5fa9346088b9146c48e8a78a85db9e13
   - enabled: 1
-    path: Assets/Scenes/Chap 1/GetReady.unity
+    path: Assets/Scenes/Chap 1/3 GetReady.unity
     guid: a8412fd46f85649a7adf5ff3ef531a4a
   - enabled: 1
-    path: Assets/Scenes/Chap 1/OutroComics.unity
+    path: Assets/Scenes/Chap 1/4 OutroComics.unity
     guid: adbb24a04db6a4f5787887cf6570e4c6
   - enabled: 1
-    path: Assets/Scenes/Chap 2/IntroComics.unity
+    path: Assets/Scenes/Chap 2/1 IntroComics.unity
     guid: fe4b3140060eb428ca4bd1cd8122b73f
   - enabled: 1
-    path: Assets/Scenes/Chap 2/Bump.unity
+    path: Assets/Scenes/Chap 2/2Bump.unity
     guid: 7dcedf8c6cdd74731b7c482bee7b6b3a
   - enabled: 1
-    path: Assets/Scenes/Chap 2/WavelengthComics.unity
+    path: Assets/Scenes/Chap 2/3 WavelengthComics.unity
     guid: 977862ae362ed4924a6dce887707facf
   - enabled: 1
-    path: Assets/Scenes/Chap 2/Wavelength.unity
+    path: Assets/Scenes/Chap 2/4 Wavelength.unity
     guid: 5fa8f60140657465393feb100c930d35
   - enabled: 1
-    path: Assets/Scenes/Chap 2/OutroComics.unity
+    path: Assets/Scenes/Chap 2/5 OutroComics.unity
     guid: 1284dd357c45c4967afd770b657c84d2
   - enabled: 1
-    path: Assets/Scenes/Chap 3/IntroComics-Start.unity
+    path: Assets/Scenes/Chap 3/1 IntroComics-Start.unity
     guid: c137b954b02704b57839e44c8fae6d7a
   - enabled: 1
-    path: Assets/Scenes/Chap 3/Choice-Book.unity
+    path: Assets/Scenes/Chap 3/2 Choice-Book.unity
     guid: c83b12a462b5943d0ad72be94c0ec8ad
   - enabled: 1
-    path: Assets/Scenes/Chap 3/Choice-Game.unity
+    path: Assets/Scenes/Chap 3/3 Choice-Game.unity
     guid: 1bd265d7dbf5a4184ad4007871f9a832
   - enabled: 0
     path: Assets/Scenes/Chap 3/CheeseComics.unity
@@ -51,28 +51,28 @@ EditorBuildSettings:
     path: Assets/Scenes/Chap 3/CheseCut.unity
     guid: 1f532ea2cab4549289cb4f0e8f05a004
   - enabled: 1
-    path: Assets/Scenes/Chap 3/IntroComics-End.unity
+    path: Assets/Scenes/Chap 3/4 IntroComics-End.unity
     guid: a932c830d15a54585b1138139836a797
   - enabled: 1
-    path: Assets/Scenes/Chap 3/OutroComics.unity
+    path: Assets/Scenes/Chap 3/5 OutroComics.unity
     guid: 4c5c4fe43917a4fa2b11f51b9ede4129
   - enabled: 1
-    path: Assets/Scenes/Chap 4/IntroComics.unity
+    path: Assets/Scenes/Chap 4/1 IntroComics.unity
     guid: 2162f02b7a7754282bbc99e99bd6b6c4
   - enabled: 1
-    path: Assets/Scenes/Chap 4/Bedtime.unity
+    path: Assets/Scenes/Chap 4/2 Bedtime.unity
     guid: 85de4f9774c0d4f38b6c0988b6e20f95
   - enabled: 1
-    path: Assets/Scenes/Chap 4/Conflict-Drawing.unity
+    path: Assets/Scenes/Chap 4/3 Conflict-Drawing.unity
     guid: c3d0f1e952d1b4a7dbdc4f0c79bdc1ff
   - enabled: 1
-    path: Assets/Scenes/Chap 4/Conflict-Trash.unity
+    path: Assets/Scenes/Chap 4/4 Conflict-Trash.unity
     guid: 8455911ecc606441e8773ec6e836b228
   - enabled: 1
-    path: Assets/Scenes/Chap 4/Fight.unity
+    path: Assets/Scenes/Chap 4/5 Fight.unity
     guid: 28aa8a9ce52e24e0ebaf729f440f0419
   - enabled: 1
-    path: Assets/Scenes/Chap 4/OutroComics(ending).unity
+    path: Assets/Scenes/Chap 4/6 OutroComics(ending).unity
     guid: 504dab80e484b4013b61e86ddf569ce5
   - enabled: 1
     path: Assets/Scenes/Others/Credit.unity
