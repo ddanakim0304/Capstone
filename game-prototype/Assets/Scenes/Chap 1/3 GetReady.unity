@@ -2561,8 +2561,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24daa706e08a942f792585baa83dfcbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HardwareManager
-  hardwareControllers: []
-  minPlayerCount: 2
 --- !u!4 &1484624729
 Transform:
   m_ObjectHideFlags: 0
