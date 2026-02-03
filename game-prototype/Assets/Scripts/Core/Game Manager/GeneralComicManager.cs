@@ -47,6 +47,11 @@ public class GeneralComicManager : MiniGameManager
             elem.targetObj.transform.localScale = Vector3.zero;
             elem.targetObj.SetActive(false);
         }
+        else if (elem.animationType == ComicAnimType.SlideInFromLeft || elem.animationType == ComicAnimType.SlideInFromRight)
+        {
+            if (elem.cachedRenderer != null) SetAlpha(elem.cachedRenderer, 0);
+            elem.targetObj.SetActive(true);
+        }
         else if (elem.animationType != ComicAnimType.Shake) // Shake usually implies visible
         {
              elem.targetObj.SetActive(false);
@@ -92,8 +97,10 @@ public class GeneralComicManager : MiniGameManager
         switch (elem.animationType)
         {
             case ComicAnimType.FadeIn: anim = FadeIn(elem.cachedRenderer, elem.duration); break;
-            case ComicAnimType.Pulse:  anim = PulseIn(elem.targetObj.transform, elem.originalScale, elem.duration, elem.magnitude); break;
+            case ComicAnimType.Pulse:  anim = PulseIn(elem.targetObj.transform, elem.cachedRenderer, elem.originalScale, elem.duration, elem.magnitude); break;
             case ComicAnimType.Shake:  anim = ShakeObject(elem.targetObj.transform, elem.originalPos, elem.duration, elem.magnitude); break;
+            case ComicAnimType.SlideInFromLeft: anim = SlideInFromLeft(elem.targetObj.transform, elem.cachedRenderer, elem.originalPos, elem.duration, elem.magnitude); break;
+            case ComicAnimType.SlideInFromRight: anim = SlideInFromRight(elem.targetObj.transform, elem.cachedRenderer, elem.originalPos, elem.duration, elem.magnitude); break;
         }
 
         if (anim != null)
@@ -112,15 +119,21 @@ public class GeneralComicManager : MiniGameManager
         SetAlpha(r, 1f);
     }
 
-    protected IEnumerator PulseIn(Transform t, Vector3 end, float d, float mag)
+    protected IEnumerator PulseIn(Transform t, SpriteRenderer r, Vector3 end, float d, float mag)
     {
+        if (t == null) yield break;
+        
         t.gameObject.SetActive(true);
-        Vector3 over = end * (1 + mag);
-        Vector3 squash = end * (1 - mag * 0.5f);
-        float step = d / 3f;
-        yield return AnimateScale(t, Vector3.zero, over, step);
-        yield return AnimateScale(t, over, squash, step);
-        yield return AnimateScale(t, squash, end, step);
+        if (r) SetAlpha(r, 0); // Start fully transparent
+        
+        Vector3 overshootScale = end * (1 + mag);
+        Vector3 squashScale = end * (1 - mag * 0.5f);
+        float stepDuration = d / 3.0f;
+        
+        // Animate through the three steps with fade-in: overshoot, squash, and settle.
+        yield return AnimateScaleAndFade(t, r, Vector3.zero, overshootScale, 0f, 1f, stepDuration);
+        yield return AnimateScale(t, overshootScale, squashScale, stepDuration);
+        yield return AnimateScale(t, squashScale, end, stepDuration);
     }
 
     protected IEnumerator ShakeObject(Transform t, Vector3 center, float d, float mag)
@@ -136,11 +149,67 @@ public class GeneralComicManager : MiniGameManager
         t.localPosition = center;
     }
 
+    protected IEnumerator SlideInFromLeft(Transform t, SpriteRenderer r, Vector3 targetPos, float d, float mag)
+    {
+        if (t == null) yield break;
+        
+        t.gameObject.SetActive(true);
+        Vector3 startPos = targetPos + Vector3.left * mag; // Start offset to the left
+        t.localPosition = startPos;
+        if (r) SetAlpha(r, 0); // Start fully transparent
+        
+        // Animate position and fade simultaneously
+        yield return AnimatePositionAndFade(t, r, startPos, targetPos, 0f, 1f, d);
+    }
+
+    protected IEnumerator SlideInFromRight(Transform t, SpriteRenderer r, Vector3 targetPos, float d, float mag)
+    {
+        if (t == null) yield break;
+        
+        t.gameObject.SetActive(true);
+        Vector3 startPos = targetPos + Vector3.right * mag; // Start offset to the right
+        t.localPosition = startPos;
+        if (r) SetAlpha(r, 0); // Start fully transparent
+        
+        // Animate position and fade simultaneously
+        yield return AnimatePositionAndFade(t, r, startPos, targetPos, 0f, 1f, d);
+    }
+
     protected IEnumerator AnimateScale(Transform t, Vector3 s, Vector3 e, float d)
     {
         float time = 0f;
         while (time < d) { t.localScale = Vector3.Lerp(s, e, time/d); time += Time.deltaTime; yield return null; }
         t.localScale = e;
+    }
+
+    protected IEnumerator AnimateScaleAndFade(Transform t, SpriteRenderer r, Vector3 scaleStart, Vector3 scaleEnd, float alphaStart, float alphaEnd, float d)
+    {
+        float time = 0f;
+        while (time < d) 
+        {
+            float progress = time / d;
+            t.localScale = Vector3.Lerp(scaleStart, scaleEnd, progress);
+            if (r) SetAlpha(r, Mathf.Lerp(alphaStart, alphaEnd, progress));
+            time += Time.deltaTime;
+            yield return null;
+        }
+        t.localScale = scaleEnd;
+        if (r) SetAlpha(r, alphaEnd);
+    }
+
+    protected IEnumerator AnimatePositionAndFade(Transform t, SpriteRenderer r, Vector3 posStart, Vector3 posEnd, float alphaStart, float alphaEnd, float d)
+    {
+        float time = 0f;
+        while (time < d)
+        {
+            float progress = time / d;
+            t.localPosition = Vector3.Lerp(posStart, posEnd, progress);
+            if (r) SetAlpha(r, Mathf.Lerp(alphaStart, alphaEnd, progress));
+            time += Time.deltaTime;
+            yield return null;
+        }
+        t.localPosition = posEnd;
+        if (r) SetAlpha(r, alphaEnd);
     }
 
     protected void SetAlpha(SpriteRenderer r, float a) { if(r) { Color c = r.color; c.a = a; r.color = c; } }

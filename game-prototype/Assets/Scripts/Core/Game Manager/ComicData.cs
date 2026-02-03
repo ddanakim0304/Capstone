@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public enum ComicAnimType { None, FadeIn, Pulse, Shake }
+public enum ComicAnimType { None, FadeIn, Pulse, Shake, SlideInFromLeft, SlideInFromRight }
 
 [System.Serializable]
 public class ComicElement
