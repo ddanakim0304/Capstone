@@ -33,8 +33,11 @@ public class ComicPanel
     [Tooltip("0 = Player 1, 1 = Player 2")]
     public int playerIndex = 0;
 
-    public List<GameObject> choiceOptions;
+    public List<ComicElement> choiceElements;
     public ComicElement resultElement;
+
+    [Header("Choice Timing")]
+    public float delayBeforeChoices = 0.5f;
 
     [Header("Timing")]
     public float delayAfterPanel = 1.0f;

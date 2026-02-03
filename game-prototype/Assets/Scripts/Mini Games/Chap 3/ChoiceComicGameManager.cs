@@ -21,8 +21,12 @@ public class ChoiceComicGameManager : GeneralComicManager
     // Override the base logic to handle choice panels
     protected override IEnumerator ProcessExtraPanelLogic(ComicPanel panel)
     {
-        if (panel.isChoicePanel && panel.choiceOptions.Count > 0)
+        if (panel.isChoicePanel && panel.choiceElements != null && panel.choiceElements.Count > 0)
         {
+            // First, let base class handle choice animations
+            yield return StartCoroutine(base.ProcessExtraPanelLogic(panel));
+            
+            // Then handle choice interaction
             yield return StartCoroutine(HandleChoiceLoop(panel));
         }
     }
@@ -40,11 +44,8 @@ public class ChoiceComicGameManager : GeneralComicManager
             }
         }
 
-        // 2. Reveal Options
-        foreach (var opt in panel.choiceOptions)
-        {
-            if (opt) opt.SetActive(true);
-        }
+        // 2. Choices are already animated by base class, just make them interactive
+        // No need to SetActive here since base class handled animations
 
         int currentIndex = 0;
         bool confirmed = false;
@@ -88,16 +89,16 @@ public class ChoiceComicGameManager : GeneralComicManager
                 currentIndex += inputDelta;
                 
                 // Clamp to ensure we stay within the list size
-                currentIndex = Mathf.Clamp(currentIndex, 0, panel.choiceOptions.Count - 1);
+                currentIndex = Mathf.Clamp(currentIndex, 0, panel.choiceElements.Count - 1);
             }
 
             // --- D. Update Visuals ---
-            for (int i = 0; i < panel.choiceOptions.Count; i++)
+            for (int i = 0; i < panel.choiceElements.Count; i++)
             {
-                if (panel.choiceOptions[i] == null) continue;
+                if (panel.choiceElements[i] == null || panel.choiceElements[i].targetObj == null) continue;
 
-                SpriteRenderer sr = panel.choiceOptions[i].GetComponent<SpriteRenderer>();
-                Transform tf = panel.choiceOptions[i].transform;
+                SpriteRenderer sr = panel.choiceElements[i].targetObj.GetComponent<SpriteRenderer>();
+                Transform tf = panel.choiceElements[i].targetObj.transform;
 
                 if (i == currentIndex)
                 {
@@ -131,14 +132,17 @@ public class ChoiceComicGameManager : GeneralComicManager
         // 4. Post Selection
         
         // Color the selected one
-        if (panel.choiceOptions[currentIndex])
-            panel.choiceOptions[currentIndex].GetComponent<SpriteRenderer>().color = selectedColor;
+        if (panel.choiceElements[currentIndex] != null && panel.choiceElements[currentIndex].targetObj != null)
+        {
+            var sr = panel.choiceElements[currentIndex].targetObj.GetComponent<SpriteRenderer>();
+            if (sr) sr.color = selectedColor;
+        }
 
         // Hide others
-        for (int i = 0; i < panel.choiceOptions.Count; i++)
+        for (int i = 0; i < panel.choiceElements.Count; i++)
         {
-            if (i != currentIndex && panel.choiceOptions[i]) 
-                panel.choiceOptions[i].SetActive(false);
+            if (i != currentIndex && panel.choiceElements[i] != null && panel.choiceElements[i].targetObj != null) 
+                panel.choiceElements[i].targetObj.SetActive(false);
         }
 
         // 5. Delay before Result

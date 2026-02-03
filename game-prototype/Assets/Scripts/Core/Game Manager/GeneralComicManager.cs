@@ -20,10 +20,10 @@ public class GeneralComicManager : MiniGameManager
             // Init standard elements
             foreach (var elem in panel.elements) InitElementState(elem);
             
-            // Init choice elements (Hide them by default in the base class)
-            if (panel.choiceOptions != null)
+            // Init choice elements with proper animation setup
+            if (panel.choiceElements != null)
             {
-                foreach(var opt in panel.choiceOptions) if(opt) opt.SetActive(false);
+                foreach(var choiceElem in panel.choiceElements) InitElementState(choiceElem);
             }
             InitElementState(panel.resultElement);
         }
@@ -82,7 +82,19 @@ public class GeneralComicManager : MiniGameManager
     // Virtual method for the Child class to override
     protected virtual IEnumerator ProcessExtraPanelLogic(ComicPanel panel)
     {
-        // Base class does nothing here
+        // Base class: Show choice elements if this is a choice panel
+        if (panel.isChoicePanel && panel.choiceElements != null && panel.choiceElements.Count > 0)
+        {
+            // Wait before showing choices
+            if (panel.delayBeforeChoices > 0)
+                yield return new WaitForSeconds(panel.delayBeforeChoices);
+                
+            // Animate all choice elements
+            foreach (var choiceElem in panel.choiceElements)
+            {
+                yield return StartCoroutine(PlayElementAnimation(choiceElem));
+            }
+        }
         yield break;
     }
 
