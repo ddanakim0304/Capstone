@@ -222,8 +222,8 @@ GameObject:
   - component: {fileID: 390236224}
   - component: {fileID: 390236226}
   - component: {fileID: 390236225}
-  - component: {fileID: 390236227}
   - component: {fileID: 390236228}
+  - component: {fileID: 390236227}
   m_Layer: 3
   m_Name: P2
   m_TagString: Player
@@ -1324,7 +1324,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BumpingGameManager
   player1Collision: {fileID: 1141610972}
   player2Collision: {fileID: 390236227}
-  player1Mover: {fileID: 390236224}
+  player1Mover: {fileID: 1141610969}
   player2Mover: {fileID: 390236224}
   player1Reaction: {fileID: 1141610973}
   player2Reaction: {fileID: 390236228}
@@ -1373,8 +1373,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24daa706e08a942f792585baa83dfcbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HardwareManager
-  hardwareControllers: []
-  minPlayerCount: 2
 --- !u!4 &1484624729
 Transform:
   m_ObjectHideFlags: 0

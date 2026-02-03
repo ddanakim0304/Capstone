@@ -628,9 +628,9 @@ Transform:
   m_GameObject: {fileID: 551840245}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.18, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1995742161}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -681,7 +681,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: 21300000, guid: 672fdf231cb374af5864aeadaab27004, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fb19aab91fda240b7a8089887d1f9920, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2189,7 +2189,7 @@ MonoBehaviour:
       animationType: 4
       duration: 0.3
       delayBefore: 0
-      magnitude: 0.1
+      magnitude: 0.2
       waitForCompletion: 0
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
@@ -2214,7 +2214,7 @@ MonoBehaviour:
     - name: 
       targetObj: {fileID: 551840245}
       animationType: 1
-      duration: 0.01
+      duration: 0.2
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 1
@@ -2255,7 +2255,7 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
-    delayAfterPanel: 10
+    delayAfterPanel: 6
 --- !u!1 &1855344719
 GameObject:
   m_ObjectHideFlags: 0
@@ -3224,8 +3224,8 @@ SceneRoots:
   - {fileID: 2139391285}
   - {fileID: 577851847}
   - {fileID: 2039917331}
-  - {fileID: 1034698785}
   - {fileID: 1528866444}
+  - {fileID: 1034698785}
   - {fileID: 1637098167}
   - {fileID: 2020562589}
   - {fileID: 1824183948}

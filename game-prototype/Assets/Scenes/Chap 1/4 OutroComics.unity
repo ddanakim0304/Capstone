@@ -1305,7 +1305,7 @@ GameObject:
   - component: {fileID: 2092215125}
   - component: {fileID: 2092215126}
   m_Layer: 0
-  m_Name: OutroGameManager
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1347,8 +1347,8 @@ MonoBehaviour:
   animationSlots:
   - {fileID: 293168210}
   - {fileID: 262875005}
-  cycleCount: 5
-  totalCycleDuration: 2
+  cycleCount: 8
+  totalCycleDuration: 4
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
