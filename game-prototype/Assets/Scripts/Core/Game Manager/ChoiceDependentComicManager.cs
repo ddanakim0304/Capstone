@@ -51,8 +51,8 @@ public class ChoiceDependentComicManager : GeneralComicManager
             string objName = obj.name.Trim().ToLower();
 
             // Check for match
-            bool isDrinkMatch = !string.IsNullOrEmpty(drinkKey) && objName == drinkKey;
-            bool isActivityMatch = !string.IsNullOrEmpty(activityKey) && objName == activityKey;
+            bool isDrinkMatch = !string.IsNullOrEmpty(drinkKey) && objName.Contains(drinkKey);
+            bool isActivityMatch = !string.IsNullOrEmpty(activityKey) && objName.Contains(activityKey);
 
             // Enable if it matches either selection, otherwise disable permanently
             bool shouldBeActive = isDrinkMatch || isActivityMatch;

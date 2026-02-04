@@ -16,7 +16,9 @@ public class ComicElement
     
     [HideInInspector] public Vector3 originalScale;
     [HideInInspector] public Vector3 originalPos;
-    [HideInInspector] public SpriteRenderer cachedRenderer;
+    [HideInInspector] public SpriteRenderer cachedRenderer; // Kept for legacy or single-access
+    [HideInInspector] public SpriteRenderer[] cachedRenderers;
+    [HideInInspector] public SpriteMask[] cachedMasks;
 }
 
 [System.Serializable]
