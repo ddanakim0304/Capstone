@@ -273,12 +273,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 1c6eaad6a850c4ea5a8934f06d098be9, type: 3}
+  m_Sprite: {fileID: 1591126624479905884, guid: 1c6eaad6a850c4ea5a8934f06d098be9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 19.2, y: 10.8}
+  m_Size: {x: 1.64, y: 1.67}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -293,7 +293,7 @@ Transform:
   m_GameObject: {fileID: 236226424}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.40206182, y: 0, z: 0}
+  m_LocalPosition: {x: 4.29, y: -2.22, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -860,12 +860,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: ae0886b0929624af99cbab846abe3cc0, type: 3}
+  m_Sprite: {fileID: -4578325448928981557, guid: ae0886b0929624af99cbab846abe3cc0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 19.2, y: 10.8}
+  m_Size: {x: 1.73, y: 1.55}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -880,7 +880,7 @@ Transform:
   m_GameObject: {fileID: 524049908}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.40206182, y: -0.24, z: 0}
+  m_LocalPosition: {x: 1.99, y: -1.19, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1069,12 +1069,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 1b6caf32546f240dea39309d8789cd41, type: 3}
+  m_Sprite: {fileID: 2467362178255117525, guid: 1b6caf32546f240dea39309d8789cd41, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 19.2, y: 10.8}
+  m_Size: {x: 1.57, y: 1.24}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1089,7 +1089,7 @@ Transform:
   m_GameObject: {fileID: 673772190}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.40206182, y: 0, z: 0}
+  m_LocalPosition: {x: -0.84, y: -1.05, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1310,7 +1310,7 @@ MonoBehaviour:
       cachedRenderer: {fileID: 0}
     isChoicePanel: 1
     playerIndex: 1
-    choiceOptions: []
+    choiceElements: []
     resultElement:
       name: 
       targetObj: {fileID: 524049908}
@@ -1322,6 +1322,7 @@ MonoBehaviour:
       originalScale: {x: 1, y: 1, z: 1}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 524049909}
+    delayBeforeChoices: 0.5
     delayAfterPanel: 2.5
   - panelName: 2
     elements:
@@ -1350,7 +1351,7 @@ MonoBehaviour:
       animationType: 2
       duration: 0.2
       delayBefore: 0.5
-      magnitude: 0.2
+      magnitude: 0.05
       waitForCompletion: 1
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
@@ -1360,7 +1361,7 @@ MonoBehaviour:
       animationType: 2
       duration: 0.2
       delayBefore: 0.5
-      magnitude: 0.2
+      magnitude: 0.05
       waitForCompletion: 1
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
@@ -1377,7 +1378,7 @@ MonoBehaviour:
       cachedRenderer: {fileID: 0}
     isChoicePanel: 1
     playerIndex: 1
-    choiceOptions: []
+    choiceElements: []
     resultElement:
       name: 
       targetObj: {fileID: 524049908}
@@ -1389,14 +1390,53 @@ MonoBehaviour:
       originalScale: {x: 1, y: 1, z: 1}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 524049909}
+    delayBeforeChoices: 0.5
     delayAfterPanel: 2.5
   - panelName: 3
-    elements: []
+    elements:
+    - name: 
+      targetObj: {fileID: 1045524465}
+      animationType: 1
+      duration: 0.2
+      delayBefore: 0
+      magnitude: 0
+      waitForCompletion: 0
+      originalScale: {x: 0, y: 0, z: 0}
+      originalPos: {x: 0, y: 0, z: 0}
+      cachedRenderer: {fileID: 0}
+    - name: 
+      targetObj: {fileID: 414853169}
+      animationType: 1
+      duration: 0.2
+      delayBefore: 0
+      magnitude: 0
+      waitForCompletion: 1
+      originalScale: {x: 0, y: 0, z: 0}
+      originalPos: {x: 0, y: 0, z: 0}
+      cachedRenderer: {fileID: 0}
     isChoicePanel: 1
     playerIndex: 0
-    choiceOptions:
-    - {fileID: 1428722236}
-    - {fileID: 1305413364}
+    choiceElements:
+    - name: 
+      targetObj: {fileID: 1428722236}
+      animationType: 2
+      duration: 0.2
+      delayBefore: 0
+      magnitude: 0.2
+      waitForCompletion: 0
+      originalScale: {x: 0, y: 0, z: 0}
+      originalPos: {x: 0, y: 0, z: 0}
+      cachedRenderer: {fileID: 0}
+    - name: 
+      targetObj: {fileID: 1305413364}
+      animationType: 2
+      duration: 0.2
+      delayBefore: 0
+      magnitude: 0.2
+      waitForCompletion: 0
+      originalScale: {x: 0, y: 0, z: 0}
+      originalPos: {x: 0, y: 0, z: 0}
+      cachedRenderer: {fileID: 0}
     resultElement:
       name: 
       targetObj: {fileID: 673772190}
@@ -1408,14 +1448,53 @@ MonoBehaviour:
       originalScale: {x: 1, y: 1, z: 1}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 673772191}
+    delayBeforeChoices: 0.5
     delayAfterPanel: 2.5
   - panelName: 4
-    elements: []
+    elements:
+    - name: 
+      targetObj: {fileID: 777404402}
+      animationType: 1
+      duration: 0.2
+      delayBefore: 0
+      magnitude: 0
+      waitForCompletion: 0
+      originalScale: {x: 0, y: 0, z: 0}
+      originalPos: {x: 0, y: 0, z: 0}
+      cachedRenderer: {fileID: 0}
+    - name: 
+      targetObj: {fileID: 360126650}
+      animationType: 1
+      duration: 0.2
+      delayBefore: 0
+      magnitude: 0
+      waitForCompletion: 0
+      originalScale: {x: 0, y: 0, z: 0}
+      originalPos: {x: 0, y: 0, z: 0}
+      cachedRenderer: {fileID: 0}
     isChoicePanel: 1
     playerIndex: 1
-    choiceOptions:
-    - {fileID: 236226424}
-    - {fileID: 1004129873}
+    choiceElements:
+    - name: 
+      targetObj: {fileID: 236226424}
+      animationType: 2
+      duration: 0.2
+      delayBefore: 0
+      magnitude: 0.2
+      waitForCompletion: 0
+      originalScale: {x: 0, y: 0, z: 0}
+      originalPos: {x: 0, y: 0, z: 0}
+      cachedRenderer: {fileID: 0}
+    - name: 
+      targetObj: {fileID: 1004129873}
+      animationType: 2
+      duration: 0.2
+      delayBefore: 0
+      magnitude: 0.2
+      waitForCompletion: 0
+      originalScale: {x: 0, y: 0, z: 0}
+      originalPos: {x: 0, y: 0, z: 0}
+      cachedRenderer: {fileID: 0}
     resultElement:
       name: 
       targetObj: {fileID: 524049908}
@@ -1427,11 +1506,12 @@ MonoBehaviour:
       originalScale: {x: 1, y: 1, z: 1}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 524049909}
+    delayBeforeChoices: 0.5
     delayAfterPanel: 2.5
   optionScaleIntensity: 1.03
-  normalColor: {r: 1, g: 1, b: 1, a: 1}
-  highlightColor: {r: 0.60784316, g: 0.98039216, b: 1, a: 1}
-  selectedColor: {r: 0, g: 0, b: 0, a: 1}
+  normalColor: {r: 1, g: 1, b: 1, a: 0.56078434}
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 1, b: 1, a: 1}
   delayAfterChoice: 0.17
 --- !u!1 &777404402
 GameObject:
@@ -1713,12 +1793,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: b79bd3bb006ec47279a20dbfcf3b5e70, type: 3}
+  m_Sprite: {fileID: 7667307899565656071, guid: b79bd3bb006ec47279a20dbfcf3b5e70, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 19.2, y: 10.8}
+  m_Size: {x: 1.91, y: 1.68}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1733,7 +1813,7 @@ Transform:
   m_GameObject: {fileID: 1004129873}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.40206182, y: 0, z: 0}
+  m_LocalPosition: {x: 6.08, y: -1.05, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -2098,12 +2178,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: f662cb69ff9b94381947934cc2a08cd8, type: 3}
+  m_Sprite: {fileID: 7021606605714104404, guid: f662cb69ff9b94381947934cc2a08cd8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 19.2, y: 10.8}
+  m_Size: {x: 1.66, y: 1.85}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -2118,7 +2198,7 @@ Transform:
   m_GameObject: {fileID: 1305413364}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.6804123, y: -0.21649483, z: 0}
+  m_LocalPosition: {x: -3.05, y: -1.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -2369,12 +2449,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 148f245969a4443fface66900d9a21b6, type: 3}
+  m_Sprite: {fileID: -7514906054742553019, guid: 148f245969a4443fface66900d9a21b6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 19.2, y: 10.8}
+  m_Size: {x: 2.09, y: 1.72}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -2389,7 +2469,7 @@ Transform:
   m_GameObject: {fileID: 1428722236}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.6804123, y: -0.21649483, z: 0}
+  m_LocalPosition: {x: -5.12, y: -0.94, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
