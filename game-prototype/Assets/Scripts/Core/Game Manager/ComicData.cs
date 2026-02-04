@@ -19,6 +19,7 @@ public class ComicElement
     [HideInInspector] public SpriteRenderer cachedRenderer; // Kept for legacy or single-access
     [HideInInspector] public SpriteRenderer[] cachedRenderers;
     [HideInInspector] public SpriteMask[] cachedMasks;
+    [HideInInspector] public float[] originalMaskCutoffs;
 }
 
 [System.Serializable]
