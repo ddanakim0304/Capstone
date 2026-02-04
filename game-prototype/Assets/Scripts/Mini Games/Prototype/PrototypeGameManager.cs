@@ -10,7 +10,7 @@ public class PrototypeGameManager : MiniGameManager
 
     IEnumerator WaitAndWin()
     {
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(5f);
         WinGame();
     }
 }

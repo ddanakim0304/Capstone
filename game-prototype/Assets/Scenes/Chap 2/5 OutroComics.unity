@@ -1708,7 +1708,7 @@ MonoBehaviour:
       cachedMasks: []
       originalMaskCutoffs: []
     delayBeforeChoices: 0.5
-    delayAfterPanel: 4
+    delayAfterPanel: 3
   optionScaleIntensity: 1.2
   normalColor: {r: 1, g: 1, b: 1, a: 0.56078434}
   highlightColor: {r: 1, g: 1, b: 1, a: 1}

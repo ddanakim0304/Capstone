@@ -555,7 +555,7 @@ MonoBehaviour:
   m_text: "Hello!\nThis is a game about connection, told through the story of two
     mice. \nIt's a cooperative experience, so find a partner!\nWhile the final game
     uses unique hardware, this prototype uses the keyboard.\n\nControls:\nPlayer
-    1: A and D\nPlayer 2: \u2190 and \u2192\n\nEnjoy the story!"
+    1: A and D / E\nPlayer 2: \u2190 and \u2192 / Enter\n\nEnjoy the story!"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 71d778cc6ad124dbda83a55bf0e6835f, type: 2}
   m_sharedMaterial: {fileID: 464080077162132245, guid: 71d778cc6ad124dbda83a55bf0e6835f, type: 2}
