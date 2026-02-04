@@ -7,6 +7,10 @@ public class MainGameFlowManager : MonoBehaviour
     // A singleton instance for easy access from other scripts
     public static MainGameFlowManager Instance { get; private set; }
 
+    // Persistent Game State Variables
+    public string SelectedDrink = "";
+    public string SelectedActivity = "";
+
     void Awake()
     {
         //ensure only one instance of the manager exists.
@@ -40,5 +44,22 @@ public class MainGameFlowManager : MonoBehaviour
             // If there are no more scenes, the player has finished the entire game.
             Debug.Log("FINAL SCENE COMPLETED! ENTIRE GAME WON!");
         }
+    }
+
+    public void RegisterChoice(string choiceName)
+    {
+        if (string.IsNullOrEmpty(choiceName)) return;
+        
+        choiceName = choiceName.ToLower();
+
+        // Check for Drink
+        if (choiceName.Contains("coffee")) SelectedDrink = "coffee";
+        else if (choiceName.Contains("tea")) SelectedDrink = "tea";
+
+        // Check for Activity
+        else if (choiceName.Contains("game")) SelectedActivity = "game";
+        else if (choiceName.Contains("book")) SelectedActivity = "book";
+
+        Debug.Log($"[MainGameFlowManager] Choice Registered: {choiceName}. Current State -> Drink: {SelectedDrink}, Activity: {SelectedActivity}");
     }
 }

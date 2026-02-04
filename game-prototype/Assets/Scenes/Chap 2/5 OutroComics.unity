@@ -1308,17 +1308,17 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
-    isChoicePanel: 1
-    playerIndex: 1
+    isChoicePanel: 0
+    playerIndex: 0
     choiceElements: []
     resultElement:
       name: 
-      targetObj: {fileID: 524049908}
-      animationType: 2
-      duration: 0.38
-      delayBefore: 1
-      magnitude: 0.09
-      waitForCompletion: 1
+      targetObj: {fileID: 0}
+      animationType: 0
+      duration: 0
+      delayBefore: 0
+      magnitude: 0
+      waitForCompletion: 0
       originalScale: {x: 1, y: 1, z: 1}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 524049909}
@@ -1376,17 +1376,17 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
-    isChoicePanel: 1
-    playerIndex: 1
+    isChoicePanel: 0
+    playerIndex: 0
     choiceElements: []
     resultElement:
       name: 
-      targetObj: {fileID: 524049908}
-      animationType: 2
-      duration: 0.38
-      delayBefore: 1
-      magnitude: 0.09
-      waitForCompletion: 1
+      targetObj: {fileID: 0}
+      animationType: 0
+      duration: 0
+      delayBefore: 0
+      magnitude: 0
+      waitForCompletion: 0
       originalScale: {x: 1, y: 1, z: 1}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 524049909}
@@ -1507,12 +1507,12 @@ MonoBehaviour:
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 524049909}
     delayBeforeChoices: 0.5
-    delayAfterPanel: 2.5
-  optionScaleIntensity: 1.03
+    delayAfterPanel: 4
+  optionScaleIntensity: 1.2
   normalColor: {r: 1, g: 1, b: 1, a: 0.56078434}
   highlightColor: {r: 1, g: 1, b: 1, a: 1}
   selectedColor: {r: 1, g: 1, b: 1, a: 1}
-  delayAfterChoice: 0.17
+  delayAfterChoice: 0
 --- !u!1 &777404402
 GameObject:
   m_ObjectHideFlags: 0
@@ -2548,6 +2548,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18d167066f98d4bdfaed3f86ba30c09d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainGameFlowManager
+  SelectedDrink: 
+  SelectedActivity: 
 --- !u!4 &1642750476
 Transform:
   m_ObjectHideFlags: 0

@@ -131,6 +131,16 @@ public class ChoiceComicGameManager : GeneralComicManager
 
         // 4. Post Selection
         
+        // Store the choice in the persistent GameManager
+        if (panel.choiceElements[currentIndex] != null && panel.choiceElements[currentIndex].targetObj != null)
+        {
+            string choiceName = panel.choiceElements[currentIndex].targetObj.name;
+            if (MainGameFlowManager.Instance != null)
+            {
+                MainGameFlowManager.Instance.RegisterChoice(choiceName);
+            }
+        }
+
         // Color the selected one
         if (panel.choiceElements[currentIndex] != null && panel.choiceElements[currentIndex].targetObj != null)
         {
