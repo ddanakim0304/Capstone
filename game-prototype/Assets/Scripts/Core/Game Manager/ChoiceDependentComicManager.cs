@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -92,10 +93,6 @@ public class ChoiceDependentComicManager : GeneralComicManager
              return;
         }
 
-        // It does NOT match a selected choice.
-        // Check if it is a "Hidden Choice" variant.
-        // If it contains ANY choice keyword, but wasn't the selected one (checked above), then it must be a rejected choice.
-        
         bool isAnyChoiceObject = false;
         foreach(string keyword in choiceKeywords)
         {
@@ -108,26 +105,57 @@ public class ChoiceDependentComicManager : GeneralComicManager
 
         if (isAnyChoiceObject)
         {
-             // It is a choice-related object, but it didn't match the selected choice.
-             // Therefore, it is the "Hidden" / "Rejected" variant -> DISABLE IT.
              obj.SetActive(false);
-             elem.targetObj = null; // Removing reference stops the base class from processing it
+             elem.targetObj = null;
              Debug.Log($"[ChoiceDependentComicManager] Disabling '{obj.name}' (Identifying as hidden choice variant).");
         }
         else
         {
-             // It is NOT a choice-related object (does not contain any choice keywords).
-             // Therefore, it is a Background/Common object -> KEEP ACTIVE
              obj.SetActive(true);
-             // Debug.Log($"[ChoiceDependentComicManager] Keeping '{obj.name}' active (Background object).");
         }
     }
 
-    // Removed the choiceDependentObjects loop section as we now use FilterElementList
-    /*
-        foreach (GameObject obj in choiceDependentObjects)
+    // Override WinGame to handle choice-dependent scene routing
+    protected override void WinGame()
+    {
+        // Prevent winning multiple times
+        if (isGameWon) return;
+        isGameWon = true;
+
+        if (MainGameFlowManager.Instance == null)
         {
-            // ...
+            Debug.LogError("[ChoiceDependentComicManager] MainGameFlowManager not found! Cannot proceed.");
+            return;
         }
-    */
+
+        string selectedActivity = MainGameFlowManager.Instance.SelectedActivity;
+        string targetScene = "";
+        
+        if (!string.IsNullOrEmpty(selectedActivity))
+        {
+            string activityKey = selectedActivity.ToLower();
+            
+            if (activityKey == "game")
+            {
+                targetScene = "3 Choice-Game";
+            }
+            else if (activityKey == "book")
+            {
+                targetScene = "2 Choice-Book";
+            }
+        }
+
+        if (!string.IsNullOrEmpty(targetScene))
+        {
+            Debug.Log($"[ChoiceDependentComicManager] Comic sequence complete! Loading scene based on activity choice: {targetScene} (Activity: {selectedActivity})");
+            SceneManager.LoadScene(targetScene);
+        }
+        else
+        {
+            // Fallback to base behavior if no valid activity selected
+            Debug.LogWarning($"[ChoiceDependentComicManager] No valid activity selected ({selectedActivity}). Using fallback scene loading.");
+            base.WinGame();
+        }
+    }
+
 }

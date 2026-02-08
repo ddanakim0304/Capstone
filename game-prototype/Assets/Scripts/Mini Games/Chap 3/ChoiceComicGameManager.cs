@@ -45,7 +45,6 @@ public class ChoiceComicGameManager : GeneralComicManager
         }
 
         // 2. Choices are already animated by base class, just make them interactive
-        // No need to SetActive here since base class handled animations
 
         int currentIndex = 0;
         bool confirmed = false;
@@ -163,5 +162,8 @@ public class ChoiceComicGameManager : GeneralComicManager
 
         // 6. Result Animation
         yield return StartCoroutine(PlayElementAnimation(panel.resultElement));
+
+        yield return new WaitForSeconds(2.0f); 
+        UnityEngine.SceneManagement.SceneManager.LoadScene("IntermediateScene");
     }
 }

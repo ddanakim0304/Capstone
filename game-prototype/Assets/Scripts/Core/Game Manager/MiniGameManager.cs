@@ -5,7 +5,7 @@ public abstract class MiniGameManager : MonoBehaviour
     protected bool isGameWon = false;
 
     // This is the method that individual mini-games will call when their win condition is met.
-    protected void WinGame()
+    protected virtual void WinGame()
     {
         // Prevent winning multiple times
         if (isGameWon) return; 
