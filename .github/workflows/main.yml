@@ -3,11 +3,9 @@ name: Build and Publish to Itch
 on:
   push:
     tags:
-      # Triggers when pushing a tag like v0.1, v0.4, etc.
-      - 'v*' 
+      - 'v*' # Triggers on v0.1, v0.4, etc.
 
 env:
-  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
   ITCH_GAME: when-we-found-us
   ITCH_USER: ddanakim0304
 
@@ -17,13 +15,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout repository
       - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: true
 
-      # Cache Unity Library (Speeds up future builds)
       - name: Cache Unity Library
         uses: actions/cache@v3
         with:
@@ -32,15 +28,18 @@ jobs:
           restore-keys: |
             Library-WebGL-
 
-      # Build Unity project (WebGL)
+      # FIX: Added UNITY_EMAIL and UNITY_PASSWORD here
       - name: Build Unity
         uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           projectPath: game-prototype
           targetPlatform: WebGL
-          buildName: ${{ env.ITCH_GAME }} 
+          buildName: ${{ env.ITCH_GAME }}
 
-      # Install Butler (itch.io CLI)
       - name: Install Butler
         run: |
           curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/latest/archive/default
@@ -49,8 +48,7 @@ jobs:
           mkdir -p bin
           mv butler bin/
 
-      # Push to itch.io
-      # Note: Unity Builder outputs to: build/WebGL/[buildName]
+      # Unity-Builder outputs to: build/[Platform]/[BuildName]
       - name: Upload to Itch.io
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
