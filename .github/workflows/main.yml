@@ -25,8 +25,8 @@ jobs:
       - name: Cache Unity Library
         uses: actions/cache@v3
         with:
-          path: game-prototype/Library
-          key: Library-WebGL-${{ hashFiles('game-prototype/ProjectSettings/ProjectVersion.txt') }}
+          path: When-We-Found-Us/Library
+          key: Library-WebGL-${{ hashFiles('When-We-Found-Us/ProjectSettings/ProjectVersion.txt') }}
           restore-keys: |
             Library-WebGL-
 
@@ -38,7 +38,7 @@ jobs:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          projectPath: game-prototype
+          projectPath: When-We-Found-Us
           targetPlatform: WebGL
           buildName: ${{ env.ITCH_GAME }}
 
