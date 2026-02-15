@@ -3,7 +3,8 @@ name: Build and Publish to Itch
 on:
   push:
     tags:
-      - 'v*' # Triggers on v0.1, v0.4, etc.
+      # Triggers on v0.1, v0.4, etc.
+      - 'v*'
 
 env:
   ITCH_GAME: when-we-found-us
@@ -15,13 +16,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout your code
+      # Checkout code
       - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: true
 
-      # 2. Cache Unity Library (saves time on next builds)
+      # Cache Unity Library
       - name: Cache Unity Library
         uses: actions/cache@v3
         with:
@@ -30,7 +31,7 @@ jobs:
           restore-keys: |
             Library-WebGL-
 
-      # 3. Build Unity WebGL
+      # Build Unity WebGL
       - name: Build Unity
         uses: game-ci/unity-builder@v4
         env:
@@ -42,7 +43,7 @@ jobs:
           targetPlatform: WebGL
           buildName: ${{ env.ITCH_GAME }}
 
-      # 4. Install Butler (Using the broth.itch.zone URL from documentation)
+      # Install Butler
       - name: Install Butler
         run: |
           curl -L -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
@@ -50,7 +51,7 @@ jobs:
           chmod +x butler
           # Move it to a folder in the path or just call it directly below
 
-      # 5. Push to Itch.io
+      # Push to Itch.io
       - name: Upload to Itch.io
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
