@@ -1384,6 +1384,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18d167066f98d4bdfaed3f86ba30c09d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainGameFlowManager
+  SelectedDrink: 
+  SelectedActivity: 
 --- !u!4 &1353435602
 Transform:
   m_ObjectHideFlags: 0
@@ -2070,6 +2072,9 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
+      cachedRenderers: []
+      cachedMasks: []
+      originalMaskCutoffs: []
     - name: 
       targetObj: {fileID: 1070073825}
       animationType: 2
@@ -2080,6 +2085,9 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
+      cachedRenderers: []
+      cachedMasks: []
+      originalMaskCutoffs: []
     - name: 
       targetObj: {fileID: 1614486710}
       animationType: 1
@@ -2090,6 +2098,9 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
+      cachedRenderers: []
+      cachedMasks: []
+      originalMaskCutoffs: []
     - name: 
       targetObj: {fileID: 1831873420}
       animationType: 1
@@ -2100,9 +2111,12 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
+      cachedRenderers: []
+      cachedMasks: []
+      originalMaskCutoffs: []
     isChoicePanel: 0
     playerIndex: 0
-    choiceOptions: []
+    choiceElements: []
     resultElement:
       name: 
       targetObj: {fileID: 0}
@@ -2114,6 +2128,10 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
+      cachedRenderers: []
+      cachedMasks: []
+      originalMaskCutoffs: []
+    delayBeforeChoices: 0.5
     delayAfterPanel: 2.5
   - panelName: 2
     elements:
@@ -2127,6 +2145,9 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
+      cachedRenderers: []
+      cachedMasks: []
+      originalMaskCutoffs: []
     - name: 
       targetObj: {fileID: 1227416605}
       animationType: 1
@@ -2137,6 +2158,9 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
+      cachedRenderers: []
+      cachedMasks: []
+      originalMaskCutoffs: []
     - name: 
       targetObj: {fileID: 1978401959}
       animationType: 2
@@ -2147,9 +2171,12 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
+      cachedRenderers: []
+      cachedMasks: []
+      originalMaskCutoffs: []
     isChoicePanel: 0
     playerIndex: 0
-    choiceOptions: []
+    choiceElements: []
     resultElement:
       name: 
       targetObj: {fileID: 0}
@@ -2161,6 +2188,10 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
+      cachedRenderers: []
+      cachedMasks: []
+      originalMaskCutoffs: []
+    delayBeforeChoices: 0.5
     delayAfterPanel: 2.5
   - panelName: 3
     elements:
@@ -2174,6 +2205,9 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
+      cachedRenderers: []
+      cachedMasks: []
+      originalMaskCutoffs: []
     - name: 
       targetObj: {fileID: 965233545}
       animationType: 4
@@ -2184,6 +2218,9 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
+      cachedRenderers: []
+      cachedMasks: []
+      originalMaskCutoffs: []
     - name: 
       targetObj: {fileID: 503753019}
       animationType: 4
@@ -2194,9 +2231,12 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
+      cachedRenderers: []
+      cachedMasks: []
+      originalMaskCutoffs: []
     isChoicePanel: 0
     playerIndex: 0
-    choiceOptions: []
+    choiceElements: []
     resultElement:
       name: 
       targetObj: {fileID: 0}
@@ -2208,6 +2248,10 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
+      cachedRenderers: []
+      cachedMasks: []
+      originalMaskCutoffs: []
+    delayBeforeChoices: 0.5
     delayAfterPanel: 2.5
   - panelName: 4
     elements:
@@ -2221,6 +2265,9 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
+      cachedRenderers: []
+      cachedMasks: []
+      originalMaskCutoffs: []
     - name: 
       targetObj: {fileID: 1977413471}
       animationType: 4
@@ -2231,6 +2278,9 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
+      cachedRenderers: []
+      cachedMasks: []
+      originalMaskCutoffs: []
     - name: 
       targetObj: {fileID: 376240623}
       animationType: 5
@@ -2241,9 +2291,12 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
+      cachedRenderers: []
+      cachedMasks: []
+      originalMaskCutoffs: []
     isChoicePanel: 0
     playerIndex: 0
-    choiceOptions: []
+    choiceElements: []
     resultElement:
       name: 
       targetObj: {fileID: 0}
@@ -2255,6 +2308,10 @@ MonoBehaviour:
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
+      cachedRenderers: []
+      cachedMasks: []
+      originalMaskCutoffs: []
+    delayBeforeChoices: 0.5
     delayAfterPanel: 6
 --- !u!1 &1855344719
 GameObject:
@@ -2295,6 +2352,37 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.44761, y: -2.45349, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1916666555
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1916666556}
+  m_Layer: 0
+  m_Name: SceneAudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1916666556
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1916666555}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.53583, y: -1.67422, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3229,3 +3317,4 @@ SceneRoots:
   - {fileID: 1637098167}
   - {fileID: 2020562589}
   - {fileID: 1824183948}
+  - {fileID: 1916666556}

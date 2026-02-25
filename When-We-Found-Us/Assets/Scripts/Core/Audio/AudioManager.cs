@@ -67,19 +67,40 @@ public class AudioManager : MonoBehaviour
         bgmSource.volume = volume;
     }
 
-    // --- SFX LOGIC (Same as before) ---
-    public void PlaySFX(AudioClip clip, AudioPan pan)
+    // --- SFX LOGIC ---
+    public void PlaySFX(AudioClip clip, AudioPan pan, float volume = 1.0f, bool loop = false)
     {
         if (clip == null) return;
 
+        AudioSource source = pan switch
+        {
+            AudioPan.Left   => sfxLeftSource,
+            AudioPan.Right  => sfxRightSource,
+            _               => sfxCenterSource,
+        };
+
+        if (loop)
+        {
+            // For looping we must assign the clip directly so loop works
+            source.clip = clip;
+            source.volume = volume;
+            source.loop = true;
+            source.Play();
+        }
+        else
+        {
+            source.loop = false;
+            source.PlayOneShot(clip, volume);
+        }
+    }
+
+    public void StopSFX(AudioPan pan)
+    {
         switch (pan)
         {
-            // Pan -1
-            case AudioPan.Left: sfxLeftSource.PlayOneShot(clip); break;
-            // Pan 1
-            case AudioPan.Right: sfxRightSource.PlayOneShot(clip); break;
-            // Pan 0
-            case AudioPan.Center: sfxCenterSource.PlayOneShot(clip); break;
+            case AudioPan.Left: sfxLeftSource.Stop(); break;
+            case AudioPan.Right: sfxRightSource.Stop(); break;
+            case AudioPan.Center: sfxCenterSource.Stop(); break;
         }
     }
 }

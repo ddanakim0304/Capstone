@@ -42,6 +42,14 @@ public class BrushTeethGameManager : MiniGameManager
     [Header("Optional Feedback")]
     public AudioSource brushingSound;
 
+    [Header("Music")]
+    [Tooltip("The music clip to play when brushing starts (plays once).")]
+    public AudioClip brushingMusic;
+    public AudioPan brushingMusicPan = AudioPan.Left;
+    [Range(0f, 1f)]
+    public float musicVolume = 1.0f;
+    public bool musicLoop = true;
+
     // Internal state - Using P2 Controller (Brush)
     private ControllerInput p2_controller;
     private long lastEncoderCount;
@@ -81,6 +89,12 @@ public class BrushTeethGameManager : MiniGameManager
         {
             if(bubble.bubbleObject != null)
                 bubble.bubbleObject.SetActive(false);
+        }
+
+        // 4. Play music
+        if (brushingMusic != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(brushingMusic, brushingMusicPan, musicVolume, musicLoop);
         }
     }
 
@@ -223,6 +237,14 @@ public class BrushTeethGameManager : MiniGameManager
             
             // Mark task as done so the Level Manager knows
             IsTaskFinished = true;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopSFX(brushingMusicPan);
         }
     }
 }

@@ -39,8 +39,13 @@ public class ShowerGameManager : MiniGameManager
     [Tooltip("Smoothing for the movement.")]
     public float movementSmoothing = 10f;
 
-    [Header("Audio")]
-    public AudioSource waterSound;
+    [Header("Music")]
+    [Tooltip("The music clip to play when the shower starts (plays once).")]
+    public AudioClip showerMusic;
+    public AudioPan showerMusicPan = AudioPan.Left;
+    [Range(0f, 1f)]
+    public float musicVolume = 1.0f;
+    public bool musicLoop = true;
 
     // Internal state - Using P1 Controller (Shower)
     private ControllerInput p1_controller;
@@ -81,6 +86,12 @@ public class ShowerGameManager : MiniGameManager
         {
             if(dirt.dirtObject != null)
                 dirt.dirtObject.SetActive(true);
+        }
+
+        // 4. Play music immediately
+        if (showerMusic != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(showerMusic, showerMusicPan, musicVolume, musicLoop);
         }
     }
 
@@ -149,17 +160,6 @@ public class ShowerGameManager : MiniGameManager
         if (!isFinishing && deltaMoved > 0.001f)
         {
             totalMovementCompleted += deltaMoved;
-            
-            if (waterSound)
-            {
-                if (!waterSound.isPlaying) waterSound.Play();
-                // Randomize pitch slightly to sound like flowing water
-                waterSound.pitch = Mathf.Lerp(0.9f, 1.1f, deltaMoved * 50f); 
-            }
-        }
-        else
-        {
-            if (waterSound) waterSound.Stop();
         }
     }
 
@@ -219,10 +219,16 @@ public class ShowerGameManager : MiniGameManager
         if (Mathf.Abs(currentT - targetT) < 0.02f)
         {
             currentT = targetT; 
-            if (waterSound) waterSound.Stop();
-
             // Mark task as done so the Level Manager knows
             IsTaskFinished = true;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopSFX(showerMusicPan);
         }
     }
 }

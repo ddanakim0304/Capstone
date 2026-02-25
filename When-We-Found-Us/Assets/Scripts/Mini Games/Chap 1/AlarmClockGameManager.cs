@@ -13,8 +13,14 @@ public class AlarmClockGameManager : MiniGameManager
         public GameObject alarmOnSprite;
         [Tooltip("The GameObject with this player's 'alarm off' visuals.")]
         public GameObject alarmOffSprite;
-        [Tooltip("The AudioSource that plays this player's unique alarm sound.")]
-        public AudioSource alarmAudioSource;
+
+        [Header("Alarm Sound")]
+        [Tooltip("The alarm sound clip for this player (loops until they press the button).")]
+        public AudioClip alarmMusic;
+        [Tooltip("Which speaker pan to use for this player's alarm.")]
+        public AudioPan alarmMusicPan = AudioPan.Left;
+        [Range(0f, 1f)]
+        public float musicVolume = 1.0f;
         
         [Header("Hand Positions")]
         [Tooltip("The starting Y position of this player's hand (top).")]
@@ -143,10 +149,9 @@ public class AlarmClockGameManager : MiniGameManager
             alarmSetup.handTransform.position = new Vector3(alarmSetup.handTransform.position.x, alarmSetup.handStartPositionY, alarmSetup.handTransform.position.z);
         }
 
-        if (alarmSetup.alarmAudioSource != null)
+        if (alarmSetup.alarmMusic != null && AudioManager.Instance != null)
         {
-            alarmSetup.alarmAudioSource.loop = true;
-            alarmSetup.alarmAudioSource.Play();
+            AudioManager.Instance.PlaySFX(alarmSetup.alarmMusic, alarmSetup.alarmMusicPan, alarmSetup.musicVolume, true);
         }
     }
 
@@ -161,9 +166,9 @@ public class AlarmClockGameManager : MiniGameManager
              alarmSetup.handTransform.position = new Vector3(alarmSetup.handTransform.position.x, alarmSetup.handEndPositionY, alarmSetup.handTransform.position.z);
         }
 
-        if (alarmSetup.alarmAudioSource != null)
+        if (AudioManager.Instance != null)
         {
-            alarmSetup.alarmAudioSource.Stop();
+            AudioManager.Instance.StopSFX(alarmSetup.alarmMusicPan);
         }
     }
 
@@ -179,5 +184,14 @@ public class AlarmClockGameManager : MiniGameManager
     {
         yield return new WaitForSeconds(delayAfterWin);
         WinGame();
+    }
+
+    private void OnDestroy()
+    {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopSFX(player1Alarm.alarmMusicPan);
+            AudioManager.Instance.StopSFX(player2Alarm.alarmMusicPan);
+        }
     }
 }
