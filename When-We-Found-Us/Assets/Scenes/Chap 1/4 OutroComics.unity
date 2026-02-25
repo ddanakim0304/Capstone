@@ -1098,6 +1098,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18d167066f98d4bdfaed3f86ba30c09d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainGameFlowManager
+  SelectedDrink: 
+  SelectedActivity: 
 --- !u!4 &1642750476
 Transform:
   m_ObjectHideFlags: 0

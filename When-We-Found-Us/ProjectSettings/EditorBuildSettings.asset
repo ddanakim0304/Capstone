@@ -36,10 +36,10 @@ EditorBuildSettings:
     path: Assets/Scenes/Chap 2/3 WavelengthComics.unity
     guid: 977862ae362ed4924a6dce887707facf
   - enabled: 1
-    path: Assets/Scenes/Chap 2/4 Wavelength.unity
+    path: Assets/Scenes/Chap 2/3 Wavelength.unity
     guid: 5fa8f60140657465393feb100c930d35
   - enabled: 1
-    path: Assets/Scenes/Chap 2/5 OutroComics.unity
+    path: Assets/Scenes/Chap 2/4 OutroComics.unity
     guid: 1284dd357c45c4967afd770b657c84d2
   - enabled: 1
     path: Assets/Scenes/Chap 3/0 Chapter Title.unity

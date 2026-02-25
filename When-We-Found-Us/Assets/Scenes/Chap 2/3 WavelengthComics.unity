@@ -628,8 +628,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24daa706e08a942f792585baa83dfcbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HardwareManager
-  hardwareControllers: []
-  minPlayerCount: 2
 --- !u!4 &1484624729
 Transform:
   m_ObjectHideFlags: 0
@@ -674,6 +672,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18d167066f98d4bdfaed3f86ba30c09d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainGameFlowManager
+  SelectedDrink: 
+  SelectedActivity: 
 --- !u!4 &1642750476
 Transform:
   m_ObjectHideFlags: 0
@@ -733,7 +733,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfe055ba4997f4cd78ce82b19cfc4f09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  delayAfterWin: 5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
