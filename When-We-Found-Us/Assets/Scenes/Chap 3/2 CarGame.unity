@@ -689,13 +689,15 @@ MonoBehaviour:
   - {fileID: 7040346865362410759, guid: 2ca4a2c3992e947e1958218bcf65ba59, type: 3}
   minSpacingX: 5
   maxSpacingX: 8
-  minY: 2
+  minY: -0.14
   maxY: 4.3
   cloudZ: 1
   sortingLayerName: Background
   sortingOrder: 0
-  minScale: 0.8
-  maxScale: 1.5
+  minScaleX: 0.6
+  maxScaleX: 1
+  minScaleY: 0.6
+  maxScaleY: 1
   spawnAheadX: 20
   despawnBehindX: 10
 --- !u!4 &153518152
