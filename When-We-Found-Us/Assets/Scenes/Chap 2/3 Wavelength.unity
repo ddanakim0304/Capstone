@@ -3174,9 +3174,9 @@ MonoBehaviour:
   p1LineRenderer: {fileID: 795921766}
   p2LineRenderer: {fileID: 1719817004}
   matchedColor: {r: 0, g: 0.8065429, b: 1, a: 1}
-  Music: {fileID: 8300000, guid: 2103e18b794164f75a358e9f6cb20e9f, type: 3}
+  Music: {fileID: 8300000, guid: 5df9cf914a15b4b129b418a0a79aab62, type: 3}
   MusicPan: 2
-  musicVolume: 0.055
+  musicVolume: 0.304
   musicLoop: 0
 --- !u!4 &1819896268
 Transform:
