@@ -16,6 +16,14 @@ public class BumpingGameManager : MiniGameManager
     public BumpReaction player2Reaction;
     public float delayAfterBump = 1.0f;
 
+    [Header("Music")]
+    public AudioClip Music;
+    public AudioPan MusicPan = AudioPan.Center;
+    [Range(0f, 4f)]
+    public float musicVolume = 2.0f;
+    public bool musicLoop = true;
+
+
     void Start()
     {
         // When a bump is detected, call HandleBumpDetected
@@ -52,6 +60,10 @@ public class BumpingGameManager : MiniGameManager
 
     private IEnumerator DelayedWin()
     {
+        if (Music != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(Music, MusicPan, musicVolume, musicLoop);
+        }
         // Wait for a short delay before declaring the win
         yield return new WaitForSeconds(delayAfterBump); 
         WinGame();

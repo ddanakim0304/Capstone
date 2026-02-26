@@ -103,4 +103,28 @@ public class AudioManager : MonoBehaviour
             case AudioPan.Center: sfxCenterSource.Stop(); break;
         }
     }
+
+    public void FadeOutSFX(AudioPan pan, float fadeTime = 0.5f)
+    {
+        StartCoroutine(FadeOutSFXCoroutine(pan, fadeTime));
+    }
+
+    private IEnumerator FadeOutSFXCoroutine(AudioPan pan, float fadeTime)
+    {
+        AudioSource source = pan switch
+        {
+            AudioPan.Left   => sfxLeftSource,
+            AudioPan.Right  => sfxRightSource,
+            _               => sfxCenterSource,
+        };
+
+        float startVolume = source.volume;
+        for (float t = 0; t < fadeTime; t += Time.deltaTime)
+        {
+            source.volume = Mathf.Lerp(startVolume, 0f, t / fadeTime);
+            yield return null;
+        }
+        source.Stop();
+        source.volume = startVolume; // Reset volume for next use
+    }
 }

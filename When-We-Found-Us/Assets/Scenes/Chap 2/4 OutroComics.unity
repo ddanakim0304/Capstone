@@ -1143,6 +1143,446 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &649211084
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 649211090}
+  - component: {fileID: 649211089}
+  - component: {fileID: 649211088}
+  - component: {fileID: 649211087}
+  - component: {fileID: 649211086}
+  - component: {fileID: 649211085}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!82 &649211085
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 649211084}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &649211086
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 649211084}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 1
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &649211087
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 649211084}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: -1
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &649211088
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 649211084}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &649211089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 649211084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ad95fe24611840e3b099c68198b4a69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  bgmSource: {fileID: 649211088}
+  sfxLeftSource: {fileID: 649211087}
+  sfxRightSource: {fileID: 649211086}
+  sfxCenterSource: {fileID: 649211085}
+--- !u!4 &649211090
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 649211084}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.53583, y: -1.67422, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &673772190
 GameObject:
   m_ObjectHideFlags: 0
@@ -1413,6 +1853,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -1426,6 +1867,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 1
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -1439,6 +1881,7 @@ MonoBehaviour:
       delayBefore: 0.5
       magnitude: 0.2
       waitForCompletion: 1
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -1452,12 +1895,15 @@ MonoBehaviour:
       delayBefore: 0.5
       magnitude: 0.2
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
       cachedRenderers: []
       cachedMasks: []
       originalMaskCutoffs: []
+    onStartMusic: []
+    onEndMusic: []
     isChoicePanel: 0
     playerIndex: 0
     choiceElements: []
@@ -1469,6 +1915,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 1, y: 1, z: 1}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 524049909}
@@ -1476,6 +1923,13 @@ MonoBehaviour:
       cachedMasks: []
       originalMaskCutoffs: []
     delayBeforeChoices: 0.5
+    choiceChangeSound:
+      id: Music
+      music: {fileID: 0}
+      musicPan: 2
+      musicVolume: 1
+      musicLoop: 0
+      fadeDuration: 0.5
     delayAfterPanel: 2.5
   - panelName: 2
     elements:
@@ -1486,6 +1940,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -1499,6 +1954,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 1
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -1512,6 +1968,7 @@ MonoBehaviour:
       delayBefore: 0.5
       magnitude: 0.05
       waitForCompletion: 1
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -1525,6 +1982,7 @@ MonoBehaviour:
       delayBefore: 0.5
       magnitude: 0.05
       waitForCompletion: 1
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -1538,12 +1996,15 @@ MonoBehaviour:
       delayBefore: 0.5
       magnitude: 0.5
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
       cachedRenderers: []
       cachedMasks: []
       originalMaskCutoffs: []
+    onStartMusic: []
+    onEndMusic: []
     isChoicePanel: 0
     playerIndex: 0
     choiceElements: []
@@ -1555,6 +2016,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 1, y: 1, z: 1}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 524049909}
@@ -1562,6 +2024,13 @@ MonoBehaviour:
       cachedMasks: []
       originalMaskCutoffs: []
     delayBeforeChoices: 0.5
+    choiceChangeSound:
+      id: Music
+      music: {fileID: 0}
+      musicPan: 2
+      musicVolume: 1
+      musicLoop: 0
+      fadeDuration: 0.5
     delayAfterPanel: 2.5
   - panelName: 3
     elements:
@@ -1572,6 +2041,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -1585,12 +2055,15 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 1
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
       cachedRenderers: []
       cachedMasks: []
       originalMaskCutoffs: []
+    onStartMusic: []
+    onEndMusic: []
     isChoicePanel: 1
     playerIndex: 0
     choiceElements:
@@ -1601,6 +2074,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.2
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -1614,6 +2088,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.2
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -1628,6 +2103,13 @@ MonoBehaviour:
       delayBefore: 1
       magnitude: 0.1
       waitForCompletion: 1
+      onPlayMusic:
+      - id: 
+        music: {fileID: 8300000, guid: 9bd99ceb4f8874fd882284c749e9880f, type: 3}
+        musicPan: 2
+        musicVolume: 1
+        musicLoop: 0
+        fadeDuration: 0
       originalScale: {x: 1, y: 1, z: 1}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 673772191}
@@ -1635,6 +2117,13 @@ MonoBehaviour:
       cachedMasks: []
       originalMaskCutoffs: []
     delayBeforeChoices: 0.5
+    choiceChangeSound:
+      id: Music
+      music: {fileID: 8300000, guid: 089e576fa51a44a978f3ad67d9ef6f63, type: 3}
+      musicPan: 2
+      musicVolume: 1
+      musicLoop: 0
+      fadeDuration: 0
     delayAfterPanel: 2.5
   - panelName: 4
     elements:
@@ -1645,6 +2134,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -1658,12 +2148,15 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
       cachedRenderers: []
       cachedMasks: []
       originalMaskCutoffs: []
+    onStartMusic: []
+    onEndMusic: []
     isChoicePanel: 1
     playerIndex: 1
     choiceElements:
@@ -1674,6 +2167,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.2
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -1687,6 +2181,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.2
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -1701,6 +2196,13 @@ MonoBehaviour:
       delayBefore: 1
       magnitude: 0.1
       waitForCompletion: 1
+      onPlayMusic:
+      - id: 
+        music: {fileID: 8300000, guid: 9bd99ceb4f8874fd882284c749e9880f, type: 3}
+        musicPan: 2
+        musicVolume: 1
+        musicLoop: 0
+        fadeDuration: 0
       originalScale: {x: 1, y: 1, z: 1}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 524049909}
@@ -1708,6 +2210,13 @@ MonoBehaviour:
       cachedMasks: []
       originalMaskCutoffs: []
     delayBeforeChoices: 0.5
+    choiceChangeSound:
+      id: Music
+      music: {fileID: 8300000, guid: 089e576fa51a44a978f3ad67d9ef6f63, type: 3}
+      musicPan: 2
+      musicVolume: 1
+      musicLoop: 0
+      fadeDuration: 0
     delayAfterPanel: 3
   optionScaleIntensity: 1.2
   normalColor: {r: 1, g: 1, b: 1, a: 0.56078434}
@@ -3325,3 +3834,4 @@ SceneRoots:
   - {fileID: 731533690}
   - {fileID: 804266029}
   - {fileID: 2071407961}
+  - {fileID: 649211090}

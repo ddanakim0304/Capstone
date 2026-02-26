@@ -35,6 +35,13 @@ public class WavelengthGameManager : MiniGameManager
     public LineRenderer p1LineRenderer;
     public LineRenderer p2LineRenderer;
     public Color matchedColor = Color.white;
+
+    [Header("Music")]
+    public AudioClip Music;
+    public AudioPan MusicPan = AudioPan.Center;
+    [Range(0f, 1f)]
+    public float musicVolume = 1.0f;
+    public bool musicLoop = true;
     
     // Tracks how long the players have successfully matched their wavelengths.
     private float matchTimer = 0f;
@@ -119,9 +126,14 @@ public class WavelengthGameManager : MiniGameManager
         if (player2NormalVisuals != null) player2NormalVisuals.SetActive(false);
         if (player2HappyVisuals != null) player2HappyVisuals.SetActive(true);
 
+        if (Music != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(Music, MusicPan, musicVolume, musicLoop);
+        }
+
         // Play the victory animations for both players simultaneously.
         StartCoroutine(AnimateBoing(player1Transform));
-        yield return StartCoroutine(AnimateBoing(player2Transform)); // Wait for the second (and thus both) to finish.
+        yield return StartCoroutine(AnimateBoing(player2Transform));
 
         // Wait a moment before loading the next level.
         yield return new WaitForSeconds(delayAfterWin);

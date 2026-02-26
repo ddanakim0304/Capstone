@@ -80,6 +80,9 @@ public class GeneralComicManager : MiniGameManager
     {
         foreach (var panel in comicPanels)
         {
+            // 0. Play panel start music
+            PlayComicMusics(panel.onStartMusic);
+
             // 1. Play Standard Animations
             foreach (var elem in panel.elements)
             {
@@ -89,7 +92,10 @@ public class GeneralComicManager : MiniGameManager
             // 2. Allow Child Class to insert Logic here (Choice)
             yield return StartCoroutine(ProcessExtraPanelLogic(panel));
 
-            // 3. Wait
+            // 3. Fade out panel end music
+            FadeOutComicMusics(panel.onEndMusic);
+
+            // 4. Wait
             if (panel.delayAfterPanel > 0)
                 yield return new WaitForSeconds(panel.delayAfterPanel);
         }
@@ -122,6 +128,9 @@ public class GeneralComicManager : MiniGameManager
     {
         if (elem.targetObj == null) yield break;
         if (elem.delayBefore > 0) yield return new WaitForSeconds(elem.delayBefore);
+
+        // Play element-level audio
+        PlayComicMusics(elem.onPlayMusic);
 
         IEnumerator anim = null;
         switch (elem.animationType)
@@ -276,12 +285,6 @@ public class GeneralComicManager : MiniGameManager
         
         if (elem.cachedMasks != null)
         {
-            // For masks, we invert the logic if we want to "fade in" (reveal).
-            // Alpha 0 = Invisible (Hidden) -> Cutoff 1
-            // Alpha 1 = Visible (Revealed) -> Original Cutoff (e.g. 0 or 0.2)
-            
-            // Lerp from 1 down to originalCutoff based on alpha 'a' (which goes 0->1)
-            // if a=0, cutoff=1. if a=1, cutoff=original.
             
             for (int i = 0; i < elem.cachedMasks.Length; i++)
             {
@@ -299,4 +302,34 @@ public class GeneralComicManager : MiniGameManager
     }
 
     protected void SetAlpha(SpriteRenderer r, float a) { if(r) { Color c = r.color; c.a = a; r.color = c; } }
+
+    // --- Audio Helpers ---
+
+    protected void PlayComicMusics(List<ComicMusic> musics)
+    {
+        if (musics == null || AudioManager.Instance == null) return;
+        foreach (var m in musics)
+        {
+            if (m?.music != null)
+                AudioManager.Instance.PlaySFX(m.music, m.musicPan, m.musicVolume, m.musicLoop);
+        }
+    }
+
+    protected void FadeOutComicMusics(List<ComicMusic> musics)
+    {
+        if (musics == null || AudioManager.Instance == null) return;
+        foreach (var m in musics)
+        {
+            if (m != null)
+                AudioManager.Instance.FadeOutSFX(m.musicPan, m.fadeDuration);
+        }
+    }
+
+    // Call this from a subclass whenever the player navigates choices.
+    protected void PlayChoiceChangeSound(ComicPanel panel)
+    {
+        var m = panel.choiceChangeSound;
+        if (m?.music != null && AudioManager.Instance != null)
+            AudioManager.Instance.PlaySFX(m.music, m.musicPan, m.musicVolume, m.musicLoop);
+    }
 }

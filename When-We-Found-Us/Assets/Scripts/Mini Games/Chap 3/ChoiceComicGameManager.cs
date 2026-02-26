@@ -85,10 +85,15 @@ public class ChoiceComicGameManager : GeneralComicManager
             // --- C. Update Index ---
             if (inputDelta != 0)
             {
+                int prevIndex = currentIndex;
                 currentIndex += inputDelta;
                 
                 // Clamp to ensure we stay within the list size
                 currentIndex = Mathf.Clamp(currentIndex, 0, panel.choiceElements.Count - 1);
+
+                // Play navigation sound only if the selection actually moved
+                if (currentIndex != prevIndex)
+                    PlayChoiceChangeSound(panel);
             }
 
             // --- D. Update Visuals ---
