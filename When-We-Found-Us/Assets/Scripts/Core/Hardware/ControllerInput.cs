@@ -1,5 +1,6 @@
 using UnityEngine;
-using System.IO.Ports;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 
 public class ControllerInput : MonoBehaviour
@@ -8,23 +9,23 @@ public class ControllerInput : MonoBehaviour
     public long EncoderCount { get; private set; }
     public long EncoderDelta { get; private set; }
     public bool IsButtonPressed { get; private set; }
-    public bool IsHardwareConnected => serialPort != null && serialPort.IsOpen;
+    public bool IsHardwareConnected => _udpClient != null;
 
     private int playerIndex;
-    private SerialPort serialPort;
+    private UdpClient _udpClient;
     private Thread readThread;
     private volatile bool isRunning = false;
     private volatile string latestData = "";
     private long previousEncoderCount = 0;
     private bool _lastHardwareButtonState = false;
-    private readonly object serialLock = new object();
+    private readonly object dataLock = new object();
 
-    public void Initialize(int index, string port = "", int rate = 115200)
+    public void Initialize(int index, int udpListenPort = 0)
     {
         this.playerIndex = index;
-        if (!string.IsNullOrEmpty(port))
+        if (udpListenPort > 0)
         {
-            ConnectToController(port, rate);
+            StartUdpListener(udpListenPort);
         }
     }
 
@@ -34,7 +35,7 @@ public class ControllerInput : MonoBehaviour
         
         // Process Hardware Data
         string dataToProcess = null;
-        lock (serialLock)
+        lock (dataLock)
         {
             if (!string.IsNullOrEmpty(latestData))
             {
@@ -53,19 +54,25 @@ public class ControllerInput : MonoBehaviour
         
         if (playerIndex == 0)
         {
-            // Button: Space or E (held)
-            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.E)) keyboardPressed = true;
+            // Button: Space, E, W, or S (held)
+            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.E) ||
+                Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)) keyboardPressed = true;
             
-            // Encoder: E (tap)
-            if (Input.GetKeyDown(KeyCode.E)) EncoderDelta = 1;
+            // Encoder: D/RightArrow = +1, A/LeftArrow = -1, E (tap) = +1
+            if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) EncoderDelta += 1;
+            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) EncoderDelta -= 1;
+            if (Input.GetKeyDown(KeyCode.E)) EncoderDelta += 1;
         }
         else if (playerIndex == 1)
         {
-            // Button: Enter or RightShift (held)
-            if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.RightShift)) keyboardPressed = true;
+            // Button: Enter, RightShift, UpArrow, or DownArrow (held)
+            if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.RightShift) ||
+                Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow)) keyboardPressed = true;
             
-            // Encoder: Return (tap)
-            if (Input.GetKeyDown(KeyCode.Return)) EncoderDelta = 1;
+            // Encoder: Return (tap) = +1, RightArrow = +1, LeftArrow = -1
+            if (Input.GetKeyDown(KeyCode.Return)) EncoderDelta += 1;
+            if (Input.GetKeyDown(KeyCode.RightArrow)) EncoderDelta += 1;
+            if (Input.GetKeyDown(KeyCode.LeftArrow)) EncoderDelta -= 1;
         }
 
         IsButtonPressed = _lastHardwareButtonState || keyboardPressed;
@@ -95,187 +102,83 @@ public class ControllerInput : MonoBehaviour
         catch { /* Ignore dirty packets */ }
     }
 
-    void ConnectToController(string portName, int baudRate)
+    private void StartUdpListener(int port)
     {
-        lock (serialLock)
+        try
         {
-            if (serialPort != null && serialPort.IsOpen) return;
-
-            try
-            {
-                serialPort = new SerialPort(portName, baudRate);
-                serialPort.ReadTimeout = 100;
-                serialPort.WriteTimeout = 100;
-                serialPort.DtrEnable = false; // CRITICAL: Start with DTR disabled
-                serialPort.RtsEnable = false; // CRITICAL: Start with RTS disabled
-                serialPort.Open();
-                
-                // Small delay before enabling control signals
-                Thread.Sleep(50);
-                serialPort.DtrEnable = true;
-                serialPort.RtsEnable = true;
-
-                isRunning = true;
-                readThread = new Thread(ReadSerialLoop);
-                readThread.IsBackground = true;
-                readThread.Start();
-
-                Debug.Log($"<color=cyan>[P{playerIndex}] Connected to {portName}</color>");
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"[P{playerIndex}] Failed to connect to {portName}: {e.Message}");
-                serialPort = null;
-            }
+            _udpClient = new UdpClient();
+            // Allow immediate rebind on the same port after a Play session stops
+            _udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            _udpClient.Client.Bind(new IPEndPoint(IPAddress.Any, port));
+            _udpClient.Client.ReceiveTimeout = 200;
+            isRunning = true;
+            readThread = new Thread(ReadUdpLoop);
+            readThread.IsBackground = true;
+            readThread.Start();
+            Debug.Log($"<color=cyan>[P{playerIndex}] Listening for UDP on port {port}</color>");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[P{playerIndex}] Failed to open UDP port {port}: {e.Message}");
+            _udpClient = null;
         }
     }
 
-    private void ReadSerialLoop()
+    private void ReadUdpLoop()
     {
-        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        IPEndPoint remoteEP = new IPEndPoint(IPAddress.Any, 0);
 
         while (isRunning)
         {
             try
             {
-                SerialPort port;
-                lock (serialLock)
+                byte[] data = _udpClient.Receive(ref remoteEP);
+                string line = System.Text.Encoding.ASCII.GetString(data).Trim();
+                if (!string.IsNullOrEmpty(line))
                 {
-                    port = serialPort;
-                }
-                
-                if (port == null || !port.IsOpen)
-                {
-                    break;
-                }
-
-                int b = port.ReadByte();
-                
-                if (b == -1) continue;
-
-                char c = (char)b;
-                if (c == '\n')
-                {
-                    string line = sb.ToString().Trim();
-                    sb.Clear();
-                    if (!string.IsNullOrEmpty(line))
+                    lock (dataLock)
                     {
-                        lock (serialLock)
-                        {
-                            latestData = line;
-                        }
+                        latestData = line;
                     }
                 }
-                else if (c != '\r') // Skip carriage returns
-                {
-                    sb.Append(c);
-                }
             }
-            catch (System.TimeoutException) 
+            catch (SocketException ex) when (ex.SocketErrorCode == SocketError.TimedOut)
             {
-                // Normal - no data available
-            }
-            catch (ThreadInterruptedException)
-            {
-                // Thread was interrupted during Close()
-                break;
+                // Normal timeout — no data this tick
             }
             catch (System.Exception e)
             {
-                if (isRunning) 
-                {
-                    Debug.LogWarning($"<color=red>[P{playerIndex}] Serial read error: {e.Message}</color>");
-                }
+                if (isRunning)
+                    Debug.LogWarning($"<color=red>[P{playerIndex}] UDP read error: {e.Message}</color>");
                 break;
             }
         }
-        
-        Debug.Log($"<color=orange>[P{playerIndex}] Read thread exiting</color>");
+
+        Debug.Log($"<color=orange>[P{playerIndex}] UDP read thread exiting</color>");
     }
 
     public void Close()
     {
-        Debug.Log($"<color=orange>[P{playerIndex}] Closing serial connection...</color>");
-        
-        // 1. Signal the thread to stop
         isRunning = false;
 
-        // 2. Wait for thread to exit (with timeout)
+        // Closing the socket unblocks Receive() immediately
+        try { _udpClient?.Close(); } catch { }
+
         if (readThread != null && readThread.IsAlive)
         {
             if (!readThread.Join(500))
             {
-                Debug.LogWarning($"[P{playerIndex}] Thread didn't exit gracefully, interrupting...");
-                try
-                {
-                    readThread.Interrupt();
-                    readThread.Join(200);
-                }
-                catch { }
+                readThread.Interrupt();
+                readThread.Join(200);
             }
             readThread = null;
         }
 
-        // 3. Close the serial port properly
-        lock (serialLock)
-        {
-            if (serialPort != null)
-            {
-                try
-                {
-                    if (serialPort.IsOpen)
-                    {
-                        // CRITICAL FOR BLUETOOTH: Disable control signals BEFORE closing
-                        serialPort.DtrEnable = false;
-                        serialPort.RtsEnable = false;
-                        
-                        // Small delay to let signals propagate
-                        Thread.Sleep(50);
-                        
-                        // Discard buffers
-                        serialPort.DiscardInBuffer();
-                        serialPort.DiscardOutBuffer();
-                        
-                        // Close the port
-                        serialPort.Close();
-                        
-                        Debug.Log($"<color=green>[P{playerIndex}] Serial port closed successfully</color>");
-                    }
-                }
-                catch (System.Exception e)
-                {
-                    Debug.LogError($"[P{playerIndex}] Error closing port: {e.Message}");
-                }
-                finally
-                {
-                    // CRITICAL: Dispose the SerialPort object
-                    try
-                    {
-                        serialPort.Dispose();
-                    }
-                    catch { }
-                    
-                    serialPort = null;
-                }
-            }
-        }
-        
-        // 4. Extra sleep to ensure Bluetooth releases (macOS specific)
-        Thread.Sleep(100);
+        _udpClient = null;
+        Debug.Log($"<color=orange>[P{playerIndex}] UDP listener closed</color>");
     }
 
-    void OnDisable()
-    {
-        Close();
-    }
-
-    void OnDestroy()
-    {
-        Close();
-    }
-
-    void OnApplicationQuit()
-    {
-        Close();
-    }
+    void OnDisable()       { Close(); }
+    void OnDestroy()       { Close(); }
+    void OnApplicationQuit() { Close(); }
 }

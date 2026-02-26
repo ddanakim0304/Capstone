@@ -44,11 +44,11 @@ public class HardwareManager : MonoBehaviour
         for (int i = 0; i < controllers.Count; i++)
         {
             var setup = controllers[i];
-            GameObject controllerObject = new GameObject($"HardwareController_Player{i} ({setup.portName})");
+            GameObject controllerObject = new GameObject($"HardwareController_Player{i} (UDP:{setup.udpListenPort})");
             controllerObject.transform.SetParent(this.transform);
             
             var input = controllerObject.AddComponent<ControllerInput>();
-            input.Initialize(i, setup.portName, setup.baudRate);
+            input.Initialize(i, setup.udpListenPort);
             allControllers.Add(input);
         }
         

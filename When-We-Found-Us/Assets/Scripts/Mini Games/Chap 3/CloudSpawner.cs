@@ -1,11 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Spawns cloud sprites randomly ahead of the camera as it scrolls,
-/// and removes them once they pass behind. All spacing / range values
-/// are configurable from the Inspector.
-/// </summary>
 public class CloudSpawner : MonoBehaviour
 {
     // ── Sprites ──────────────────────────────────────────────────────────────

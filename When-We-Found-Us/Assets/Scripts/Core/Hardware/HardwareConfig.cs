@@ -7,8 +7,8 @@ public class HardwareConfig : ScriptableObject
     [System.Serializable]
     public class ControllerSetup
     {
-        public string portName = "";
-        public int baudRate = 115200;
+        [Tooltip("UDP port Unity listens on for this controller (e.g. 5000 for P1, 5001 for P2). Must match UDP_PORT in the ESP32 sketch.")]
+        public int udpListenPort = 5000;
     }
     
     [Header("Hardware Configuration")]
