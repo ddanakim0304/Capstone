@@ -47,11 +47,14 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Chap 3/1 IntroComics.unity
     guid: c137b954b02704b57839e44c8fae6d7a
+  - enabled: 1
+    path: Assets/Scenes/Chap 3/2 CarGame.unity
+    guid: 98e4fc020fb86405cb00d938ba66c095
   - enabled: 0
-    path: Assets/Scenes/Chap 3/2 Choice-Book.unity
+    path: Assets/Scenes/Others/2 Choice-Book.unity
     guid: c83b12a462b5943d0ad72be94c0ec8ad
   - enabled: 0
-    path: Assets/Scenes/Chap 3/3 Choice-Game.unity
+    path: Assets/Scenes/Others/3 Choice-Game.unity
     guid: 1bd265d7dbf5a4184ad4007871f9a832
   - enabled: 0
     path: Assets/Scenes/Others/CheeseComics.unity

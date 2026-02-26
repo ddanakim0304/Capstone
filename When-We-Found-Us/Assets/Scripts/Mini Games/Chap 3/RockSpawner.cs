@@ -1,18 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-
-/// <summary>
-/// Spawns rock obstacles randomly along the road at game start.
-///
-/// SETUP
-/// ─────
-/// • Assign 1-4 rock prefabs (one per size) to the rockPrefabs array.
-/// • Each prefab should have a Collider2D (or Collider) so the car collides with it.
-/// • Set spawnStartX / spawnEndX to the X range where rocks should appear.
-///   (Leave a gap at the very start so the car isn't immediately blocked.)
-/// • Adjust minSpacingX so rocks are never too close together.
-/// • RockCount controls total rocks spawned.
-/// </summary>
 public class RockSpawner : MonoBehaviour
 {
     // ── Inspector ─────────────────────────────────────────────────────────────

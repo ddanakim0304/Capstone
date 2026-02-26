@@ -1,9 +1,4 @@
 using UnityEngine;
-
-/// <summary>
-/// Smooth horizontal camera follow for the Car mini-game.
-/// Locks the Y axis so the camera only scrolls left/right with the car.
-/// </summary>
 public class CarCameraFollow : MonoBehaviour
 {
     [Header("Target")]

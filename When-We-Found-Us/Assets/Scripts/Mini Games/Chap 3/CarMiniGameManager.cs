@@ -1,11 +1,4 @@
 using UnityEngine;
-
-/// <summary>
-/// Mini-game manager for the Car / Dino-jump game in Chapter 3.
-/// Win condition: the car reaches or passes the configured end X position.
-/// Inherits from MiniGameManager so it calls MainGameFlowManager.MiniGameWon()
-/// when the car crosses the finish line.
-/// </summary>
 public class CarMiniGameManager : MiniGameManager
 {
     // ── Singleton ────────────────────────────────────────────────────────────

@@ -115,46 +115,11 @@ public class ChoiceDependentComicManager : GeneralComicManager
         }
     }
 
-    // Override WinGame to handle choice-dependent scene routing
-    protected override void WinGame()
+    private void OnDestroy()
     {
-        // Prevent winning multiple times
-        if (isGameWon) return;
-        isGameWon = true;
-
-        if (MainGameFlowManager.Instance == null)
+        if (AudioManager.Instance != null)
         {
-            Debug.LogError("[ChoiceDependentComicManager] MainGameFlowManager not found! Cannot proceed.");
-            return;
-        }
-
-        string selectedActivity = MainGameFlowManager.Instance.SelectedActivity;
-        string targetScene = "";
-        
-        if (!string.IsNullOrEmpty(selectedActivity))
-        {
-            string activityKey = selectedActivity.ToLower();
-            
-            if (activityKey == "game")
-            {
-                targetScene = "3 Choice-Game";
-            }
-            else if (activityKey == "book")
-            {
-                targetScene = "2 Choice-Book";
-            }
-        }
-
-        if (!string.IsNullOrEmpty(targetScene))
-        {
-            Debug.Log($"[ChoiceDependentComicManager] Comic sequence complete! Loading scene based on activity choice: {targetScene} (Activity: {selectedActivity})");
-            SceneManager.LoadScene(targetScene);
-        }
-        else
-        {
-            // Fallback to base behavior if no valid activity selected
-            Debug.LogWarning($"[ChoiceDependentComicManager] No valid activity selected ({selectedActivity}). Using fallback scene loading.");
-            base.WinGame();
+            AudioManager.Instance.FadeOutSFX(AudioPan.Center, 0.5f);
         }
     }
 

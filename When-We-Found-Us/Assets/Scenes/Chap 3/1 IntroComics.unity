@@ -660,6 +660,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -673,6 +674,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 1
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -686,6 +688,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.5
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -699,6 +702,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.5
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -712,6 +716,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.5
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -725,6 +730,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.5
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -738,6 +744,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.5
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -751,6 +758,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.5
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -764,6 +772,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.5
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -777,6 +786,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.5
       waitForCompletion: 1
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -790,6 +800,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.2
       waitForCompletion: 1
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -803,12 +814,15 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.2
       waitForCompletion: 1
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
       cachedRenderers: []
       cachedMasks: []
       originalMaskCutoffs: []
+    onStartMusic: []
+    onEndMusic: []
     isChoicePanel: 0
     playerIndex: 0
     choiceElements: []
@@ -820,6 +834,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -827,6 +842,13 @@ MonoBehaviour:
       cachedMasks: []
       originalMaskCutoffs: []
     delayBeforeChoices: 0
+    choiceChangeSound:
+      id: Music
+      music: {fileID: 0}
+      musicPan: 2
+      musicVolume: 1
+      musicLoop: 0
+      fadeDuration: 0.5
     delayAfterPanel: 2.5
   - panelName: 2
     elements:
@@ -837,6 +859,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 1
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -850,6 +873,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.5
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -863,6 +887,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.5
       waitForCompletion: 1
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -876,6 +901,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.5
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -889,12 +915,15 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.5
       waitForCompletion: 1
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
       cachedRenderers: []
       cachedMasks: []
       originalMaskCutoffs: []
+    onStartMusic: []
+    onEndMusic: []
     isChoicePanel: 0
     playerIndex: 0
     choiceElements: []
@@ -906,6 +935,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -913,6 +943,13 @@ MonoBehaviour:
       cachedMasks: []
       originalMaskCutoffs: []
     delayBeforeChoices: 0
+    choiceChangeSound:
+      id: Music
+      music: {fileID: 0}
+      musicPan: 2
+      musicVolume: 1
+      musicLoop: 0
+      fadeDuration: 0.5
     delayAfterPanel: 4
   - panelName: 3
     elements:
@@ -923,6 +960,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 1
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -936,6 +974,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.5
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -949,12 +988,15 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.5
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
       cachedRenderers: []
       cachedMasks: []
       originalMaskCutoffs: []
+    onStartMusic: []
+    onEndMusic: []
     isChoicePanel: 0
     playerIndex: 0
     choiceElements: []
@@ -966,6 +1008,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -973,6 +1016,13 @@ MonoBehaviour:
       cachedMasks: []
       originalMaskCutoffs: []
     delayBeforeChoices: 0
+    choiceChangeSound:
+      id: Music
+      music: {fileID: 0}
+      musicPan: 2
+      musicVolume: 1
+      musicLoop: 0
+      fadeDuration: 0.5
     delayAfterPanel: 2
   - panelName: 4
     elements:
@@ -983,6 +1033,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 1
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -996,6 +1047,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.5
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -1009,12 +1061,27 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0.5
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
       cachedRenderers: []
       cachedMasks: []
       originalMaskCutoffs: []
+    onStartMusic:
+    - id: 
+      music: {fileID: 8300000, guid: c7c961211b703456f8cc1cfa351003cd, type: 3}
+      musicPan: 2
+      musicVolume: 0.074
+      musicLoop: 0
+      fadeDuration: 0
+    onEndMusic:
+    - id: 
+      music: {fileID: 0}
+      musicPan: 0
+      musicVolume: 0
+      musicLoop: 0
+      fadeDuration: 0
     isChoicePanel: 0
     playerIndex: 0
     choiceElements: []
@@ -1026,6 +1093,7 @@ MonoBehaviour:
       delayBefore: 0
       magnitude: 0
       waitForCompletion: 0
+      onPlayMusic: []
       originalScale: {x: 0, y: 0, z: 0}
       originalPos: {x: 0, y: 0, z: 0}
       cachedRenderer: {fileID: 0}
@@ -1033,7 +1101,14 @@ MonoBehaviour:
       cachedMasks: []
       originalMaskCutoffs: []
     delayBeforeChoices: 0
-    delayAfterPanel: 2
+    choiceChangeSound:
+      id: Music
+      music: {fileID: 0}
+      musicPan: 2
+      musicVolume: 1
+      musicLoop: 0
+      fadeDuration: 0.5
+    delayAfterPanel: 7
   choiceKeywords:
   - coffee
   - tea

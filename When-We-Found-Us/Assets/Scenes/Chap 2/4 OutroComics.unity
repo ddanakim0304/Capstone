@@ -2107,7 +2107,7 @@ MonoBehaviour:
       - id: 
         music: {fileID: 8300000, guid: 9bd99ceb4f8874fd882284c749e9880f, type: 3}
         musicPan: 2
-        musicVolume: 1
+        musicVolume: 0.537
         musicLoop: 0
         fadeDuration: 0
       originalScale: {x: 1, y: 1, z: 1}
@@ -2121,10 +2121,10 @@ MonoBehaviour:
       id: Music
       music: {fileID: 8300000, guid: 089e576fa51a44a978f3ad67d9ef6f63, type: 3}
       musicPan: 2
-      musicVolume: 1
+      musicVolume: 0.553
       musicLoop: 0
       fadeDuration: 0
-    delayAfterPanel: 2.5
+    delayAfterPanel: 2
   - panelName: 4
     elements:
     - name: 

@@ -1,29 +1,5 @@
 using UnityEngine;
-
-/// <summary>
-/// Picopark-style dual-input car controller.
-///
-/// HOW SIMULTANEOUS INPUT WORKS
-/// ─────────────────────────────
-/// Every frame each player reports their desired action (Left / Right / Jump / None).
-/// The car only responds when BOTH players choose the SAME non-None action that
-/// frame.  The on-screen button sprites are tinted to show each player's intent:
-///   • Only P1 pressing  → P1 colour
-///   • Only P2 pressing  → P2 colour
-///   • Both pressing same → blue (agreed colour)
-///   • Nobody pressing   → neutral colour
-///
-/// HARDWARE INPUT MAPPING (per ControllerInput)
-/// ─────────────────────────────────────────────
-///   Left   = encoder delta < -encoderThreshold
-///   Right  = encoder delta >  encoderThreshold
-///   Jump   = button just pressed (rising edge)
-///
-/// KEYBOARD FALLBACK
-/// ──────────────────
-///   P1 : A / D / Space
-///   P2 : ← / → / Enter
-/// </summary>
+using System.Collections;
 [RequireComponent(typeof(Rigidbody2D))]
 public class CarController : MonoBehaviour
 {
@@ -55,6 +31,19 @@ public class CarController : MonoBehaviour
     public Color agreedColor  = new Color(0.2f, 0.6f, 1f);   // Both agreed (blue)
     public Color neutralColor = Color.white;
 
+    // ── Audio ─────────────────────────────────────────────────────────────────
+    [Header("Audio")]
+    [Tooltip("Looping engine sound played while the car moves left or right.")]
+    public AudioClip engineClip;
+    [Tooltip("One-shot sound played each time the car jumps.")]
+    public AudioClip jumpClip;
+    [Range(0f, 1f)]
+    public float engineVolume = 1f;
+    [Range(0f, 1f)]
+    public float jumpVolume   = 1f;
+    [Tooltip("Seconds for the engine to fade in / fade out.")]
+    public float engineFadeTime = 0.25f;
+
     // ── Stuck Recovery ────────────────────────────────────────────────────────
     [Header("Stuck-on-Rock Recovery")]
     [Tooltip("If the car tries to move horizontally but barely moves, apply a small upward nudge.")]
@@ -77,6 +66,11 @@ public class CarController : MonoBehaviour
     private float jumpBuffer0    = 0f;
     private float jumpBuffer1    = 0f;
 
+    // Engine has its own AudioSource so it never conflicts with jump (AudioManager.Center)
+    private AudioSource  engineSource        = null;
+    private Coroutine    engineFadeCoroutine = null;
+    private bool         isEngineRunning     = false;
+
     // Stuck detection
     private float stuckTimer     = 0f;
     private bool  wantsToMove    = false;
@@ -86,6 +80,16 @@ public class CarController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+
+        // Set up a dedicated AudioSource for the engine loop
+        // This keeps it on a completely separate channel from AudioManager's sfxCenterSource
+        // so jump one-shots can play simultaneously without interrupting the loop.
+        engineSource = gameObject.AddComponent<AudioSource>();
+        engineSource.clip        = engineClip;
+        engineSource.loop        = true;
+        engineSource.playOnAwake = false;
+        engineSource.volume      = 0f;
+        engineSource.spatialBlend = 0f; // 2-D sound
 
         if (HardwareManager.Instance != null)
         {
@@ -132,6 +136,13 @@ public class CarController : MonoBehaviour
             // Left / Right: require same action held simultaneously (unchanged)
             ExecuteAction(action0);
         }
+
+        // ── Engine audio ───────────────────────────────────────────────────
+        bool carMoving = (action0 != CarAction.None && action0 != CarAction.Jump && action0 == action1);
+        if (carMoving && !isEngineRunning)
+            StartEngine();
+        else if (!carMoving && isEngineRunning)
+            StopEngine();
 
         // ── Button display ─────────────────────────────────────────────────
         UpdateButtonDisplay(leftButtonSprite,  action0 == CarAction.Left,  action1 == CarAction.Left);
@@ -264,9 +275,47 @@ public class CarController : MonoBehaviour
                     rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f); // consistent jump height
                     rb.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
                     isGrounded = false;
+
+                    if (jumpClip != null && AudioManager.Instance != null)
+                        AudioManager.Instance.PlaySFX(jumpClip, AudioPan.Center, jumpVolume);
                 }
                 break;
         }
+    }
+
+    // ── Engine audio helpers ───────────────────────────────────────────────────
+
+    private void StartEngine()
+    {
+        if (engineClip == null || engineSource == null) return;
+        isEngineRunning = true;
+        if (engineFadeCoroutine != null) StopCoroutine(engineFadeCoroutine);
+        engineSource.clip = engineClip;
+        if (!engineSource.isPlaying) engineSource.Play();
+        engineFadeCoroutine = StartCoroutine(FadeEngine(engineSource.volume, engineVolume));
+    }
+
+    private void StopEngine()
+    {
+        if (engineSource == null) return;
+        isEngineRunning = false;
+        if (engineFadeCoroutine != null) StopCoroutine(engineFadeCoroutine);
+        engineFadeCoroutine = StartCoroutine(FadeEngine(engineSource.volume, 0f, stopWhenDone: true));
+    }
+
+    private System.Collections.IEnumerator FadeEngine(float from, float to, bool stopWhenDone = false)
+    {
+        float elapsed = 0f;
+        float duration = Mathf.Max(engineFadeTime, 0.01f);
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            engineSource.volume = Mathf.Lerp(from, to, elapsed / duration);
+            yield return null;
+        }
+        engineSource.volume = to;
+        if (stopWhenDone) engineSource.Stop();
+        engineFadeCoroutine = null;
     }
 
     /// <summary>Tints a button sprite based on which players are pressing it.</summary>
@@ -304,6 +353,15 @@ public class CarController : MonoBehaviour
                 isGrounded = true;
                 break;
             }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // Immediately silence the engine source (coroutines won't run after destroy)
+        if (engineSource != null)
+        {
+            engineSource.Stop();
         }
     }
 }
