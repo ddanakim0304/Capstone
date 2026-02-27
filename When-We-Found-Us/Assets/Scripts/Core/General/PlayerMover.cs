@@ -48,24 +48,17 @@ public class PlayerMover : MonoBehaviour
         
         float movement = 0f;
 
-        // Check if a controller was successfully assigned and if it's a real, connected piece of hardware.
+        // Hardware encoder — always read when connected
         if (controller != null && controller.IsHardwareConnected)
         {
-            // Use the encoder input from the hardware controller
-            // Calculate how much the encoder has turned since the last frame.
-            long encoderDelta = controller.EncoderCount - lastEncoderCount;
+            long encoderDelta = lastEncoderCount - controller.EncoderCount;
             lastEncoderCount = controller.EncoderCount;
-            
-            // The final movement is the change in encoder value multiplied by sensitivity.
-            movement = encoderDelta * encoderSensitivity;
+            movement += encoderDelta * encoderSensitivity;
         }
-        else
-        {
-            // If no controller is connected, fall back to keyboard input
-            // Determine which input axis to use based on the player index.
-            string axisName = (playerIndex == 0) ? "Horizontal_P1" : "Horizontal_P2";
-            movement = Input.GetAxis(axisName) * keyboardSensitivity * Time.deltaTime;
-        }
+
+        // Keyboard always accepted alongside hardware (for debugging)
+        string axisName = (playerIndex == 0) ? "Horizontal_P1" : "Horizontal_P2";
+        movement += Input.GetAxis(axisName) * keyboardSensitivity * Time.deltaTime;
 
         // Update the target position with the new input.
         if (movement != 0)

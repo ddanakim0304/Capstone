@@ -125,15 +125,13 @@ public class BrushTeethGameManager : MiniGameManager
         if (p2_controller != null && p2_controller.IsHardwareConnected)
         {
             long currentCount = p2_controller.EncoderCount;
-            long rawDelta = currentCount - lastEncoderCount;
+            long rawDelta = lastEncoderCount - currentCount;
             lastEncoderCount = currentCount;
-            inputDelta = rawDelta * encoderSensitivity;
+            inputDelta += rawDelta * encoderSensitivity;
         }
-        else
-        {
-            // P2 Keyboard fallback
-            inputDelta = Input.GetAxis("Horizontal_P2") * keyboardSensitivity * Time.deltaTime;
-        }
+
+        // Keyboard always accepted alongside hardware (for debugging)
+        inputDelta += Input.GetAxis("Horizontal_P2") * keyboardSensitivity * Time.deltaTime;
 
         // Store direction for the finish snap logic
         lastInputDelta = inputDelta;

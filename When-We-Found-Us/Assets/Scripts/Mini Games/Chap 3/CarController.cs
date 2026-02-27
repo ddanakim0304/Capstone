@@ -10,8 +10,11 @@ public class CarController : MonoBehaviour
     public float jumpPower    = 12f;   // Jump impulse magnitude
 
     [Header("Input")]
-    [Tooltip("Encoder delta magnitude required to register Left/Right intent.")]
-    public float encoderThreshold = 0.5f;
+    [Tooltip("Multiplier applied to encoder count delta for horizontal force.")]
+    public float encoderSensitivity = 0.1f;
+
+    [Tooltip("How long (seconds) a detected encoder turn keeps applying force. Compensates for infrequent UDP packets.")]
+    public float encoderHoldDuration = 0.5f;
 
     [Tooltip("How long (seconds) a jump press is remembered, giving both players time to press together.")]
     public float jumpBufferTime = 0.3f;
@@ -66,6 +69,14 @@ public class CarController : MonoBehaviour
     private float jumpBuffer0    = 0f;
     private float jumpBuffer1    = 0f;
 
+    // Per-player encoder tracking + hold buffer for horizontal force
+    private long  lastEncoderCount0 = 0;
+    private long  lastEncoderCount1 = 0;
+    private float encoderHoldTimer0 = 0f;  // how long to keep applying P1 encoder force
+    private float encoderHoldTimer1 = 0f;
+    private float encoderHoldDir0   = 0f;  // last detected encoder direction for P1 (+1 / -1)
+    private float encoderHoldDir1   = 0f;
+
     // Engine has its own AudioSource so it never conflicts with jump (AudioManager.Center)
     private AudioSource  engineSource        = null;
     private Coroutine    engineFadeCoroutine = null;
@@ -100,6 +111,10 @@ public class CarController : MonoBehaviour
         {
             Debug.LogWarning("[CarController] HardwareManager not found – using keyboard fallback only.");
         }
+
+        // Sync encoder baselines so there's no jump on first frame
+        if (controller0 != null) lastEncoderCount0 = controller0.EncoderCount;
+        if (controller1 != null) lastEncoderCount1 = controller1.EncoderCount;
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -109,9 +124,9 @@ public class CarController : MonoBehaviour
         jumpBuffer0 = Mathf.Max(0f, jumpBuffer0 - Time.deltaTime);
         jumpBuffer1 = Mathf.Max(0f, jumpBuffer1 - Time.deltaTime);
 
-        // ── Sample each player's action this frame ─────────────────────────
-        CarAction action0 = GetActionForPlayer(0, controller0, prevBtn0);
-        CarAction action1 = GetActionForPlayer(1, controller1, prevBtn1);
+        // ── Sample jump actions this frame ────────────────────────────────
+        CarAction action0 = GetJumpActionForPlayer(0, controller0, prevBtn0);
+        CarAction action1 = GetJumpActionForPlayer(1, controller1, prevBtn1);
 
         // If a player pressed jump this frame, fill their buffer
         if (action0 == CarAction.Jump) jumpBuffer0 = jumpBufferTime;
@@ -121,38 +136,43 @@ public class CarController : MonoBehaviour
         prevBtn0 = GetRawButton(0, controller0);
         prevBtn1 = GetRawButton(1, controller1);
 
-        // ── Resolve agreed action ──────────────────────────────────────────
-        // For Jump: use the buffers so both players don't need the exact same frame
+        // ── Resolve jump ───────────────────────────────────────────────────
         bool bothWantJump = jumpBuffer0 > 0f && jumpBuffer1 > 0f;
         if (bothWantJump && isGrounded)
         {
             ExecuteAction(CarAction.Jump);
-            jumpBuffer0 = 0f;   // consume both buffers only when jump actually fires
+            jumpBuffer0 = 0f;
             jumpBuffer1 = 0f;
         }
-        else if (action0 != CarAction.None && action0 != CarAction.Jump &&
-                 action0 == action1)
-        {
-            // Left / Right: require same action held simultaneously (unchanged)
-            ExecuteAction(action0);
-        }
+
+        // ── Continuous horizontal force (like PlayerMover) ─────────────────
+        // Each player produces a force value from encoder count delta + keyboard.
+        // If both agree on direction (same sign), apply force to the car.
+        float force0 = GetPlayerHorizontalForce(0, controller0, ref lastEncoderCount0, ref encoderHoldTimer0, ref encoderHoldDir0);
+        float force1 = GetPlayerHorizontalForce(1, controller1, ref lastEncoderCount1, ref encoderHoldTimer1, ref encoderHoldDir1);
+
+        bool bothMoveRight = force0 > 0f && force1 > 0f;
+        bool bothMoveLeft  = force0 < 0f && force1 < 0f;
+        bool carMoving     = bothMoveRight || bothMoveLeft;
+
+        if (bothMoveRight)
+            rb.AddForce(Vector2.right * movePower);
+        else if (bothMoveLeft)
+            rb.AddForce(Vector2.left * movePower);
 
         // ── Engine audio ───────────────────────────────────────────────────
-        bool carMoving = (action0 != CarAction.None && action0 != CarAction.Jump && action0 == action1);
         if (carMoving && !isEngineRunning)
             StartEngine();
         else if (!carMoving && isEngineRunning)
             StopEngine();
 
         // ── Button display ─────────────────────────────────────────────────
-        UpdateButtonDisplay(leftButtonSprite,  action0 == CarAction.Left,  action1 == CarAction.Left);
-        UpdateButtonDisplay(rightButtonSprite, action0 == CarAction.Right, action1 == CarAction.Right);
-        // Show jump colour for the full duration the button is physically held down
+        UpdateButtonDisplay(leftButtonSprite,  force0 < 0f, force1 < 0f);
+        UpdateButtonDisplay(rightButtonSprite, force0 > 0f, force1 > 0f);
         UpdateButtonDisplay(jumpButtonSprite,  GetJumpHeld(0, controller0), GetJumpHeld(1, controller1));
 
         // ── Stuck recovery ─────────────────────────────────────────────────
-        wantsToMove = (action0 == CarAction.Left  || action0 == CarAction.Right ||
-                       action1 == CarAction.Left  || action1 == CarAction.Right);
+        wantsToMove = carMoving;
 
         if (wantsToMove && !isGrounded == false)   // only check while on or near ground
         {
@@ -201,85 +221,104 @@ public class CarController : MonoBehaviour
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
-    /// <summary>Returns what action the given player wants this frame.</summary>
-    private CarAction GetActionForPlayer(int idx, ControllerInput ctrl, bool prevButton)
+    /// <summary>Returns only jump intent for this frame (horizontal handled separately).</summary>
+    private CarAction GetJumpActionForPlayer(int idx, ControllerInput ctrl, bool prevButton)
     {
-        // ── Hardware path ──
+        // Hardware rising edge
         if (ctrl != null && ctrl.IsHardwareConnected)
         {
-            long delta    = ctrl.EncoderDelta;
-            bool btnNow   = ctrl.IsButtonPressed;
-            bool btnRising = btnNow && !prevButton;   // rising edge
-
-            if (btnRising)             return CarAction.Jump;
-            if (delta >  encoderThreshold) return CarAction.Right;
-            if (delta < -encoderThreshold) return CarAction.Left;
-            return CarAction.None;
+            bool btnNow    = ctrl.IsButtonPressed;
+            bool btnRising = btnNow && !prevButton;
+            if (btnRising) return CarAction.Jump;
         }
 
-        // ── Keyboard fallback ──
+        // Keyboard always accepted alongside hardware
+        if (idx == 0 && Input.GetKeyDown(KeyCode.W))        return CarAction.Jump;
+        if (idx == 1 && Input.GetKeyDown(KeyCode.UpArrow))  return CarAction.Jump;
+
+        return CarAction.None;
+    }
+
+    /// <summary>
+    /// Returns a horizontal force value for one player.
+    /// Hardware: when a new encoder delta arrives, the direction is held for
+    /// encoderHoldDuration seconds so force stays continuous between sparse UDP packets.
+    /// Keyboard is always accepted alongside hardware.
+    /// Positive = right, negative = left.
+    /// </summary>
+    private float GetPlayerHorizontalForce(int idx, ControllerInput ctrl,
+        ref long lastCount, ref float holdTimer, ref float holdDir)
+    {
+        // ── Hardware: refresh hold buffer on each new encoder delta ──
+        if (ctrl != null && ctrl.IsHardwareConnected)
+        {
+            long currentCount = ctrl.EncoderCount;
+            long delta        = lastCount - currentCount;
+            lastCount         = currentCount;
+
+            if (delta > 0)
+            {
+                holdDir   =  1f;
+                holdTimer = encoderHoldDuration;
+            }
+            else if (delta < 0)
+            {
+                holdDir   = -1f;
+                holdTimer = encoderHoldDuration;
+            }
+        }
+
+        // Tick the hold timer down
+        holdTimer = Mathf.Max(0f, holdTimer - Time.deltaTime);
+
+        float force = 0f;
+
+        // Apply the buffered encoder direction while the timer is alive
+        if (holdTimer > 0f)
+            force += holdDir;
+
+        // Keyboard always accepted alongside hardware (for debugging)
         if (idx == 0)
         {
-            bool jumpKey = Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space);
-            if (jumpKey)                         return CarAction.Jump;
-            if (Input.GetKey(KeyCode.D))         return CarAction.Right;
-            if (Input.GetKey(KeyCode.A))         return CarAction.Left;
+            if (Input.GetKey(KeyCode.D))      force += 1f;
+            else if (Input.GetKey(KeyCode.A)) force -= 1f;
         }
         else
         {
-            bool jumpKey = Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Return);
-            if (jumpKey)                           return CarAction.Jump;
-            if (Input.GetKey(KeyCode.RightArrow))  return CarAction.Right;
-            if (Input.GetKey(KeyCode.LeftArrow))   return CarAction.Left;
+            if (Input.GetKey(KeyCode.RightArrow))     force += 1f;
+            else if (Input.GetKey(KeyCode.LeftArrow)) force -= 1f;
         }
 
-        return CarAction.None;
+        return force;
     }
 
     /// <summary>Returns whether the raw button (not edge-detected) is held.</summary>
     private bool GetRawButton(int idx, ControllerInput ctrl)
     {
-        if (ctrl != null && ctrl.IsHardwareConnected)
-            return ctrl.IsButtonPressed;
-
-        if (idx == 0) return Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space);
-        return Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.Return);
+        if (ctrl != null && ctrl.IsHardwareConnected && ctrl.IsButtonPressed) return true;
+        if (idx == 0) return Input.GetKey(KeyCode.W);
+        return Input.GetKey(KeyCode.UpArrow);
     }
 
     /// <summary>Returns true for the entire duration the jump key/button is physically held.</summary>
     private bool GetJumpHeld(int idx, ControllerInput ctrl)
     {
-        if (ctrl != null && ctrl.IsHardwareConnected)
-            return ctrl.IsButtonPressed;
-
-        if (idx == 0) return Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space);
-        return Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.Return);
+        if (ctrl != null && ctrl.IsHardwareConnected && ctrl.IsButtonPressed) return true;
+        if (idx == 0) return Input.GetKey(KeyCode.W);
+        return Input.GetKey(KeyCode.UpArrow);
     }
 
-    /// <summary>Applies the agreed action to the car.</summary>
+    /// <summary>Applies the jump action to the car.</summary>
     private void ExecuteAction(CarAction action)
     {
-        switch (action)
+        if (action == CarAction.Jump && isGrounded)
         {
-            case CarAction.Left:
-                rb.AddForce(Vector2.left * movePower);
-                break;
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f); // consistent jump height
+            rb.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+            isGrounded = false;
 
-            case CarAction.Right:
-                rb.AddForce(Vector2.right * movePower);
-                break;
-
-            case CarAction.Jump:
-                if (isGrounded)
-                {
-                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f); // consistent jump height
-                    rb.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
-                    isGrounded = false;
-
-                    if (jumpClip != null && AudioManager.Instance != null)
-                        AudioManager.Instance.PlaySFX(jumpClip, AudioPan.Center, jumpVolume);
-                }
-                break;
+            if (jumpClip != null && AudioManager.Instance != null)
+                AudioManager.Instance.PlaySFX(jumpClip, AudioPan.Center, jumpVolume);
         }
     }
 

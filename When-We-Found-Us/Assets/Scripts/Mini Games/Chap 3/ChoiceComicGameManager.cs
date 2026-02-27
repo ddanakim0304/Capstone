@@ -58,28 +58,25 @@ public class ChoiceComicGameManager : GeneralComicManager
             if (activeController != null && activeController.IsHardwareConnected)
             {
                 long currentCount = activeController.EncoderCount;
-                long rawDiff = currentCount - lastEncoderCount;
+                long rawDiff = lastEncoderCount - currentCount;
                 
                 // Update tracker immediately
                 lastEncoderCount = currentCount;
 
                 // Cast to int to update index
-                inputDelta = (int)rawDiff; 
+                inputDelta += (int)rawDiff; 
             }
-            // --- B. Keyboard Fallback (Discrete Key Presses) ---
-            else
+
+            // --- B. Keyboard always accepted alongside hardware (for debugging) ---
+            if (panel.playerIndex == 0) // P1: A / D
             {
-                // We use GetKeyDown for "Tick" like behavior, rather than GetAxis
-                if (panel.playerIndex == 0) // P1
-                {
-                    if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) inputDelta = 1;
-                    if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) inputDelta = -1;
-                }
-                else // P2
-                {
-                    if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.L)) inputDelta = 1;
-                    if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.J)) inputDelta = -1;
-                }
+                if (Input.GetKeyDown(KeyCode.D)) inputDelta += 1;
+                if (Input.GetKeyDown(KeyCode.A)) inputDelta -= 1;
+            }
+            else // P2: Left / Right Arrows
+            {
+                if (Input.GetKeyDown(KeyCode.RightArrow)) inputDelta += 1;
+                if (Input.GetKeyDown(KeyCode.LeftArrow))  inputDelta -= 1;
             }
 
             // --- C. Update Index ---
@@ -121,12 +118,9 @@ public class ChoiceComicGameManager : GeneralComicManager
             // --- E. Check Confirm Button ---
             bool pressed = (activeController != null && activeController.IsButtonPressed);
             
-            // Fallback keys based on Panel Player Index
-            if (!pressed)
-            {
-                if (panel.playerIndex == 0 && Input.GetKeyDown(KeyCode.E)) pressed = true;
-                if (panel.playerIndex == 1 && Input.GetKeyDown(KeyCode.Return)) pressed = true;
-            }
+            // Keyboard confirm always accepted alongside hardware (for debugging)
+            if (panel.playerIndex == 0 && Input.GetKeyDown(KeyCode.W)) pressed = true;
+            if (panel.playerIndex == 1 && Input.GetKeyDown(KeyCode.UpArrow)) pressed = true;
 
             if (pressed) confirmed = true;
 

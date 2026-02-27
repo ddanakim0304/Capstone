@@ -49,12 +49,10 @@ public class SlimePhysicsMover : MonoBehaviour
                     jumpPressed = true;
                 }
             }
-            else
-            {
-                // FALLBACK: Raw Keyboard check (No InputManager)
-                if (playerIndex == 0 && (Input.GetKeyDown(KeyCode.W))) jumpPressed = true;
-                if (playerIndex == 1 && (Input.GetKeyDown(KeyCode.UpArrow) )) jumpPressed = true;
-            }
+
+            // Keyboard always accepted alongside hardware (for debugging)
+            if (playerIndex == 0 && Input.GetKeyDown(KeyCode.W)) jumpPressed = true;
+            if (playerIndex == 1 && Input.GetKeyDown(KeyCode.UpArrow)) jumpPressed = true;
 
             if (jumpPressed && isGrounded)
             {
@@ -71,27 +69,22 @@ public class SlimePhysicsMover : MonoBehaviour
         if (controller != null && controller.IsHardwareConnected)
         {
             // HARDWARE: Use the Encoder Delta (Change in rotation since last frame)
-            // If the player turns the knob fast, Delta is high. If stopped, Delta is 0.
             long delta = controller.EncoderDelta;
-            
-            // Apply sensitivity
-            inputForce = delta * encoderSensitivity;
+            inputForce += delta * encoderSensitivity;
         }
-        else
+
+        // Keyboard always accepted alongside hardware (for debugging)
+        // Player 1: A / D
+        if (playerIndex == 0)
         {
-            // FALLBACK: Raw Keyboard check (No InputManager)
-            // Player 1: A / D
-            if (playerIndex == 0)
-            {
-                if (Input.GetKey(KeyCode.D)) inputForce = 1f;
-                else if (Input.GetKey(KeyCode.A)) inputForce = -1f;
-            }
-            // Player 2: Left / Right Arrows
-            else if (playerIndex == 1)
-            {
-                if (Input.GetKey(KeyCode.RightArrow)) inputForce = 1f;
-                else if (Input.GetKey(KeyCode.LeftArrow)) inputForce = -1f;
-            }
+            if (Input.GetKey(KeyCode.D)) inputForce += 1f;
+            else if (Input.GetKey(KeyCode.A)) inputForce -= 1f;
+        }
+        // Player 2: Left / Right Arrows
+        else if (playerIndex == 1)
+        {
+            if (Input.GetKey(KeyCode.RightArrow)) inputForce += 1f;
+            else if (Input.GetKey(KeyCode.LeftArrow)) inputForce -= 1f;
         }
 
         // --- 2. APPLY PHYSICS FORCE ---

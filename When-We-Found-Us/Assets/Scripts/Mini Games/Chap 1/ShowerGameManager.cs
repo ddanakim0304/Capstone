@@ -122,15 +122,13 @@ public class ShowerGameManager : MiniGameManager
         if (p1_controller != null && p1_controller.IsHardwareConnected)
         {
             long currentCount = p1_controller.EncoderCount;
-            long rawDelta = currentCount - lastEncoderCount;
+            long rawDelta = lastEncoderCount - currentCount;
             lastEncoderCount = currentCount;
-            inputDelta = rawDelta * encoderSensitivity;
+            inputDelta += rawDelta * encoderSensitivity;
         }
-        else
-        {
-            // P1 Keyboard fallback
-            inputDelta = Input.GetAxis("Horizontal_P1") * keyboardSensitivity * Time.deltaTime;
-        }
+
+        // Keyboard always accepted alongside hardware (for debugging)
+        inputDelta += Input.GetAxis("Horizontal_P1") * keyboardSensitivity * Time.deltaTime;
 
         // Store direction for the finish snap logic
         lastInputDelta = inputDelta;

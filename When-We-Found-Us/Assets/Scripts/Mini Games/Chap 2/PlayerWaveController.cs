@@ -86,20 +86,18 @@ public class PlayerWaveController : MonoBehaviour
 
         float totalChange = 0f;
 
-        // Prioritize physical hardware input if a controller is connected.
+        // Hardware input when connected.
         if (controller.IsHardwareConnected)
         {
             // Calculate how much the encoder has turned since the last frame.
-            long encoderDelta = controller.EncoderCount - lastEncoderCount;
+            long encoderDelta = lastEncoderCount - controller.EncoderCount;
             lastEncoderCount = controller.EncoderCount;
-            totalChange = encoderDelta * encoderSensitivity;
+            totalChange += encoderDelta * encoderSensitivity;
         }
-        // If no hardware is found, fall back to keyboard input.
-        else
-        {
-            string axisName = (playerIndex == 0) ? "Horizontal_P1" : "Horizontal_P2";
-            totalChange = Input.GetAxis(axisName) * keyboardSensitivity * Time.deltaTime;
-        }
+
+        // Keyboard always accepted alongside hardware (for debugging).
+        string axisName = (playerIndex == 0) ? "Horizontal_P1" : "Horizontal_P2";
+        totalChange += Input.GetAxis(axisName) * keyboardSensitivity * Time.deltaTime;
 
         // Apply the input change to the target frequency and keep it within a playable range.
         targetFrequency += totalChange;

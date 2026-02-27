@@ -49,22 +49,17 @@ public class ControllerInput : MonoBehaviour
             ParseData(dataToProcess);
         }
 
-        // Keyboard button fallback — only active when hardware is not connected.
+        // Keyboard button fallback — always active so keyboard can be used alongside hardware for debugging.
         // Encoder/knob keyboard fallback is intentionally absent here; each
         // mini-game implements its own encoder keyboard logic in its own script.
         bool keyboardPressed = false;
-        if (!IsHardwareConnected)
+        if (playerIndex == 0)
         {
-            if (playerIndex == 0)
-            {
-                if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.E) ||
-                    Input.GetKey(KeyCode.W)     || Input.GetKey(KeyCode.S)) keyboardPressed = true;
-            }
-            else if (playerIndex == 1)
-            {
-                if (Input.GetKey(KeyCode.Return)  || Input.GetKey(KeyCode.RightShift) ||
-                    Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow)) keyboardPressed = true;
-            }
+            if (Input.GetKey(KeyCode.W)) keyboardPressed = true;
+        }
+        else if (playerIndex == 1)
+        {
+            if (Input.GetKey(KeyCode.UpArrow)) keyboardPressed = true;
         }
 
         IsButtonPressed = _lastHardwareButtonState || keyboardPressed;
