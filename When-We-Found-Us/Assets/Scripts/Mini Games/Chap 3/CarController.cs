@@ -26,9 +26,9 @@ public class CarController : MonoBehaviour
     public SpriteRenderer jumpButtonSprite;
 
     [Header("Button Colours")]
-    public Color p1Color      = new Color(1f, 0.4f, 0.4f);   // Player 1 (red-ish)
-    public Color p2Color      = new Color(0.4f, 1f, 0.4f);   // Player 2 (green-ish)
-    public Color agreedColor  = new Color(0.2f, 0.6f, 1f);   // Both agreed (blue)
+    public Color p1Color      = new Color(1f, 0.4f, 0.4f);
+    public Color p2Color      = new Color(0.4f, 1f, 0.4f);
+    public Color agreedColor  = new Color(0.2f, 0.6f, 1f);
     public Color neutralColor = Color.white;
 
     // ── Audio ─────────────────────────────────────────────────────────────────

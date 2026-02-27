@@ -49,30 +49,22 @@ public class ControllerInput : MonoBehaviour
             ParseData(dataToProcess);
         }
 
-        // Handle Button State (Hardware OR Keyboard)
+        // Keyboard button fallback — only active when hardware is not connected.
+        // Encoder/knob keyboard fallback is intentionally absent here; each
+        // mini-game implements its own encoder keyboard logic in its own script.
         bool keyboardPressed = false;
-        
-        if (playerIndex == 0)
+        if (!IsHardwareConnected)
         {
-            // Button: Space, E, W, or S (held)
-            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.E) ||
-                Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)) keyboardPressed = true;
-            
-            // Encoder: D/RightArrow = +1, A/LeftArrow = -1, E (tap) = +1
-            if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) EncoderDelta += 1;
-            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) EncoderDelta -= 1;
-            if (Input.GetKeyDown(KeyCode.E)) EncoderDelta += 1;
-        }
-        else if (playerIndex == 1)
-        {
-            // Button: Enter, RightShift, UpArrow, or DownArrow (held)
-            if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.RightShift) ||
-                Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow)) keyboardPressed = true;
-            
-            // Encoder: Return (tap) = +1, RightArrow = +1, LeftArrow = -1
-            if (Input.GetKeyDown(KeyCode.Return)) EncoderDelta += 1;
-            if (Input.GetKeyDown(KeyCode.RightArrow)) EncoderDelta += 1;
-            if (Input.GetKeyDown(KeyCode.LeftArrow)) EncoderDelta -= 1;
+            if (playerIndex == 0)
+            {
+                if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.E) ||
+                    Input.GetKey(KeyCode.W)     || Input.GetKey(KeyCode.S)) keyboardPressed = true;
+            }
+            else if (playerIndex == 1)
+            {
+                if (Input.GetKey(KeyCode.Return)  || Input.GetKey(KeyCode.RightShift) ||
+                    Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow)) keyboardPressed = true;
+            }
         }
 
         IsButtonPressed = _lastHardwareButtonState || keyboardPressed;
@@ -90,7 +82,7 @@ public class ControllerInput : MonoBehaviour
                 bool btnState = (parts[2].Trim() == "1");
 
                 ControllerID = id;
-                EncoderDelta = count - previousEncoderCount;
+                EncoderDelta = previousEncoderCount - count;
                 previousEncoderCount = count;
                 EncoderCount = count;
                 
@@ -153,8 +145,6 @@ public class ControllerInput : MonoBehaviour
                 break;
             }
         }
-
-        Debug.Log($"<color=orange>[P{playerIndex}] UDP read thread exiting</color>");
     }
 
     public void Close()
@@ -175,7 +165,6 @@ public class ControllerInput : MonoBehaviour
         }
 
         _udpClient = null;
-        Debug.Log($"<color=orange>[P{playerIndex}] UDP listener closed</color>");
     }
 
     void OnDisable()       { Close(); }

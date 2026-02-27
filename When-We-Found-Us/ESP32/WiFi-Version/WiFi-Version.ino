@@ -2,18 +2,17 @@
 #include <WiFiUdp.h>
 #include <ESP32Encoder.h>
 
-#define PLAYER_ID  0
+#define PLAYER_ID  1
 
 const char* SSID     = "KT_GiGA_2G_Wave2_CE0C";
 const char* PASSWORD = "5af5hcf861";
-const char* PC_IP    = "172.30.1.3";   // Mac's IP address (run `ifconfig | grep "inet "` on Mac)
+const char* PC_IP    = "172.30.1.3";
 
 #if PLAYER_ID == 0
   const int UDP_PORT = 5000;
 #else
   const int UDP_PORT = 5001;
 #endif
-// ============================================================
 
 #define ENCODER_CLK 32
 #define ENCODER_DT  33

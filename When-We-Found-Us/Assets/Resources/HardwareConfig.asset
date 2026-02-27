@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 157c4521c4d0347858517de77b5ace68, type: 3}
   m_Name: HardwareConfig
   m_EditorClassIdentifier: Assembly-CSharp::HardwareConfig
-  hardwareControllers: []
+  hardwareControllers:
+  - udpListenPort: 5000
+  - udpListenPort: 5001
   minPlayerCount: 2
