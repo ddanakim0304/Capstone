@@ -1,12 +1,13 @@
 #include <WiFi.h>
 #include <WiFiUdp.h>
 #include <ESP32Encoder.h>
+#include "arduino_secrets.h"
 
 #define PLAYER_ID  1
 
-const char* SSID     = "KT_GiGA_2G_Wave2_CE0C";
-const char* PASSWORD = "5af5hcf861";
-const char* PC_IP    = "172.30.1.3";
+const char* SSID     = SECRET_SSID;
+const char* PASSWORD = SECRET_PASSWORD;
+const char* PC_IP    = SECRET_PC_IP;
 
 #if PLAYER_ID == 0
   const int UDP_PORT = 5000;

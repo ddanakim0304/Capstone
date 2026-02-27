@@ -1,4 +1,8 @@
 .utmp/
+
+# Arduino credentials
+ESP32/**/arduino_secrets.h
+
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
