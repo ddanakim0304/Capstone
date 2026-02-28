@@ -95,6 +95,9 @@ public class CarController : MonoBehaviour
     // Cutscene lock – set by StopCar(); disables all player input
     private bool  isStopped      = false;
 
+    // Horizontal force intent written by Update(), consumed by FixedUpdate()
+    private float pendingHorizontalForce = 0f;
+
     // ─────────────────────────────────────────────────────────────────────────
     void Start()
     {
@@ -231,9 +234,11 @@ public class CarController : MonoBehaviour
         bool carMoving     = bothMoveRight || bothMoveLeft;
 
         if (bothMoveRight)
-            rb.AddForce(Vector2.right * movePower);
+            pendingHorizontalForce = movePower;
         else if (bothMoveLeft)
-            rb.AddForce(Vector2.left * movePower);
+            pendingHorizontalForce = -movePower;
+        else
+            pendingHorizontalForce = 0f;
 
         // ── Engine audio ───────────────────────────────────────────────────
         if (carMoving && !isEngineRunning)
@@ -281,6 +286,10 @@ public class CarController : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
             return;
         }
+
+        // Apply horizontal force here (physics-step aligned, frame-rate independent)
+        if (pendingHorizontalForce != 0f)
+            rb.AddForce(Vector2.right * pendingHorizontalForce);
 
         // Clamp X to startPositionX (can't go left of the start)
         if (CarMiniGameManager.Instance != null)
