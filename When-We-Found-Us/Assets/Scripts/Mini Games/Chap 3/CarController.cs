@@ -34,6 +34,12 @@ public class CarController : MonoBehaviour
     public Color agreedColor  = new Color(0.2f, 0.6f, 1f);
     public Color neutralColor = Color.white;
 
+    [Header("Arrival Fade")]
+    [Tooltip("Seconds over which all three button sprites fade to transparent when the car stops.")]
+    public float buttonFadeDuration = 0.5f;
+    [Tooltip("Seconds over which the car's own SpriteRenderers fade out (triggered by FinalCutsceneMiniGame).")]
+    public float carFadeDuration = 1f;
+
     // ── Audio ─────────────────────────────────────────────────────────────────
     [Header("Audio")]
     [Tooltip("Looping engine sound played while the car moves left or right.")]
@@ -86,6 +92,9 @@ public class CarController : MonoBehaviour
     private float stuckTimer     = 0f;
     private bool  wantsToMove    = false;
 
+    // Cutscene lock – set by StopCar(); disables all player input
+    private bool  isStopped      = false;
+
     // ─────────────────────────────────────────────────────────────────────────
     void Start()
     {
@@ -118,8 +127,81 @@ public class CarController : MonoBehaviour
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    /// <summary>Locks all player input and brings the car to a stop. Called by CarMiniGameManager.</summary>
+    public void StopCar()
+    {
+        isStopped = true;
+        rb.linearVelocity = Vector2.zero;
+        StopEngine();
+        // Fade out the UI buttons immediately
+        StartCoroutine(FadeOutButtons(buttonFadeDuration));
+        Debug.Log("[CarController] Car stopped for cutscene.");
+    }
+
+    /// <summary>Fades all three button SpriteRenderers to alpha 0 over <paramref name="duration"/> seconds.</summary>
+    private IEnumerator FadeOutButtons(float duration)
+    {
+        SpriteRenderer[] buttons = { leftButtonSprite, rightButtonSprite, jumpButtonSprite };
+        float[] startAlphas = new float[buttons.Length];
+        for (int i = 0; i < buttons.Length; i++)
+            startAlphas[i] = buttons[i] != null ? buttons[i].color.a : 0f;
+
+        float elapsed = 0f;
+        duration = Mathf.Max(duration, 0.01f);
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            for (int i = 0; i < buttons.Length; i++)
+            {
+                if (buttons[i] == null) continue;
+                Color c = buttons[i].color;
+                c.a = Mathf.Lerp(startAlphas[i], 0f, t);
+                buttons[i].color = c;
+            }
+            yield return null;
+        }
+        foreach (SpriteRenderer sr in buttons)
+        {
+            if (sr == null) continue;
+            Color c = sr.color; c.a = 0f; sr.color = c;
+        }
+    }
+
+    /// <summary>Fades all SpriteRenderers on this GO and its children to alpha 0. Called by FinalCutsceneMiniGame.</summary>
+    public IEnumerator FadeOutCar(float duration)
+    {
+        SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>(true);
+        float[] startAlphas = new float[renderers.Length];
+        for (int i = 0; i < renderers.Length; i++)
+            startAlphas[i] = renderers[i].color.a;
+
+        float elapsed = 0f;
+        duration = Mathf.Max(duration, 0.01f);
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                Color c = renderers[i].color;
+                c.a = Mathf.Lerp(startAlphas[i], 0f, t);
+                renderers[i].color = c;
+            }
+            yield return null;
+        }
+        foreach (SpriteRenderer sr in renderers)
+        {
+            Color c = sr.color; c.a = 0f; sr.color = c;
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
     void Update()
     {
+        // Cutscene lock: ignore all input while stopped
+        if (isStopped) return;
+
         // ── Tick down jump buffers ─────────────────────────────────────────
         jumpBuffer0 = Mathf.Max(0f, jumpBuffer0 - Time.deltaTime);
         jumpBuffer1 = Mathf.Max(0f, jumpBuffer1 - Time.deltaTime);
@@ -200,6 +282,13 @@ public class CarController : MonoBehaviour
     // ─────────────────────────────────────────────────────────────────────────
     void FixedUpdate()
     {
+        // Keep the car frozen when stopped
+        if (isStopped)
+        {
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
         // Clamp X to startPositionX (can't go left of the start)
         if (CarMiniGameManager.Instance != null)
         {

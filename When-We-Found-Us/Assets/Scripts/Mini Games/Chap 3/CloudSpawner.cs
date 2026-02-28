@@ -29,7 +29,7 @@ public class CloudSpawner : MonoBehaviour
     [Tooltip("Sorting layer name for cloud sprites.")]
     public string sortingLayerName = "Background";
     [Tooltip("Order in the sorting layer.")]
-    public int sortingOrder = 0;
+    public int sortingOrder = -30;
 
     // ── Scale ─────────────────────────────────────────────────────────────────
     [Header("Scale")]
@@ -60,7 +60,7 @@ public class CloudSpawner : MonoBehaviour
     {
         _cam = Camera.main;
         if (_cam == null)
-            _cam = FindObjectOfType<Camera>();
+            _cam = FindFirstObjectByType<Camera>();
 
         // Seed the first spawn position just ahead of the initial camera view
         _nextSpawnX = _cam.transform.position.x + spawnAheadX * 0.5f;

@@ -30,12 +30,6 @@ public class RockSpawner : MonoBehaviour
     // ─────────────────────────────────────────────────────────────────────────
     void Start()
     {
-        if (rockPrefabs == null || rockPrefabs.Length == 0)
-        {
-            Debug.LogError("[RockSpawner] No rock prefabs assigned!");
-            return;
-        }
-
         SpawnAllRocks();
     }
 
@@ -50,8 +44,7 @@ public class RockSpawner : MonoBehaviour
             float chosenX = TryGetValidX(maxPlacementAttempts);
 
             if (float.IsNaN(chosenX))
-            {
-                Debug.LogWarning($"[RockSpawner] Could not place rock {i + 1} after {maxPlacementAttempts} attempts – skipping.");
+            {             
                 continue;
             }
 
@@ -64,15 +57,8 @@ public class RockSpawner : MonoBehaviour
             spawnedXPositions.Add(chosenX);
             spawned++;
         }
-
-        Debug.Log($"[RockSpawner] Spawned {spawned} / {rockCount} rocks.");
     }
 
-    /// <summary>
-    /// Attempts to find an X position within [spawnStartX, spawnEndX] that
-    /// respects the minimum spacing from all already-placed rocks.
-    /// Returns NaN if no valid position is found within the attempt limit.
-    /// </summary>
     private float TryGetValidX(int maxAttempts)
     {
         for (int attempt = 0; attempt < maxAttempts; attempt++)
