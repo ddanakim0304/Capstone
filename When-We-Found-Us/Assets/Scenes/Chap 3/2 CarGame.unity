@@ -783,7 +783,7 @@ MonoBehaviour:
   maxY: 4.3
   cloudZ: 1
   sortingLayerName: Background
-  sortingOrder: 0
+  sortingOrder: -30
   minScaleX: 0.6
   maxScaleX: 1
   minScaleY: 0.6
@@ -1146,7 +1146,7 @@ MonoBehaviour:
   maxCameraX: 112.547
   arrivalLookAheadX: 6
   arrivalLookAheadDuration: 2
-  houseFocusPosition: {x: 117.7, y: 0, z: 0}
+  houseFocusPosition: {x: 117.7, y: 0, z: -10}
   houseFocusMoveDuration: 2
 --- !u!1 &598679569
 GameObject:
@@ -3328,7 +3328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b979a49f93af14630b6f9a50c8b2ab2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FinalCutsceneMiniGame
-  cutsceneStartDelay: 8
+  cutsceneStartDelay: 5
   animations:
   - animObject: {fileID: 1244890789}
     paperSprite: {fileID: 1380373448}
@@ -3352,12 +3352,12 @@ MonoBehaviour:
   houseOpened: {fileID: 1321735829}
   windowLight: {fileID: 90622968}
   windowDark: {fileID: 606665733}
-  houseFadeOutDuration: 0.5
-  houseFadeInDuration: 0.5
-  houseFinishDelay: 8
+  houseFadeOutDuration: 1
+  houseFadeInDuration: 1
+  houseFinishDelay: 4
   cameraFollow: {fileID: 519420033}
   carController: {fileID: 1988357707}
-  preFocusDelay: 0
+  preWinGameDelay: 8
   carFadeDuration: 0.5
 --- !u!1 &1963759735
 GameObject:

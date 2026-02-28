@@ -66,14 +66,11 @@ public class FinalCutsceneMiniGame : MiniGameManager
     [Tooltip("The CarController to fade out after the cutscene.")]
     public CarController carController;
 
-    [Tooltip("Seconds to wait after houseFinishDelay before starting the camera move and car fade.")]
-    public float preFocusDelay = 0.5f;
+    [Tooltip("Seconds to wait after the window cross-fade before WinGame() is called.")]
+    public float preWinGameDelay = 0f;
 
     [Tooltip("Seconds over which the car fades out (matches CarController.carFadeDuration by default).")]
     public float carFadeDuration = 1f;
-
-    [Tooltip("Seconds to wait after the window cross-fade before WinGame() is called.")]
-    public float winGameDelay = 1f;
     void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
@@ -188,11 +185,7 @@ public class FinalCutsceneMiniGame : MiniGameManager
         if (houseFinishDelay > 0f)
             yield return new WaitForSeconds(houseFinishDelay);
 
-        // 2. Wait before starting the camera move
-        if (preFocusDelay > 0f)
-            yield return new WaitForSeconds(preFocusDelay);
-
-        // 3. Camera focus + car fade simultaneously; wait for both to finish
+        // 2. Camera focus + car fade simultaneously; wait for both to finish
         if (cameraFollow != null)
             cameraFollow.TriggerHouseFocus();
 
@@ -226,8 +219,8 @@ public class FinalCutsceneMiniGame : MiniGameManager
         if (windowDark != null)
             windowDark.SetActive(false);
 
-        if (winGameDelay > 0f)
-            yield return new WaitForSeconds(winGameDelay);
+        if (preWinGameDelay > 0f)
+            yield return new WaitForSeconds(preWinGameDelay);
 
         WinGame();
     }

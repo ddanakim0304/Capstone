@@ -40,9 +40,6 @@ public class CarCameraFollow : MonoBehaviour
     public float houseFocusMoveDuration = 1f;
 
     private bool isFocusing = false;
-
-    // ─────────────────────────────────────────────────────────────────────────
-    /// <summary>Stops car-following and smoothly moves the camera to houseFocusPosition.</summary>
     public void TriggerHouseFocus()
     {
         StartCoroutine(FocusOnHouse());
@@ -62,9 +59,6 @@ public class CarCameraFollow : MonoBehaviour
         }
         transform.position = houseFocusPosition;
     }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    /// <summary>Smoothly lerps lookAheadX to arrivalLookAheadX over arrivalLookAheadDuration seconds.</summary>
     public void TriggerArrivalLookAhead()
     {
         StartCoroutine(LerpLookAhead(lookAheadX, arrivalLookAheadX, arrivalLookAheadDuration));

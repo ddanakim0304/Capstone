@@ -125,9 +125,6 @@ public class CarController : MonoBehaviour
         if (controller0 != null) lastEncoderCount0 = controller0.EncoderCount;
         if (controller1 != null) lastEncoderCount1 = controller1.EncoderCount;
     }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    /// <summary>Locks all player input and brings the car to a stop. Called by CarMiniGameManager.</summary>
     public void StopCar()
     {
         isStopped = true;
@@ -137,8 +134,6 @@ public class CarController : MonoBehaviour
         StartCoroutine(FadeOutButtons(buttonFadeDuration));
         Debug.Log("[CarController] Car stopped for cutscene.");
     }
-
-    /// <summary>Fades all three button SpriteRenderers to alpha 0 over <paramref name="duration"/> seconds.</summary>
     private IEnumerator FadeOutButtons(float duration)
     {
         SpriteRenderer[] buttons = { leftButtonSprite, rightButtonSprite, jumpButtonSprite };
@@ -167,8 +162,6 @@ public class CarController : MonoBehaviour
             Color c = sr.color; c.a = 0f; sr.color = c;
         }
     }
-
-    /// <summary>Fades all SpriteRenderers on this GO and its children to alpha 0. Called by FinalCutsceneMiniGame.</summary>
     public IEnumerator FadeOutCar(float duration)
     {
         SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>(true);
@@ -307,10 +300,6 @@ public class CarController : MonoBehaviour
             rb.linearVelocity = new Vector2(Mathf.Sign(rb.linearVelocity.x) * maxSpeed, rb.linearVelocity.y);
         }
     }
-
-    // ── Helpers ───────────────────────────────────────────────────────────────
-
-    /// <summary>Returns only jump intent for this frame (horizontal handled separately).</summary>
     private CarAction GetJumpActionForPlayer(int idx, ControllerInput ctrl, bool prevButton)
     {
         // Hardware rising edge
@@ -327,14 +316,6 @@ public class CarController : MonoBehaviour
 
         return CarAction.None;
     }
-
-    /// <summary>
-    /// Returns a horizontal force value for one player.
-    /// Hardware: when a new encoder delta arrives, the direction is held for
-    /// encoderHoldDuration seconds so force stays continuous between sparse UDP packets.
-    /// Keyboard is always accepted alongside hardware.
-    /// Positive = right, negative = left.
-    /// </summary>
     private float GetPlayerHorizontalForce(int idx, ControllerInput ctrl,
         ref long lastCount, ref float holdTimer, ref float holdDir)
     {
@@ -380,24 +361,18 @@ public class CarController : MonoBehaviour
 
         return force;
     }
-
-    /// <summary>Returns whether the raw button (not edge-detected) is held.</summary>
     private bool GetRawButton(int idx, ControllerInput ctrl)
     {
         if (ctrl != null && ctrl.IsHardwareConnected && ctrl.IsButtonPressed) return true;
         if (idx == 0) return Input.GetKey(KeyCode.W);
         return Input.GetKey(KeyCode.UpArrow);
     }
-
-    /// <summary>Returns true for the entire duration the jump key/button is physically held.</summary>
-    private bool GetJumpHeld(int idx, ControllerInput ctrl)
+   private bool GetJumpHeld(int idx, ControllerInput ctrl)
     {
         if (ctrl != null && ctrl.IsHardwareConnected && ctrl.IsButtonPressed) return true;
         if (idx == 0) return Input.GetKey(KeyCode.W);
         return Input.GetKey(KeyCode.UpArrow);
     }
-
-    /// <summary>Applies the jump action to the car.</summary>
     private void ExecuteAction(CarAction action)
     {
         if (action == CarAction.Jump && isGrounded)
@@ -445,8 +420,6 @@ public class CarController : MonoBehaviour
         if (stopWhenDone) engineSource.Stop();
         engineFadeCoroutine = null;
     }
-
-    /// <summary>Tints a button sprite based on which players are pressing it.</summary>
     private void UpdateButtonDisplay(SpriteRenderer sprite, bool p1Pressing, bool p2Pressing)
     {
         if (sprite == null) return;
@@ -460,11 +433,6 @@ public class CarController : MonoBehaviour
         else
             sprite.color = neutralColor;
     }
-
-    // ── Ground Detection ──────────────────────────────────────────────────────
-    // All three callbacks funnel into one method that queries every active contact
-    // on the rigidbody, so being wedged between two rocks never incorrectly clears
-    // isGrounded when one of the side contacts exits.
     private void OnCollisionEnter2D(Collision2D collision) => UpdateGroundedState();
     private void OnCollisionStay2D(Collision2D collision)  => UpdateGroundedState();
     private void OnCollisionExit2D(Collision2D collision)  => UpdateGroundedState();
