@@ -7,70 +7,47 @@ public class FinalCutsceneMiniGame : MiniGameManager
     [System.Serializable]
     public class AnimationEntry
     {
-        [Tooltip("Root GameObject that holds all child SpriteRenderers for this animation.")]
         public GameObject animObject;
-
-        [Tooltip("Optional reference – not used for fading (kept for inspector convenience).")]
         public SpriteRenderer paperSprite;
-
-        [Tooltip("Seconds over which all child sprites fade in (0 → 1).")]
         public float fadeInDuration = 0.5f;
-
-        [Tooltip("Seconds this animation stays fully visible before fading out.")]
         public float displayDuration = 2f;
-
-        [Tooltip("Seconds over which all child sprites fade out (1 → 0).")]
         public float fadeDuration = 0.5f;
-
-        [Tooltip("Seconds to wait (fully transparent) between this entry and the next.")]
         public float gapAfter = 0f;
     }
 
     [Header("Cutscene Timing")]
-    [Tooltip("Seconds to wait after TriggerCutscene() is called before the first animation starts.")]
     public float cutsceneStartDelay = 1f;
 
     [Header("Animation Sequence")]
-    [Tooltip("Animation objects played in order. All should start DISABLED in the scene.")]
     public AnimationEntry[] animations;
 
     [Header("House Sprites")]
-    [Tooltip("The original closed-house sprite. Should be ACTIVE at start. " +
-             "Fades OUT when the last animation fades in, fades back IN when it fades out.")]
     public GameObject houseClosed;
-
-    [Tooltip("The opened-house sprite shown during the last animation. Should be INACTIVE at start. " +
-             "Fades IN with the last animation, fades back OUT after it ends.")]
     public GameObject houseOpened;
 
     [Header("House Window")]
-    [Tooltip("Child of the house that represents the lit window; fades IN at the end.")]
     public GameObject windowLight;
-
-    [Tooltip("Child of the house that represents the dark window; fades OUT at the end.")]
     public GameObject windowDark;
 
-    [Tooltip("Seconds over which windowDark fades out.")]
     public float houseFadeOutDuration = 0.5f;
 
-    [Tooltip("Seconds over which windowLight fades in.")]
     public float houseFadeInDuration  = 0.5f;
-
-    [Tooltip("Seconds to wait after the house cross-fade before WinGame() is called.")]
     public float houseFinishDelay     = 1f;
 
     [Header("Post-Cutscene: Camera Focus & Car Fade")]
-    [Tooltip("Camera follow script – will be told to focus on the house.")]
     public CarCameraFollow cameraFollow;
 
-    [Tooltip("The CarController to fade out after the cutscene.")]
     public CarController carController;
-
-    [Tooltip("Seconds to wait after the window cross-fade before WinGame() is called.")]
     public float preWinGameDelay = 0f;
-
-    [Tooltip("Seconds over which the car fades out (matches CarController.carFadeDuration by default).")]
     public float carFadeDuration = 1f;
+
+
+    [Header("Light Sound")]
+    public AudioClip lightMusic;
+    public AudioPan lightMusicPan = AudioPan.Left;
+    [Range(0f, 1f)]
+    public float musicVolume = 1.0f;
+
     void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
@@ -203,6 +180,7 @@ public class FinalCutsceneMiniGame : MiniGameManager
         if (windowLight != null)
         {
             SetAllChildAlphas(windowLight, 0f);
+            AudioManager.Instance.PlaySFX(lightMusic, lightMusicPan, musicVolume, false);
             windowLight.SetActive(true);
         }
 

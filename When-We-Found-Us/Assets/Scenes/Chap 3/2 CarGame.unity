@@ -3359,6 +3359,9 @@ MonoBehaviour:
   carController: {fileID: 1988357707}
   preWinGameDelay: 8
   carFadeDuration: 0.5
+  lightMusic: {fileID: 8300000, guid: 85fe062c102a745deb5bb950a174b965, type: 3}
+  lightMusicPan: 2
+  musicVolume: 0.154
 --- !u!1 &1963759735
 GameObject:
   m_ObjectHideFlags: 0
