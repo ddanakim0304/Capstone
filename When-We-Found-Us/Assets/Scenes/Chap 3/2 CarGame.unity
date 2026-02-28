@@ -3611,7 +3611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fd64962a233a4fcd974248b742e30ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarController
-  movePower: 10
+  movePower: 40
   maxSpeed: 6
   jumpPower: 80
   encoderSensitivity: 0.1

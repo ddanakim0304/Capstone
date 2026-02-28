@@ -287,9 +287,13 @@ public class CarController : MonoBehaviour
             return;
         }
 
-        // Apply horizontal force here (physics-step aligned, frame-rate independent)
+        // Drive horizontal velocity directly – bypasses ground friction and is frame-rate independent
         if (pendingHorizontalForce != 0f)
-            rb.AddForce(Vector2.right * pendingHorizontalForce);
+        {
+            float targetX = Mathf.Sign(pendingHorizontalForce) * maxSpeed;
+            float newX = Mathf.MoveTowards(rb.linearVelocity.x, targetX, movePower * Time.fixedDeltaTime);
+            rb.linearVelocity = new Vector2(newX, rb.linearVelocity.y);
+        }
 
         // Clamp X to startPositionX (can't go left of the start)
         if (CarMiniGameManager.Instance != null)
