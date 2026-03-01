@@ -10,6 +10,7 @@ public class ControllerInput : MonoBehaviour
     public long EncoderDelta { get; private set; }
     public bool IsButtonPressed { get; private set; }
     public bool IsHardwareConnected => _udpClient != null;
+    public IPAddress RemoteAddress { get; private set; }
 
     private int playerIndex;
     private UdpClient _udpClient;
@@ -123,6 +124,7 @@ public class ControllerInput : MonoBehaviour
                 string line = System.Text.Encoding.ASCII.GetString(data).Trim();
                 if (!string.IsNullOrEmpty(line))
                 {
+                    RemoteAddress = remoteEP.Address;
                     lock (dataLock)
                     {
                         latestData = line;
@@ -139,6 +141,30 @@ public class ControllerInput : MonoBehaviour
                     Debug.LogWarning($"<color=red>[P{playerIndex}] UDP read error: {e.Message}</color>");
                 break;
             }
+        }
+    }
+
+
+    /// Sends a UDP command string to the ESP32 at its last known IP on the given port.
+    public void SendCommand(string command, int targetPort)
+    {
+        if (RemoteAddress == null)
+        {
+            Debug.LogWarning($"[P{playerIndex}] Cannot send command '{command}': ESP32 remote address not yet known.");
+            return;
+        }
+        try
+        {
+            using (var sender = new UdpClient())
+            {
+                byte[] payload = System.Text.Encoding.ASCII.GetBytes(command);
+                sender.Send(payload, payload.Length, new IPEndPoint(RemoteAddress, targetPort));
+                Debug.Log($"<color=green>[P{playerIndex}] Sent command '{command}' to {RemoteAddress}:{targetPort}</color>");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"[P{playerIndex}] Failed to send command '{command}': {e.Message}");
         }
     }
 

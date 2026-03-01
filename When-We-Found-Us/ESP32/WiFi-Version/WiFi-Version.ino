@@ -7,13 +7,9 @@
 
 const char* SSID     = SECRET_SSID;
 const char* PASSWORD = SECRET_PASSWORD;
-const char* PC_IP    = SECRET_PC_IP;
+const char* PC_ IP    = SECRET_PC_IP;
 
-#if PLAYER_ID == 0
-  const int UDP_PORT = 5000;
-#else
-  const int UDP_PORT = 5001;
-#endif
+const int UDP_PORT = 5001;
 
 #define ENCODER_CLK 32
 #define ENCODER_DT  33
