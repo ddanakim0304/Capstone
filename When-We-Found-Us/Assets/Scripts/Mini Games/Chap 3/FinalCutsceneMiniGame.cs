@@ -48,10 +48,6 @@ public class FinalCutsceneMiniGame : MiniGameManager
     [Range(0f, 1f)]
     public float musicVolume = 1.0f;
 
-    [Header("Servo Control (P0 ESP32)")]
-    [Tooltip("UDP port the P0 ESP32 listens on for commands (CMD_RECV_PORT in the sketch).")]
-    public int servoCmdPort = 5002;
-
     void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
@@ -205,7 +201,7 @@ public class FinalCutsceneMiniGame : MiniGameManager
             yield return new WaitForSeconds(preWinGameDelay);
 
         // Trigger servo on P0's ESP32 (turns 90 degrees to signal end of game)
-        HardwareManager.Instance?.GetController(0)?.SendCommand("SERVO90", servoCmdPort);
+        HardwareManager.Instance?.GetController(0)?.SendCommand("SERVO90");
 
         WinGame();
     }

@@ -3,6 +3,10 @@
 # Arduino credentials
 ESP32/**/arduino_secrets.h
 
+# Unity HardwareConfig asset — contains ESP32 IP addresses, keep off GitHub
+Assets/Resources/HardwareConfig.asset
+Assets/Resources/HardwareConfig.asset.meta
+
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/

@@ -10,9 +10,10 @@ public class ControllerInput : MonoBehaviour
     public long EncoderDelta { get; private set; }
     public bool IsButtonPressed { get; private set; }
     public bool IsHardwareConnected => _udpClient != null;
-    public IPAddress RemoteAddress { get; private set; }
 
     private int playerIndex;
+    private string _espIp;
+    private int _cmdPort;
     private UdpClient _udpClient;
     private Thread readThread;
     private volatile bool isRunning = false;
@@ -21,9 +22,11 @@ public class ControllerInput : MonoBehaviour
     private bool _lastHardwareButtonState = false;
     private readonly object dataLock = new object();
 
-    public void Initialize(int index, int udpListenPort = 0)
+    public void Initialize(int index, int udpListenPort = 0, string espIp = "", int cmdPort = 0)
     {
         this.playerIndex = index;
+        this._espIp = espIp;
+        this._cmdPort = cmdPort;
         if (udpListenPort > 0)
         {
             StartUdpListener(udpListenPort);
@@ -124,7 +127,6 @@ public class ControllerInput : MonoBehaviour
                 string line = System.Text.Encoding.ASCII.GetString(data).Trim();
                 if (!string.IsNullOrEmpty(line))
                 {
-                    RemoteAddress = remoteEP.Address;
                     lock (dataLock)
                     {
                         latestData = line;
@@ -145,12 +147,12 @@ public class ControllerInput : MonoBehaviour
     }
 
 
-    /// Sends a UDP command string to the ESP32 at its last known IP on the given port.
-    public void SendCommand(string command, int targetPort)
+    /// Sends a UDP command string to the ESP32 at the configured IP and command port.
+    public void SendCommand(string command)
     {
-        if (RemoteAddress == null)
+        if (string.IsNullOrEmpty(_espIp) || _cmdPort <= 0)
         {
-            Debug.LogWarning($"[P{playerIndex}] Cannot send command '{command}': ESP32 remote address not yet known.");
+            Debug.LogWarning($"[P{playerIndex}] Cannot send command '{command}': espIp/cmdPort not set in HardwareConfig.");
             return;
         }
         try
@@ -158,8 +160,8 @@ public class ControllerInput : MonoBehaviour
             using (var sender = new UdpClient())
             {
                 byte[] payload = System.Text.Encoding.ASCII.GetBytes(command);
-                sender.Send(payload, payload.Length, new IPEndPoint(RemoteAddress, targetPort));
-                Debug.Log($"<color=green>[P{playerIndex}] Sent command '{command}' to {RemoteAddress}:{targetPort}</color>");
+                sender.Send(payload, payload.Length, new IPEndPoint(IPAddress.Parse(_espIp), _cmdPort));
+                Debug.Log($"<color=green>[P{playerIndex}] Sent command '{command}' to {_espIp}:{_cmdPort}</color>");
             }
         }
         catch (System.Exception e)

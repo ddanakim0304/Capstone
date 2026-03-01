@@ -48,7 +48,7 @@ public class HardwareManager : MonoBehaviour
             controllerObject.transform.SetParent(this.transform);
             
             var input = controllerObject.AddComponent<ControllerInput>();
-            input.Initialize(i, setup.udpListenPort);
+            input.Initialize(i, setup.udpListenPort, setup.espIp, setup.cmdPort);
             allControllers.Add(input);
         }
         

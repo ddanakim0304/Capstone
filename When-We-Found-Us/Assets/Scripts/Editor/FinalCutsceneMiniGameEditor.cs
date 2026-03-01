@@ -34,8 +34,8 @@ public class FinalCutsceneMiniGameEditor : Editor
                 }
                 else
                 {
-                    controller.SendCommand("SERVO90", game.servoCmdPort);
-                    Debug.Log($"<color=lime>[ServoDebug] Sent SERVO90 → port {game.servoCmdPort}</color>");
+                    controller.SendCommand("SERVO90");
+                    Debug.Log("<color=lime>[ServoDebug] Sent SERVO90</color>");
                 }
             }
         }
