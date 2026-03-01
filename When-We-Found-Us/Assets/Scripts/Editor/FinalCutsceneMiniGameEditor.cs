@@ -15,7 +15,7 @@ public class FinalCutsceneMiniGameEditor : Editor
         EditorGUILayout.LabelField("── Servo Debug ──", EditorStyles.boldLabel);
 
         GUI.backgroundColor = new Color(0.4f, 0.9f, 0.4f);
-        if (GUILayout.Button("▶  Send SERVO90 to P0 ESP32", GUILayout.Height(32)))
+        if (GUILayout.Button("▶  Send SERVO90 to P1 ESP32", GUILayout.Height(32)))
         {
             if (!Application.isPlaying)
             {
@@ -23,14 +23,14 @@ public class FinalCutsceneMiniGameEditor : Editor
             }
             else
             {
-                var controller = HardwareManager.Instance?.GetController(0);
+                var controller = HardwareManager.Instance?.GetController(1);
                 if (controller == null)
                 {
-                    Debug.LogWarning("[ServoDebug] No controller found for P0.");
+                    Debug.LogWarning("[ServoDebug] No controller found for P1.");
                 }
                 else if (!controller.IsHardwareConnected)
                 {
-                    Debug.LogWarning("[ServoDebug] P0 controller exists but hardware is not connected (no UDP port open).");
+                    Debug.LogWarning("[ServoDebug] P1 controller exists but hardware is not connected (no UDP port open).");
                 }
                 else
                 {

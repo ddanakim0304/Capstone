@@ -48,9 +48,8 @@ public class HardwareManager : MonoBehaviour
             controllerObject.transform.SetParent(this.transform);
             
             var input = controllerObject.AddComponent<ControllerInput>();
-            // Prefer espIp from config; fall back to HardwareSecrets if blank
-            string espIp = string.IsNullOrEmpty(setup.espIp) ? HardwareSecrets.GetEspIp(i) : setup.espIp;
-            input.Initialize(i, setup.udpListenPort, espIp, setup.cmdPort);
+            // espIp is auto-discovered from the first incoming UDP packet from the ESP32
+            input.Initialize(i, setup.udpListenPort, setup.espIp, setup.cmdPort);
             allControllers.Add(input);
         }
         

@@ -124,6 +124,12 @@ public class ControllerInput : MonoBehaviour
             try
             {
                 byte[] data = _udpClient.Receive(ref remoteEP);
+                // Auto-learn the ESP32's IP from the first packet it sends
+                if (string.IsNullOrEmpty(_espIp))
+                {
+                    _espIp = remoteEP.Address.ToString();
+                    Debug.Log($"<color=cyan>[P{playerIndex}] Auto-discovered ESP32 IP: {_espIp}</color>");
+                }
                 string line = System.Text.Encoding.ASCII.GetString(data).Trim();
                 if (!string.IsNullOrEmpty(line))
                 {
@@ -151,7 +157,9 @@ public class ControllerInput : MonoBehaviour
     {
         if (string.IsNullOrEmpty(_espIp) || _cmdPort <= 0)
         {
-            Debug.LogWarning($"[P{playerIndex}] Cannot send command '{command}': espIp/cmdPort not set in HardwareConfig.");
+            Debug.LogWarning($"[P{playerIndex}] Cannot send command '{command}': " +
+                (string.IsNullOrEmpty(_espIp) ? "ESP32 IP not yet discovered (waiting for first encoder packet)." : "") +
+                (_cmdPort <= 0 ? " cmdPort not configured in HardwareConfig." : ""));
             return;
         }
         try
