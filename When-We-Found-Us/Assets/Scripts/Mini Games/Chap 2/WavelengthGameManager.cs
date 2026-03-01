@@ -42,6 +42,14 @@ public class WavelengthGameManager : MiniGameManager
     [Range(0f, 1f)]
     public float musicVolume = 1.0f;
     public bool musicLoop = true;
+
+    [Header("Dynamic SFX")]
+    public AudioClip dynamicSFXClip;
+    [Range(0f, 1f)] public float minSFXVolume = 0.0f;
+    [Range(0f, 1f)] public float maxSFXVolume = 1.0f;
+    public float maxFrequencyDifference = 1.0f;
+    [Tooltip("Start time in seconds within the clip")]
+    public float sfxStartTime = 0f;
     
     // Tracks how long the players have successfully matched their wavelengths.
     private float matchTimer = 0f;
@@ -56,6 +64,12 @@ public class WavelengthGameManager : MiniGameManager
         if(p2LineRenderer) p2InitialColor = p2LineRenderer.startColor;
         // Ensure the UI and character visuals are in their default state.
         if (matchText != null) matchText.gameObject.SetActive(false);
+
+        // Start dynamic SFX looping at max volume (loud when far apart)
+        if (dynamicSFXClip != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(dynamicSFXClip, AudioPan.Center, maxSFXVolume, loop: true, startTime: sfxStartTime);
+        }
 
         if (player1NormalVisuals != null) player1NormalVisuals.SetActive(true);
         if (player1HappyVisuals != null) player1HappyVisuals.SetActive(false);
@@ -75,6 +89,15 @@ public class WavelengthGameManager : MiniGameManager
         float frequency1 = player1Wave.Frequency;
         float frequency2 = player2Wave.Frequency;
         float frequencyDifference = Mathf.Abs(frequency1 - frequency2);
+
+        // Update dynamic SFX volume based on how close the frequencies are
+        if (dynamicSFXClip != null && AudioManager.Instance != null)
+        {
+            // Loud when far apart, quiet when close
+            float t = Mathf.Clamp01(frequencyDifference / maxFrequencyDifference);
+            float dynamicVolume = Mathf.Lerp(minSFXVolume, maxSFXVolume, t);
+            AudioManager.Instance.SetSFXVolume(AudioPan.Center, dynamicVolume);
+        }
 
         // Check if the players' frequencies are close enough to be considered a match.
         if (frequencyDifference < matchThreshold)
@@ -125,6 +148,12 @@ public class WavelengthGameManager : MiniGameManager
         if (player1HappyVisuals != null) player1HappyVisuals.SetActive(true);
         if (player2NormalVisuals != null) player2NormalVisuals.SetActive(false);
         if (player2HappyVisuals != null) player2HappyVisuals.SetActive(true);
+
+        // Stop the dynamic SFX when the game is won
+        if (dynamicSFXClip != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.FadeOutSFX(AudioPan.Center, 0.5f);
+        }
 
         if (Music != null && AudioManager.Instance != null)
         {

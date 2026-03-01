@@ -68,7 +68,7 @@ public class AudioManager : MonoBehaviour
     }
 
     // --- SFX LOGIC ---
-    public void PlaySFX(AudioClip clip, AudioPan pan, float volume = 1.0f, bool loop = false)
+    public void PlaySFX(AudioClip clip, AudioPan pan, float volume = 1.0f, bool loop = false, float startTime = 0f)
     {
         if (clip == null) return;
 
@@ -86,6 +86,7 @@ public class AudioManager : MonoBehaviour
             source.volume = volume;
             source.loop = true;
             source.Play();
+            if (startTime > 0f) source.time = Mathf.Clamp(startTime, 0f, clip.length);
         }
         else
         {
@@ -102,6 +103,17 @@ public class AudioManager : MonoBehaviour
             case AudioPan.Right: sfxRightSource.Stop(); break;
             case AudioPan.Center: sfxCenterSource.Stop(); break;
         }
+    }
+
+    public void SetSFXVolume(AudioPan pan, float volume)
+    {
+        AudioSource source = pan switch
+        {
+            AudioPan.Left   => sfxLeftSource,
+            AudioPan.Right  => sfxRightSource,
+            _               => sfxCenterSource,
+        };
+        source.volume = volume;
     }
 
     public void FadeOutSFX(AudioPan pan, float fadeTime = 0.5f)
