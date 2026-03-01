@@ -1384,7 +1384,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc841c3217c424f23b044de730293047, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneMusicSetup
-  backgroundMusic: {fileID: 8300000, guid: 2d1fe62919644403da07c892eec0a70c, type: 3}
+  backgroundMusic: {fileID: 8300000, guid: 599c14759da0d485dbb5c2b4dd4fc725, type: 3}
   volume: 0.068
 --- !u!4 &1591951802
 Transform:
