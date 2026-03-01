@@ -1,17 +1,18 @@
 #include <WiFi.h>
 #include <WiFiUdp.h>
+#include <ESPmDNS.h>
 #include <ESP32Encoder.h>
 #include <ESP32Servo.h>
 #include "arduino_secrets.h"
 
-#define PLAYER_ID  0
+#define PLAYER_ID  1
 
 const char* SSID     = SECRET_SSID;
 const char* PASSWORD = SECRET_PASSWORD;
 const char* PC_IP    = SECRET_PC_IP;
 
-// Port Unity listens on for P0 encoder data
-const int UDP_SEND_PORT = 5000;
+// Port Unity listens on for P1 encoder data
+const int UDP_SEND_PORT = 5001;
 
 // Port this ESP32 listens on for commands from Unity for servo trigger
 const int CMD_RECV_PORT = 5002;
@@ -26,6 +27,8 @@ WiFiUDP udpRecv;
 ESP32Encoder encoder;
 Servo myServo;
 
+IPAddress pcAddr;
+
 long oldEncoderCount = 0;
 bool oldButtonState  = true;
 
@@ -37,9 +40,9 @@ void setup() {
   pinMode(ENCODER_SW, INPUT_PULLUP);
   encoder.clearCount();
 
-  // Servo — start at 0 degrees
+  // Servo — start at 90 degrees
   myServo.attach(SERVO_PIN);
-  myServo.write(0);
+  myServo.write(90);
 
   // Connect to WiFi
   WiFi.begin(SSID, PASSWORD);
@@ -48,9 +51,18 @@ void setup() {
     delay(500);
     Serial.print(".");
   }
+  
   Serial.println();
   Serial.println("WiFi connected. IP: " + WiFi.localIP().toString());
-  Serial.printf("Sending encoder UDP to %s:%d  (Player %d)\n", PC_IP, UDP_SEND_PORT, PLAYER_ID);
+
+  // Resolve mDNS hostname to IP
+  if (!WiFi.hostByName(PC_IP, pcAddr)) {
+    Serial.println("ERROR: Failed to resolve hostname: " + String(PC_IP));
+  } else {
+    Serial.println("Resolved " + String(PC_IP) + " -> " + pcAddr.toString());
+  }
+
+  Serial.printf("Sending encoder UDP to %s:%d  (Player %d)\n", pcAddr.toString().c_str(), UDP_SEND_PORT, PLAYER_ID);
   Serial.printf("Listening for commands on port %d\n", CMD_RECV_PORT);
 
   // Open receive socket for Unity → ESP32 commands
@@ -69,8 +81,8 @@ void loop() {
     Serial.println("Received command: " + cmd);
 
     if (cmd == "SERVO90") {
-      myServo.write(90);
-      Serial.println("Servo rotated to 90 degrees");
+      myServo.write(0);
+      Serial.println("Servo rotated to 0 degrees");
     }
   }
 
@@ -84,7 +96,7 @@ void loop() {
                  String(newEncoderCount) + "," +
                  String(newButtonState == LOW ? 1 : 0);
 
-    udpSend.beginPacket(PC_IP, UDP_SEND_PORT);
+    udpSend.beginPacket(pcAddr, UDP_SEND_PORT);
     udpSend.print(msg);
     udpSend.endPacket();
 

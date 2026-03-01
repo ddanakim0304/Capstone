@@ -1,5 +1,6 @@
 #include <WiFi.h>
 #include <WiFiUdp.h>
+#include <ESPmDNS.h>
 #include <ESP32Encoder.h>
 #include "arduino_secrets.h"
 
@@ -7,7 +8,7 @@
 
 const char* SSID     = SECRET_SSID;
 const char* PASSWORD = SECRET_PASSWORD;
-const char* PC_ IP    = SECRET_PC_IP;
+const char* PC_IP    = SECRET_PC_IP;
 
 const int UDP_PORT = 5001;
 
@@ -17,6 +18,8 @@ const int UDP_PORT = 5001;
 
 WiFiUDP udp;
 ESP32Encoder encoder;
+
+IPAddress pcAddr;
 
 long oldEncoderCount = 0;
 bool oldButtonState  = true;
@@ -37,7 +40,15 @@ void setup() {
   }
   Serial.println();
   Serial.println("WiFi connected. IP: " + WiFi.localIP().toString());
-  Serial.printf("Sending UDP to %s:%d  (Player %d)\n", PC_IP, UDP_PORT, PLAYER_ID);
+
+  // Resolve mDNS hostname to IP
+  if (!WiFi.hostByName(PC_IP, pcAddr)) {
+    Serial.println("ERROR: Failed to resolve hostname: " + String(PC_IP));
+  } else {
+    Serial.println("Resolved " + String(PC_IP) + " -> " + pcAddr.toString());
+  }
+
+  Serial.printf("Sending UDP to %s:%d  (Player %d)\n", pcAddr.toString().c_str(), UDP_PORT, PLAYER_ID);
 }
 
 void loop() {
@@ -51,7 +62,7 @@ void loop() {
                  String(newButtonState == LOW ? 1 : 0);
 
     // Send UDP packet to Unity on the Mac
-    udp.beginPacket(PC_IP, UDP_PORT);
+    udp.beginPacket(pcAddr, UDP_PORT);
     udp.print(msg);
     udp.endPacket();
 

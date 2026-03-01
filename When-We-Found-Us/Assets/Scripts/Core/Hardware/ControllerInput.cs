@@ -135,7 +135,6 @@ public class ControllerInput : MonoBehaviour
             }
             catch (SocketException ex) when (ex.SocketErrorCode == SocketError.TimedOut)
             {
-                // Normal timeout — no data this tick
             }
             catch (System.Exception e)
             {
