@@ -81,8 +81,17 @@ void loop() {
     Serial.println("Received command: " + cmd);
 
     if (cmd == "SERVO90") {
-      myServo.write(0);
-      Serial.println("Servo rotated to 0 degrees");
+      Serial.println("Servo: shake animation then go to 0");
+      // Sweep from 90 → 60 first
+      for (int pos = 90; pos >= 60; pos--) { myServo.write(pos); }
+      // Oscillate 60 → 30 → 60, twice
+      for (int i = 0; i < 2; i++) {
+        for (int pos = 60; pos >= 30; pos--) { myServo.write(pos); }
+        for (int pos = 30; pos <= 60; pos++) { myServo.write(pos); }
+      }
+      // Final sweep 60 → 0
+      for (int pos = 60; pos >= 0; pos--) { myServo.write(pos); }
+      Serial.println("Servo settled at 0 degrees");
     }
   }
 
