@@ -23,9 +23,21 @@ public class BumpingGameManager : MiniGameManager
     public float musicVolume = 2.0f;
     public bool musicLoop = true;
 
+    [Header("Heartbeat SFX")]
+    public AudioClip player1Heartbeat;
+    public AudioClip player2Heartbeat;
+    [Range(0f, 1f)]
+    public float heartbeatVolume = 1.0f;
+
 
     void Start()
     {
+        // Start looping heartbeats for both players
+        if (player1Heartbeat != null && AudioManager.Instance != null)
+            AudioManager.Instance.PlaySFX(player1Heartbeat, AudioPan.Left, heartbeatVolume, loop: true);
+        if (player2Heartbeat != null && AudioManager.Instance != null)
+            AudioManager.Instance.PlaySFX(player2Heartbeat, AudioPan.Right, heartbeatVolume, loop: true);
+
         // When a bump is detected, call HandleBumpDetected
         if (player1Collision != null) player1Collision.OnPlayerBump += HandleBumpDetected;
         if (player2Collision != null) player2Collision.OnPlayerBump += HandleBumpDetected;
@@ -39,6 +51,13 @@ public class BumpingGameManager : MiniGameManager
         if (player1Collision != null) player1Collision.OnPlayerBump -= HandleBumpDetected;
         if (player2Collision != null) player2Collision.OnPlayerBump -= HandleBumpDetected;
         
+        // Stop heartbeat SFX for both players
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopSFX(AudioPan.Left);
+            AudioManager.Instance.StopSFX(AudioPan.Right);
+        }
+
         // Disable movement on both players
         if (player1Mover != null) player1Mover.canMove = false;
         if (player2Mover != null) player2Mover.canMove = false;
