@@ -200,8 +200,8 @@ public class FinalCutsceneMiniGame : MiniGameManager
         if (preWinGameDelay > 0f)
             yield return new WaitForSeconds(preWinGameDelay);
 
-        // Trigger servo on P0's ESP32 (turns 90 degrees to signal end of game)
-        HardwareManager.Instance?.GetController(0)?.SendCommand("SERVO90");
+        // Trigger servo on P1's ESP32 (turns 90 degrees to signal end of game)
+        HardwareManager.Instance?.GetController(1)?.SendCommand("SERVO90");
 
         WinGame();
     }

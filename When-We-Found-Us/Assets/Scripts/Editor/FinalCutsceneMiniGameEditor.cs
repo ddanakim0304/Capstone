@@ -12,10 +12,10 @@ public class FinalCutsceneMiniGameEditor : Editor
         FinalCutsceneMiniGame game = (FinalCutsceneMiniGame)target;
 
         EditorGUILayout.Space(10);
-        EditorGUILayout.LabelField("── Servo Debug ──", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("Servo Debug", EditorStyles.boldLabel);
 
         GUI.backgroundColor = new Color(0.4f, 0.9f, 0.4f);
-        if (GUILayout.Button("▶  Send SERVO90 to P1 ESP32", GUILayout.Height(32)))
+        if (GUILayout.Button("▶  Open the door", GUILayout.Height(32)))
         {
             if (!Application.isPlaying)
             {
