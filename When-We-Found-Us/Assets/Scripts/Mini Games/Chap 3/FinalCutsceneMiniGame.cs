@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+
 public class FinalCutsceneMiniGame : MiniGameManager
 {
     public static FinalCutsceneMiniGame Instance { get; private set; }
@@ -54,15 +55,16 @@ public class FinalCutsceneMiniGame : MiniGameManager
         Instance = this;
     }
 
+    // Public trigger to start the cutscene sequence
     public void TriggerCutscene()
     {
         if (isGameWon) return;
         StartCoroutine(PlayCutscene());
     }
 
+    // Main coroutine that plays through all animation entries
     private IEnumerator PlayCutscene()
     {
-        // Wait before starting the first animation
         if (cutsceneStartDelay > 0f)
             yield return new WaitForSeconds(cutsceneStartDelay);
 
@@ -73,6 +75,7 @@ public class FinalCutsceneMiniGame : MiniGameManager
             yield break;
         }
 
+        // Iterate through each animation step
         int lastIndex = animations.Length - 1;
 
         for (int i = 0; i <= lastIndex; i++)
@@ -82,17 +85,14 @@ public class FinalCutsceneMiniGame : MiniGameManager
 
             bool isLast = (i == lastIndex);
 
-            // ── Fade in ───────────────────────────────────────────────────
             SetEntryAlphas(entry, 0f);
             entry.animObject.SetActive(true);
 
             if (isLast && houseOpened != null)
             {
-                // Enable house opened at alpha 0
                 SetAllChildAlphas(houseOpened, 0f);
                 houseOpened.SetActive(true);
 
-                // Run all three fades in parallel: anim in, house opened in, house closed out
                 Coroutine ci1 = entry.fadeInDuration > 0f ? StartCoroutine(FadeEntry(entry, 0f, 1f, entry.fadeInDuration))                                : null;
                 Coroutine ci2 = entry.fadeInDuration > 0f ? StartCoroutine(FadeAllChildren(houseOpened, 0f, 1f, entry.fadeInDuration))                    : null;
                 Coroutine ci3 = (houseClosed != null && entry.fadeInDuration > 0f) ? StartCoroutine(FadeAllChildren(houseClosed, 1f, 0f, entry.fadeInDuration)) : null;
@@ -100,7 +100,6 @@ public class FinalCutsceneMiniGame : MiniGameManager
                 if (ci2 != null) yield return ci2;
                 if (ci3 != null) yield return ci3;
 
-                // Snap in case duration was 0
                 if (entry.fadeInDuration <= 0f)
                 {
                     SetEntryAlphas(entry, 1f);
@@ -116,14 +115,11 @@ public class FinalCutsceneMiniGame : MiniGameManager
                     SetEntryAlphas(entry, 1f);
             }
 
-            // ── Hold ──────────────────────────────────────────────────────
             if (entry.displayDuration > 0f)
                 yield return new WaitForSeconds(entry.displayDuration);
 
-            // ── Fade out ──────────────────────────────────────────────────
             if (isLast && houseOpened != null)
             {
-                // Run all three fades in parallel: anim out, house opened out, house closed in
                 Coroutine co1 = entry.fadeDuration > 0f ? StartCoroutine(FadeEntry(entry, 1f, 0f, entry.fadeDuration))                                    : null;
                 Coroutine co2 = entry.fadeDuration > 0f ? StartCoroutine(FadeAllChildren(houseOpened, 1f, 0f, entry.fadeDuration))                        : null;
                 Coroutine co3 = (houseClosed != null && entry.fadeDuration > 0f) ? StartCoroutine(FadeAllChildren(houseClosed, 0f, 1f, entry.fadeDuration)) : null;
@@ -131,7 +127,6 @@ public class FinalCutsceneMiniGame : MiniGameManager
                 if (co2 != null) yield return co2;
                 if (co3 != null) yield return co3;
 
-                // Snap in case duration was 0
                 if (entry.fadeDuration <= 0f)
                 {
                     SetEntryAlphas(entry, 0f);
@@ -155,14 +150,13 @@ public class FinalCutsceneMiniGame : MiniGameManager
 
         yield return StartCoroutine(ApplyFinalHouseState());
     }
-
+// Sets up the final scene state (lights, camera focus) after animations
+    
     private IEnumerator ApplyFinalHouseState()
     {
-        // 1. Optional pause after the last animation ends
         if (houseFinishDelay > 0f)
             yield return new WaitForSeconds(houseFinishDelay);
 
-        // 2. Camera focus + car fade simultaneously; wait for both to finish
         if (cameraFollow != null)
             cameraFollow.TriggerHouseFocus();
 
@@ -176,7 +170,6 @@ public class FinalCutsceneMiniGame : MiniGameManager
 
         if (carFade != null) yield return carFade;
 
-        // 4. Now cross-fade the window: dark out, light in
         if (windowLight != null)
         {
             SetAllChildAlphas(windowLight, 0f);
@@ -200,13 +193,13 @@ public class FinalCutsceneMiniGame : MiniGameManager
         if (preWinGameDelay > 0f)
             yield return new WaitForSeconds(preWinGameDelay);
 
-        // Trigger servo on P1's ESP32 (turns 90 degrees to signal end of game)
+        // Signal P1 ESP32 (servo 90)
         HardwareManager.Instance?.GetController(1)?.SendCommand("SERVO90");
 
         WinGame();
+    // Helper coroutine to fade all children of an object
     }
 
-    /// <summary>Lerps the alpha of every child SpriteRenderer from <paramref name="from"/> to <paramref name="to"/>.</summary>
     private IEnumerator FadeAllChildren(GameObject obj, float from, float to, float duration)
     {
         float elapsed = 0f;
@@ -219,7 +212,6 @@ public class FinalCutsceneMiniGame : MiniGameManager
         SetAllChildAlphas(obj, to);
     }
 
-    /// <summary>Fades all children of entry.animObject AND entry.paperSprite together.</summary>
     private IEnumerator FadeEntry(AnimationEntry entry, float from, float to, float duration)
     {
         float elapsed = 0f;
@@ -232,12 +224,10 @@ public class FinalCutsceneMiniGame : MiniGameManager
         SetEntryAlphas(entry, to);
     }
 
-    /// <summary>Sets alphas on all children of animObject, plus paperSprite even if it sits outside that hierarchy.</summary>
     private void SetEntryAlphas(AnimationEntry entry, float alpha)
     {
         SetAllChildAlphas(entry.animObject, alpha);
 
-        // Explicitly drive paperSprite in case it lives outside animObject's hierarchy
         if (entry.paperSprite != null)
         {
             Color c = entry.paperSprite.color;
@@ -246,6 +236,7 @@ public class FinalCutsceneMiniGame : MiniGameManager
         }
     }
 
+    // Recursively sets alpha for all child sprites
     private void SetAllChildAlphas(GameObject obj, float alpha)
     {
         foreach (SpriteRenderer sr in obj.GetComponentsInChildren<SpriteRenderer>(true))

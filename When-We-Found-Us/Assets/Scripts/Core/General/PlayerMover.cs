@@ -33,7 +33,6 @@ public class PlayerMover : MonoBehaviour
         }
         else
         {
-            // Log an error if no controller can be found, which helps with debugging.
             Debug.LogError($"PlayerMover for player {playerIndex} could not find its controller!");
         }
     }
@@ -48,7 +47,7 @@ public class PlayerMover : MonoBehaviour
         
         float movement = 0f;
 
-        // Hardware encoder — always read when connected
+        // Hardware encoder
         if (controller != null && controller.IsHardwareConnected)
         {
             long encoderDelta = lastEncoderCount - controller.EncoderCount;

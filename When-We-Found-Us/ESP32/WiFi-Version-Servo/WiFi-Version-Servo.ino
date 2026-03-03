@@ -70,7 +70,7 @@ void setup() {
 }
 
 void loop() {
-  // ── Check for commands from Unity ────────────────────────────────────────
+  // Check for commands from Unity
   int packetSize = udpRecv.parsePacket();
   if (packetSize > 0) {
     char buf[32];
@@ -95,7 +95,7 @@ void loop() {
     }
   }
 
-  // ── Send encoder + button state to Unity ─────────────────────────────────
+  // Send encoder + button state to Unity
   long newEncoderCount = encoder.getCount();
   bool newButtonState  = digitalRead(ENCODER_SW);
 

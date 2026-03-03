@@ -4,121 +4,121 @@ using System.Collections;
 public class ChoiceComicGameManager : GeneralComicManager
 {
     [Header("Visual Settings")]
-    [Tooltip("Scale of the option when selected (e.g. 1.2 is 20% bigger)")]
     public float optionScaleIntensity = 1.2f; 
     public Color normalColor = Color.white;
     public Color highlightColor = Color.cyan;
-    public Color selectedColor = new Color(0.2f, 0.5f, 1f); // Blue-ish
+    public Color selectedColor = new Color(0.2f, 0.5f, 1f);
 
     [Header("Timing")]
-    [Tooltip("Time to wait after confirming selection before the result bubble appears.")]
     public float delayAfterChoice = 0.5f;
 
-    // Internal state
+
     private ControllerInput activeController;
     private long lastEncoderCount;
 
-    // Override the base logic to handle choice panels
+
     protected override IEnumerator ProcessExtraPanelLogic(ComicPanel panel)
     {
         if (panel.isChoicePanel && panel.choiceElements != null && panel.choiceElements.Count > 0)
         {
-            // First, let base class handle choice animations
+
             yield return StartCoroutine(base.ProcessExtraPanelLogic(panel));
             
-            // Then handle choice interaction
+
             yield return StartCoroutine(HandleChoiceLoop(panel));
         }
     }
 
+    // Manages the selection process for comic panels
     private IEnumerator HandleChoiceLoop(ComicPanel panel)
     {
-        // 1. Setup Controller for THIS specific panel's player
         if (HardwareManager.Instance != null)
         {
             activeController = HardwareManager.Instance.GetController(panel.playerIndex);
             if (activeController != null) 
             {
-                // Sync the encoder count so we don't get a jump immediately
+
                 lastEncoderCount = activeController.EncoderCount;
             }
         }
 
-        // 2. Choices are already animated by base class, just make them interactive
+
 
         int currentIndex = 0;
         bool confirmed = false;
 
-        // 3. Input Loop
+
         while (!confirmed)
         {
             int inputDelta = 0;
 
-            // --- A. Hardware Input (1 Tick = 1 Move) ---
+            // Calculate input change from encoders
             if (activeController != null && activeController.IsHardwareConnected)
             {
                 long currentCount = activeController.EncoderCount;
                 long rawDiff = lastEncoderCount - currentCount;
                 
-                // Update tracker immediately
+
                 lastEncoderCount = currentCount;
 
-                // Cast to int to update index
+
                 inputDelta += (int)rawDiff; 
             }
 
-            // --- B. Keyboard always accepted alongside hardware (for debugging) ---
-            if (panel.playerIndex == 0) // P1: A / D
+
+            // Keyboard fallback inputs
+            if (panel.playerIndex == 0)
             {
                 if (Input.GetKeyDown(KeyCode.D)) inputDelta += 1;
                 if (Input.GetKeyDown(KeyCode.A)) inputDelta -= 1;
             }
-            else // P2: Left / Right Arrows
+            else
             {
                 if (Input.GetKeyDown(KeyCode.RightArrow)) inputDelta += 1;
                 if (Input.GetKeyDown(KeyCode.LeftArrow))  inputDelta -= 1;
             }
 
-            // --- C. Update Index ---
+
             if (inputDelta != 0)
             {
                 int prevIndex = currentIndex;
                 currentIndex += inputDelta;
                 
-                // Clamp to ensure we stay within the list size
+
                 currentIndex = Mathf.Clamp(currentIndex, 0, panel.choiceElements.Count - 1);
 
-                // Play navigation sound only if the selection actually moved
+
                 if (currentIndex != prevIndex)
                     PlayChoiceChangeSound(panel);
             }
 
-            // --- D. Update Visuals ---
+            // Update scaling and colors for all choice options
             for (int i = 0; i < panel.choiceElements.Count; i++)
             {
                 if (panel.choiceElements[i] == null || panel.choiceElements[i].targetObj == null) continue;
+
 
                 SpriteRenderer sr = panel.choiceElements[i].targetObj.GetComponent<SpriteRenderer>();
                 Transform tf = panel.choiceElements[i].targetObj.transform;
 
                 if (i == currentIndex)
                 {
-                    // Highlighted
+
                     if (sr) sr.color = highlightColor;
                     tf.localScale = Vector3.Lerp(tf.localScale, Vector3.one * optionScaleIntensity, Time.deltaTime * 15f);
                 }
                 else
                 {
-                    // Normal
+
                     if (sr) sr.color = normalColor;
                     tf.localScale = Vector3.Lerp(tf.localScale, Vector3.one, Time.deltaTime * 15f);
                 }
             }
 
-            // --- E. Check Confirm Button ---
+
             bool pressed = (activeController != null && activeController.IsButtonPressed);
             
-            // Keyboard confirm always accepted alongside hardware (for debugging)
+
             if (panel.playerIndex == 0 && Input.GetKeyDown(KeyCode.W)) pressed = true;
             if (panel.playerIndex == 1 && Input.GetKeyDown(KeyCode.UpArrow)) pressed = true;
 
@@ -127,9 +127,7 @@ public class ChoiceComicGameManager : GeneralComicManager
             yield return null;
         }
 
-        // 4. Post Selection
-        
-        // Store the choice in the persistent GameManager
+        // Finalize selection and register choice with main manager
         if (panel.choiceElements[currentIndex] != null && panel.choiceElements[currentIndex].targetObj != null)
         {
             string choiceName = panel.choiceElements[currentIndex].targetObj.name;
@@ -139,27 +137,27 @@ public class ChoiceComicGameManager : GeneralComicManager
             }
         }
 
-        // Color the selected one
+
         if (panel.choiceElements[currentIndex] != null && panel.choiceElements[currentIndex].targetObj != null)
         {
             var sr = panel.choiceElements[currentIndex].targetObj.GetComponent<SpriteRenderer>();
             if (sr) sr.color = selectedColor;
         }
 
-        // Hide others
+
         for (int i = 0; i < panel.choiceElements.Count; i++)
         {
             if (i != currentIndex && panel.choiceElements[i] != null && panel.choiceElements[i].targetObj != null) 
                 panel.choiceElements[i].targetObj.SetActive(false);
         }
 
-        // 5. Delay before Result
+
         if (delayAfterChoice > 0)
         {
             yield return new WaitForSeconds(delayAfterChoice);
         }
 
-        // 6. Result Animation
+
         yield return StartCoroutine(PlayElementAnimation(panel.resultElement));
 
         yield return new WaitForSeconds(2.0f); 

@@ -134,9 +134,7 @@ public class WavelengthGameManager : MiniGameManager
             if (matchText != null) matchText.gameObject.SetActive(false);
         }
     }
-    
-    // This coroutine handles all the events that occur after winning.
-    private IEnumerator WinSequence()
+        private IEnumerator WinSequence()
     {
         // Freeze player input and hide the distracting background noise.
         if (player1Wave != null) player1Wave.isUpdating = false;

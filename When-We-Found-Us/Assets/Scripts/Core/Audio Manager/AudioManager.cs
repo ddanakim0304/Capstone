@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections; // Required for Coroutines
+using System.Collections;
 
 public enum AudioPan { Left, Right, Center }
 
@@ -18,7 +18,7 @@ public class AudioManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // This object survives scene changes!
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -26,18 +26,15 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    // --- BGM LOGIC ---
-
     public void PlayBGM(AudioClip musicClip, float volume = 1.0f)
     {
         // If the requested music is ALREADY playing, do nothing. 
-        // The music will keep playing as if the scene change never happened.
         if (bgmSource.clip == musicClip && bgmSource.isPlaying) 
         {
             return; 
         }
 
-        // If the clip is different, we switch.
+        // If the clip is different then switch.
         StartCoroutine(FadeSwitchMusic(musicClip, volume));
     }
 
@@ -66,8 +63,6 @@ public class AudioManager : MonoBehaviour
         }
         bgmSource.volume = volume;
     }
-
-    // --- SFX LOGIC ---
     public void PlaySFX(AudioClip clip, AudioPan pan, float volume = 1.0f, bool loop = false, float startTime = 0f)
     {
         if (clip == null) return;
@@ -137,6 +132,7 @@ public class AudioManager : MonoBehaviour
             yield return null;
         }
         source.Stop();
-        source.volume = startVolume; // Reset volume for next use
+        // Reset volume for next use
+        source.volume = startVolume; 
     }
 }

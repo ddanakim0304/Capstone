@@ -1,31 +1,22 @@
 using UnityEngine;
 using System.Collections;
+
 [RequireComponent(typeof(Rigidbody2D))]
 public class CarController : MonoBehaviour
 {
-    // ── Movement ──────────────────────────────────────────────────────────────
     [Header("Movement Physics")]
-    public float movePower    = 30f;   // Horizontal force per frame
-    public float maxSpeed     = 6f;    // Horizontal speed cap
-    public float jumpPower    = 12f;   // Jump impulse magnitude
+    public float movePower    = 30f;
+    public float maxSpeed     = 6f;
+    public float jumpPower    = 12f;
 
     [Header("Input")]
-    [Tooltip("Multiplier applied to encoder count delta for horizontal force.")]
     public float encoderSensitivity = 0.1f;
-
-    [Tooltip("How long (seconds) a detected encoder turn keeps applying force. Compensates for infrequent UDP packets.")]
     public float encoderHoldDuration = 0.5f;
-
-    [Tooltip("How long (seconds) a jump press is remembered, giving both players time to press together.")]
     public float jumpBufferTime = 0.3f;
 
-    // ── Button Display ────────────────────────────────────────────────────────
     [Header("Button Sprite Renderers (optional)")]
-    [Tooltip("SpriteRenderer for the Left button in the scene.")]
     public SpriteRenderer leftButtonSprite;
-    [Tooltip("SpriteRenderer for the Right button in the scene.")]
     public SpriteRenderer rightButtonSprite;
-    [Tooltip("SpriteRenderer for the Jump/Up button in the scene.")]
     public SpriteRenderer jumpButtonSprite;
 
     [Header("Button Colours")]
@@ -35,84 +26,67 @@ public class CarController : MonoBehaviour
     public Color neutralColor = Color.white;
 
     [Header("Arrival Fade")]
-    [Tooltip("Seconds over which all three button sprites fade to transparent when the car stops.")]
     public float buttonFadeDuration = 0.5f;
-    [Tooltip("Seconds over which the car's own SpriteRenderers fade out (triggered by FinalCutsceneMiniGame).")]
     public float carFadeDuration = 1f;
 
-    // ── Audio ─────────────────────────────────────────────────────────────────
     [Header("Audio")]
-    [Tooltip("Looping engine sound played while the car moves left or right.")]
     public AudioClip engineClip;
-    [Tooltip("One-shot sound played each time the car jumps.")]
     public AudioClip jumpClip;
+    
     [Range(0f, 1f)]
     public float engineVolume = 1f;
+    
     [Range(0f, 1f)]
     public float jumpVolume   = 1f;
-    [Tooltip("Seconds for the engine to fade in / fade out.")]
     public float engineFadeTime = 0.25f;
 
-    // ── Stuck Recovery ────────────────────────────────────────────────────────
     [Header("Stuck-on-Rock Recovery")]
-    [Tooltip("If the car tries to move horizontally but barely moves, apply a small upward nudge.")]
-    public float stuckCheckDuration  = 0.4f;  // Seconds to watch for being stuck
-    public float stuckSpeedThreshold = 0.1f;  // X-speed below which we consider 'stuck'
-    public float unstuckUpForce      = 4f;    // Upward impulse to escape a rock
+    public float stuckCheckDuration  = 0.4f;
+    public float stuckSpeedThreshold = 0.1f;
+    public float unstuckUpForce      = 4f;
 
-    // ── Private ───────────────────────────────────────────────────────────────
     private enum CarAction { None, Left, Right, Jump }
 
     private Rigidbody2D   rb;
-    private ControllerInput controller0;   // Player 1
-    private ControllerInput controller1;   // Player 2
+    private ControllerInput controller0;
+    private ControllerInput controller1;
 
     private bool  isGrounded     = false;
-    private bool  prevBtn0       = false;   // Previous-frame button state for P1
-    private bool  prevBtn1       = false;   // Previous-frame button state for P2
+    private bool  prevBtn0       = false;
+    private bool  prevBtn1       = false;
 
-    // Jump input buffers – keeps intent alive for jumpBufferTime seconds
     private float jumpBuffer0    = 0f;
     private float jumpBuffer1    = 0f;
 
-    // Per-player encoder tracking + hold buffer for horizontal force
     private long  lastEncoderCount0 = 0;
     private long  lastEncoderCount1 = 0;
-    private float encoderHoldTimer0 = 0f;  // how long to keep applying P1 encoder force
+    private float encoderHoldTimer0 = 0f;
     private float encoderHoldTimer1 = 0f;
-    private float encoderHoldDir0   = 0f;  // last detected encoder direction for P1 (+1 / -1)
+    private float encoderHoldDir0   = 0f;
     private float encoderHoldDir1   = 0f;
 
-    // Engine has its own AudioSource so it never conflicts with jump (AudioManager.Center)
     private AudioSource  engineSource        = null;
     private Coroutine    engineFadeCoroutine = null;
     private bool         isEngineRunning     = false;
 
-    // Stuck detection
     private float stuckTimer     = 0f;
     private bool  wantsToMove    = false;
 
-    // Cutscene lock – set by StopCar(); disables all player input
     private bool  isStopped      = false;
-
-    // Horizontal force intent written by Update(), consumed by FixedUpdate()
     private float pendingHorizontalForce = 0f;
 
-    // ─────────────────────────────────────────────────────────────────────────
+    // Initialize components and hardware controllers
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
 
-        // Set up a dedicated AudioSource for the engine loop
-        // This keeps it on a completely separate channel from AudioManager's sfxCenterSource
-        // so jump one-shots can play simultaneously without interrupting the loop.
         engineSource = gameObject.AddComponent<AudioSource>();
         engineSource.clip        = engineClip;
         engineSource.loop        = true;
         engineSource.playOnAwake = false;
         engineSource.volume      = 0f;
-        engineSource.spatialBlend = 0f; // 2-D sound
+        engineSource.spatialBlend = 0f;
 
         if (HardwareManager.Instance != null)
         {
@@ -124,16 +98,17 @@ public class CarController : MonoBehaviour
             Debug.LogWarning("[CarController] HardwareManager not found – using keyboard fallback only.");
         }
 
-        // Sync encoder baselines so there's no jump on first frame
         if (controller0 != null) lastEncoderCount0 = controller0.EncoderCount;
         if (controller1 != null) lastEncoderCount1 = controller1.EncoderCount;
     }
+
+    // Stop car movement and fade out UI when game ends
     public void StopCar()
     {
         isStopped = true;
         rb.linearVelocity = Vector2.zero;
         StopEngine();
-        // Fade out the UI buttons immediately
+        
         StartCoroutine(FadeOutButtons(buttonFadeDuration));
         Debug.Log("[CarController] Car stopped for cutscene.");
     }
@@ -192,29 +167,22 @@ public class CarController : MonoBehaviour
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
     void Update()
     {
-        // Cutscene lock: ignore all input while stopped
         if (isStopped) return;
 
-        // ── Tick down jump buffers ─────────────────────────────────────────
         jumpBuffer0 = Mathf.Max(0f, jumpBuffer0 - Time.deltaTime);
         jumpBuffer1 = Mathf.Max(0f, jumpBuffer1 - Time.deltaTime);
 
-        // ── Sample jump actions this frame ────────────────────────────────
         CarAction action0 = GetJumpActionForPlayer(0, controller0, prevBtn0);
         CarAction action1 = GetJumpActionForPlayer(1, controller1, prevBtn1);
 
-        // If a player pressed jump this frame, fill their buffer
         if (action0 == CarAction.Jump) jumpBuffer0 = jumpBufferTime;
         if (action1 == CarAction.Jump) jumpBuffer1 = jumpBufferTime;
 
-        // Update previous-frame button states
         prevBtn0 = GetRawButton(0, controller0);
         prevBtn1 = GetRawButton(1, controller1);
 
-        // ── Resolve jump ───────────────────────────────────────────────────
         bool bothWantJump = jumpBuffer0 > 0f && jumpBuffer1 > 0f;
         if (bothWantJump && isGrounded)
         {
@@ -223,9 +191,6 @@ public class CarController : MonoBehaviour
             jumpBuffer1 = 0f;
         }
 
-        // ── Continuous horizontal force (like PlayerMover) ─────────────────
-        // Each player produces a force value from encoder count delta + keyboard.
-        // If both agree on direction (same sign), apply force to the car.
         float force0 = GetPlayerHorizontalForce(0, controller0, ref lastEncoderCount0, ref encoderHoldTimer0, ref encoderHoldDir0);
         float force1 = GetPlayerHorizontalForce(1, controller1, ref lastEncoderCount1, ref encoderHoldTimer1, ref encoderHoldDir1);
 
@@ -240,21 +205,17 @@ public class CarController : MonoBehaviour
         else
             pendingHorizontalForce = 0f;
 
-        // ── Engine audio ───────────────────────────────────────────────────
         if (carMoving && !isEngineRunning)
             StartEngine();
         else if (!carMoving && isEngineRunning)
             StopEngine();
 
-        // ── Button display ─────────────────────────────────────────────────
         UpdateButtonDisplay(leftButtonSprite,  force0 < 0f, force1 < 0f);
         UpdateButtonDisplay(rightButtonSprite, force0 > 0f, force1 > 0f);
         UpdateButtonDisplay(jumpButtonSprite,  GetJumpHeld(0, controller0), GetJumpHeld(1, controller1));
-
-        // ── Stuck recovery ─────────────────────────────────────────────────
         wantsToMove = carMoving;
 
-        if (wantsToMove && !isGrounded == false)   // only check while on or near ground
+        if (wantsToMove && !isGrounded == false)
         {
             if (Mathf.Abs(rb.linearVelocity.x) < stuckSpeedThreshold)
             {
@@ -276,18 +237,14 @@ public class CarController : MonoBehaviour
             stuckTimer = 0f;
         }
     }
-
-    // ─────────────────────────────────────────────────────────────────────────
     void FixedUpdate()
     {
-        // Keep the car frozen when stopped
         if (isStopped)
         {
             rb.linearVelocity = Vector2.zero;
             return;
         }
 
-        // Drive horizontal velocity directly – bypasses ground friction and is frame-rate independent
         if (pendingHorizontalForce != 0f)
         {
             float targetX = Mathf.Sign(pendingHorizontalForce) * maxSpeed;
@@ -295,7 +252,6 @@ public class CarController : MonoBehaviour
             rb.linearVelocity = new Vector2(newX, rb.linearVelocity.y);
         }
 
-        // Clamp X to startPositionX (can't go left of the start)
         if (CarMiniGameManager.Instance != null)
         {
             float minX = CarMiniGameManager.Instance.startPositionX;
@@ -307,7 +263,6 @@ public class CarController : MonoBehaviour
             }
         }
 
-        // Clamp horizontal speed
         if (Mathf.Abs(rb.linearVelocity.x) > maxSpeed)
         {
             rb.linearVelocity = new Vector2(Mathf.Sign(rb.linearVelocity.x) * maxSpeed, rb.linearVelocity.y);
@@ -315,7 +270,6 @@ public class CarController : MonoBehaviour
     }
     private CarAction GetJumpActionForPlayer(int idx, ControllerInput ctrl, bool prevButton)
     {
-        // Hardware rising edge
         if (ctrl != null && ctrl.IsHardwareConnected)
         {
             bool btnNow    = ctrl.IsButtonPressed;
@@ -323,7 +277,6 @@ public class CarController : MonoBehaviour
             if (btnRising) return CarAction.Jump;
         }
 
-        // Keyboard always accepted alongside hardware
         if (idx == 0 && Input.GetKeyDown(KeyCode.W))        return CarAction.Jump;
         if (idx == 1 && Input.GetKeyDown(KeyCode.UpArrow))  return CarAction.Jump;
 
@@ -332,7 +285,7 @@ public class CarController : MonoBehaviour
     private float GetPlayerHorizontalForce(int idx, ControllerInput ctrl,
         ref long lastCount, ref float holdTimer, ref float holdDir)
     {
-        // ── Hardware: refresh hold buffer on each new encoder delta ──
+        // Hardware: refresh hold buffer on each new encoder delta
         if (ctrl != null && ctrl.IsHardwareConnected)
         {
             long currentCount = ctrl.EncoderCount;
@@ -356,7 +309,6 @@ public class CarController : MonoBehaviour
 
         float force = 0f;
 
-        // Apply the buffered encoder direction while the timer is alive
         if (holdTimer > 0f)
             force += holdDir;
 
@@ -398,8 +350,6 @@ public class CarController : MonoBehaviour
                 AudioManager.Instance.PlaySFX(jumpClip, AudioPan.Center, jumpVolume);
         }
     }
-
-    // ── Engine audio helpers ───────────────────────────────────────────────────
 
     private void StartEngine()
     {

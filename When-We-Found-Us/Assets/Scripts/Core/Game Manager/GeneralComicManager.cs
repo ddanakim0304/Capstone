@@ -122,7 +122,7 @@ public class GeneralComicManager : MiniGameManager
         yield break;
     }
 
-    // --- Animation Logic (Protected so Child can use them) ---
+    // Animation Logic
 
     protected IEnumerator PlayElementAnimation(ComicElement elem)
     {
@@ -303,7 +303,7 @@ public class GeneralComicManager : MiniGameManager
 
     protected void SetAlpha(SpriteRenderer r, float a) { if(r) { Color c = r.color; c.a = a; r.color = c; } }
 
-    // --- Audio Helpers ---
+    // Audio Helpers
 
     protected void PlayComicMusics(List<ComicMusic> musics)
     {

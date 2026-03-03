@@ -52,10 +52,7 @@ public class ControllerInput : MonoBehaviour
         {
             ParseData(dataToProcess);
         }
-
-        // Keyboard button fallback — always active so keyboard can be used alongside hardware for debugging.
-        // Encoder/knob keyboard fallback is intentionally absent here; each
-        // mini-game implements its own encoder keyboard logic in its own script.
+        
         bool keyboardPressed = false;
         if (playerIndex == 0)
         {
@@ -90,7 +87,7 @@ public class ControllerInput : MonoBehaviour
                 _lastHardwareButtonState = btnState;
             }
         }
-        catch { /* Ignore dirty packets */ }
+        catch {}
     }
 
     private void StartUdpListener(int port)

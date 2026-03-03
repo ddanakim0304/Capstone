@@ -70,8 +70,6 @@ public class BumpReaction : MonoBehaviour
         // Clear the coroutine reference now that the animation is complete.
         runningReaction = null;
     }
-
-    // A helper coroutine to animate the scale of this object over a set duration.
     private IEnumerator AnimateScale(Vector3 startScale, Vector3 endScale, float duration)
     {
         float timer = 0f;
