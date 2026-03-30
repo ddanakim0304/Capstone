@@ -3178,7 +3178,7 @@ MonoBehaviour:
   MusicPan: 2
   musicVolume: 0.304
   musicLoop: 0
-  dynamicSFXClip: {fileID: 8300000, guid: 07f803eea81d84224863ec391faf1a6f, type: 3}
+  dynamicSFXClip: {fileID: 0}
   minSFXVolume: 0
   maxSFXVolume: 0.182
   maxFrequencyDifference: 3
