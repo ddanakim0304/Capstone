@@ -1,6 +1,6 @@
 ## Main Game
 
-*   **`game-prototype/`**: The main two-player cooperative story game (read more in the folder's README)
+*   **`When-We-Found-Us/`**: The main two-player cooperative story game (read more in the folder's README)
 
 ## Time Logger
 *   **`Time-Logger/`**: Capstone time tracking application
